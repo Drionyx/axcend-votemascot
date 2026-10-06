@@ -217,11 +217,10 @@ input:focus{border-color:var(--accent)}
     if (!isAdmin) return;
     if (!confirm("⚠️ RESET TOTAL\n\nEsto pondrá TODOS los votos a 0 y liberará a todos los votantes.\n\n¿Continuar?")) return;
     if (!confirm("¿Estás TOTALMENTE seguro? Esta acción no se puede deshacer.")) return;
-
     get(ref(db, "votos")).then((snap) => {
-      const votosActuales = snap.val() || {};
+      const votosActualesSnap = snap.val() || {};
       const votosVacios = {};
-      Object.keys(votosActuales).forEach(k => votosVacios[k] = 0);
+      Object.keys(votosActualesSnap).forEach(k => votosVacios[k] = 0);
       Promise.all([
         set(ref(db, "votos"), votosVacios),
         remove(ref(db, "votantes")),
