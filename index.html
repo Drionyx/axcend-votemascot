@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AXCEND -LATAM- &middot; VOTACION DE MASCOTA</title>
+<title>AXCEND - LATAM -</title>
 <style>
 :root{--bg:#0f1020;--card:#1a1c30;--text:#eee;--accent:#f5c542;--sub:#9aa0b5;--border:#2a2d45}
 body.light{--bg:#f2f3f7;--card:#ffffff;--text:#1a1c30;--accent:#d4a017;--sub:#555;--border:#e0e0e8}
 *{box-sizing:border-box}
 body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text);padding:16px;transition:.3s}
 header{text-align:center;margin-bottom:20px;position:relative}
-h1{color:var(--accent);margin:0;font-size:clamp(20px,5vw,36px);letter-spacing:1px}
-.sub{color:var(--sub);font-size:clamp(12px,3vw,15px);margin-top:6px}
+h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:2px;font-weight:800}
+.sub{color:var(--sub);font-size:clamp(13px,3vw,16px);margin-top:8px;letter-spacing:.5px}
 .mensaje{margin:14px auto 0;max-width:700px;padding:12px 18px;background:var(--card);border:1px solid var(--accent);border-radius:10px;color:var(--text);font-size:14px;display:none}
 .mensaje.visible{display:block}
 .countdown{margin-top:12px;display:inline-block;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:8px 18px;font-size:14px;font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
@@ -43,7 +43,8 @@ h1{color:var(--accent);margin:0;font-size:clamp(20px,5vw,36px);letter-spacing:1p
 .lightbox img{max-width:90vw;max-height:80vh;border-radius:12px}
 .lightbox .close{position:absolute;top:20px;right:30px;color:#fff;font-size:36px;cursor:pointer;font-weight:300}
 .lightbox .lb-name{position:absolute;bottom:30px;color:#fff;font-size:18px;text-align:center;width:100%}
-footer{text-align:center;color:var(--sub);font-size:12px;margin-top:40px;padding:20px}
+footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding:20px;line-height:1.6;max-width:900px;margin-left:auto;margin-right:auto}
+footer .firma{color:var(--accent);font-weight:700}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center;padding:20px}
 .modal.active{display:flex}
 .modal-content{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:400px;width:100%;text-align:center;animation:pop .25s}
@@ -142,7 +143,7 @@ footer{text-align:center;color:var(--sub);font-size:12px;margin-top:40px;padding
 <body>
 <header>
 <button class="theme-btn" onclick="toggleTheme()">&#9788; Tema</button>
-<h1>AXCEND - LATAM - &middot; VOTACION DE MASCOTA</h1>
+<h1>AXCEND - LATAM -</h1>
 <div class="sub">Vota por tu mascota favorita del clan</div>
 <div class="mensaje" id="mensaje"></div>
 <div class="countdown" id="countdown">Cargando...</div>
@@ -293,7 +294,9 @@ footer{text-align:center;color:var(--sub);font-size:12px;margin-top:40px;padding
 <button class='vote-btn' data-vote='Yorick'>Votar</button>
 </div>
 </div>
-<footer>Este sitio fue hecho con dedicación por Drionyx Bahamut. &middot; Para los miembros del clan, a seguir disfrutando todos juntos de este juego bien RICO, BAROSO y SUCULENTO!</footer>
+<footer>
+  Este sitio fue hecho con dedicación por <span class="firma">Drionyx Bahamut</span>. &middot; Para los miembros del clan, a seguir disfrutando todos juntos de este juego bien RICO, BAROSO y SUCULENTO!
+</footer>
 
 <div class="lightbox" id="lightbox" onclick="cerrarLightbox()">
 <span class="close">&times;</span>
@@ -431,12 +434,10 @@ footer{text-align:center;color:var(--sub);font-size:12px;margin-top:40px;padding
     const winnerContainer = document.getElementById("winnerContainer");
     const cards = Array.from(grid.querySelectorAll(".card"));
     
-    // Limpieza previa
     cards.forEach(c => c.classList.remove("winner"));
     winnerContainer.innerHTML = "";
     winnerContainer.classList.remove("visible");
 
-    // Ordenar por votos (de mayor a menor)
     cards.sort((a, b) => {
       const vA = votosActuales[a.querySelector('.vote-btn').dataset.vote] || 0;
       const vB = votosActuales[b.querySelector('.vote-btn').dataset.vote] || 0;
@@ -445,19 +446,16 @@ footer{text-align:center;color:var(--sub);font-size:12px;margin-top:40px;padding
 
     const cerrada = votacionCerrada();
 
-    // Si la votación está cerrada y hay un ganador con votos, moverlo al contenedor especial
     if (cerrada && cards.length > 0) {
       const topCard = cards[0];
       const topVotos = votosActuales[topCard.querySelector('.vote-btn').dataset.vote] || 0;
       
       if (topVotos > 0) {
-        // Clonar la carta del ganador para el contenedor especial
         const winnerClone = topCard.cloneNode(true);
-        winnerClone.className = "winner-card"; // Aplicar estilo de ganador
+        winnerClone.className = "winner-card";
         winnerContainer.appendChild(winnerClone);
         winnerContainer.classList.add("visible");
         
-        // Añadir evento de lightbox al clon del ganador
         winnerClone.querySelector("img").addEventListener("click", function() {
           document.getElementById("lb-img").src = this.src;
           document.getElementById("lb-name").textContent = this.alt;
@@ -466,7 +464,6 @@ footer{text-align:center;color:var(--sub);font-size:12px;margin-top:40px;padding
       }
     }
     
-    // Reordenar el resto en la cuadrícula (el ganador original sigue estando en la lista ordenada, pero no se resalta)
     cards.forEach(c => grid.appendChild(c));
   }
 
@@ -480,18 +477,17 @@ footer{text-align:center;color:var(--sub);font-size:12px;margin-top:40px;padding
 
   function actualizarCountdown() {
     const el = document.getElementById('countdown');
-    const tituloBase = "AXCEND - LATAM - · VOTACION DE MASCOTA";
     if (!finVotacion) {
       el.textContent = 'Sin fecha límite';
       el.classList.remove('cerrada');
-      document.title = tituloBase;
+      document.title = "AXCEND - LATAM -";
       return;
     }
     const restante = finVotacion - Date.now();
     if (restante <= 0) {
       el.textContent = '⛔ Votación cerrada — Resultados finales';
       el.classList.add('cerrada');
-      document.title = "⛔ Cerrada — " + tituloBase;
+      document.title = "⛔ Votación cerrada";
       if (!resultadosMostrados) {
         resultadosMostrados = true;
         mostrarVotosEnCartas();
@@ -500,7 +496,7 @@ footer{text-align:center;color:var(--sub);font-size:12px;margin-top:40px;padding
       const txt = formatearTiempo(restante);
       el.textContent = '⏳ Cierra en: ' + txt;
       el.classList.remove('cerrada');
-      document.title = `⏳ ${txt} — ` + tituloBase;
+      document.title = `⏳ ${txt} restante para tu voto!`;
     }
   }
 
