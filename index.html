@@ -82,7 +82,18 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .cd-empty{font-size:12px;color:var(--sub);text-align:center;padding:20px 10px;font-style:italic}
 .cd-list{display:flex;flex-direction:column;gap:14px}
 
-.cd-card{background:var(--bg);border:2px solid #ff9800;border-radius:14px;padding:10px;text-align:center;position:relative;animation:cdPulse 2.5s ease-in-out infinite}
+.cd-card{
+  background:var(--bg);
+  border:2px solid #ff9800;
+  border-radius:14px;
+  padding:12px;
+  text-align:center;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  animation:cdPulse 2.5s ease-in-out infinite;
+}
 @keyframes cdPulse{
   0%,100%{box-shadow:0 0 0 0 rgba(255,152,0,.4)}
   50%{box-shadow:0 0 16px 4px rgba(255,152,0,.35)}
@@ -92,7 +103,6 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
   background:#ff9800;color:#1a1c30;font-size:10px;font-weight:800;
   padding:3px 10px;border-radius:12px;letter-spacing:1px;white-space:nowrap;
 }
-/* FIX: imagen del CD bien alineada desde arriba y sin oscurecer tanto */
 .cd-card .img-wrap{
   filter: grayscale(.85) brightness(.75);
   transition:.4s;
@@ -110,20 +120,51 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
   display: block;
 }
 .cd-card .name{font-size:13px;font-weight:700;color:var(--text);opacity:.95}
-.cd-card .cd-time{font-size:11px;color:#ff9800;font-weight:600;font-variant-numeric:tabular-nums}
+.cd-card .cd-time{
+  font-size:13px;
+  color:#ff9800;
+  font-weight:700;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:.3px;
+  margin-top:2px;
+}
 .cd-card .progress{
-  background:rgba(255,152,0,.15);border:1px solid #ff9800;border-radius:6px;height:16px;position:relative;overflow:hidden;
+  background:rgba(255,152,0,.15);
+  border:1px solid #ff9800;
+  border-radius:8px;
+  height:24px;
+  position:relative;
+  overflow:hidden;
 }
 .cd-card .progress-fill{
-  background:linear-gradient(90deg,#ff9800,#f5c542);height:100%;transition:width .5s ease;
+  background:linear-gradient(90deg,#ff9800,#f5c542);
+  height:100%;
+  transition:width .5s ease;
 }
 .cd-card .progress-text{
-  position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;
-  font-size:10px;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.7);
+  position:absolute;
+  top:0;left:0;right:0;bottom:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12.5px;
+  font-weight:800;
+  color:#fff;
+  letter-spacing:.4px;
+  text-shadow:0 1px 3px rgba(0,0,0,.85), 0 0 6px rgba(0,0,0,.5);
 }
 .cd-card .salvar-btn{
-  background:#ff9800;color:#1a1c30;border:none;border-radius:8px;padding:10px;font-weight:800;
-  cursor:pointer;font-size:13px;transition:.2s;letter-spacing:.5px;
+  background:#ff9800;
+  color:#1a1c30;
+  border:none;
+  border-radius:8px;
+  padding:11px;
+  font-weight:800;
+  cursor:pointer;
+  font-size:13.5px;
+  transition:.2s;
+  letter-spacing:.6px;
+  margin-top:2px;
 }
 .cd-card .salvar-btn:hover{filter:brightness(1.15);transform:scale(1.02)}
 .cd-card .salvar-btn.disabled{background:#444;color:#999;cursor:not-allowed;opacity:.6;transform:none}
@@ -467,14 +508,13 @@ footer .firma{color:var(--accent);font-weight:700}
     var q = document.getElementById("filtro").value.toLowerCase();
     var visibles = 0;
     document.querySelectorAll("#grid .card").forEach(function(c) {
-      if (c.style.display === "none" && c.dataset.ocultaPorCd === "1") return;
-      var ok = c.dataset.name.includes(q);
       if (c.dataset.ocultaPorCd === "1") {
         c.style.display = "none";
-      } else {
-        c.style.display = ok ? "" : "none";
-        if (ok) visibles++;
+        return;
       }
+      var ok = c.dataset.name.includes(q);
+      c.style.display = ok ? "" : "none";
+      if (ok) visibles++;
     });
     document.getElementById("contador").textContent = visibles + " personaje" + (visibles !== 1 ? "s" : "");
   };
@@ -512,9 +552,6 @@ footer .firma{color:var(--accent);font-weight:700}
   // OCULTAR / MOSTRAR CARDS SEGÚN CD
   // ============================================================
 
-  // Aplica el estado visual de cada card de la grid:
-  // - Si está en CD → display: none + data-ocultaPorCd="1"
-  // - Si NO está en CD → display normal (respetando el filtro de búsqueda)
   function aplicarVisibilidadGrid() {
     const q = (document.getElementById("filtro").value || "").toLowerCase();
     let visibles = 0;
@@ -877,7 +914,6 @@ footer .firma{color:var(--accent);font-weight:700}
       renderCdPanel();
     });
 
-    // Re-render periódico por si expira un CD mientras se navega
     setInterval(() => {
       aplicarVisibilidadGrid();
       renderCdPanel();
