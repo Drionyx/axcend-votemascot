@@ -47,7 +47,6 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .votantes strong{color:var(--accent)}
 .theme-btn{position:absolute;top:0;right:0;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:20px;padding:8px 14px;cursor:pointer;font-size:14px}
 
-/* --- LAYOUT PRINCIPAL (grid + panel CD) --- */
 .layout{display:grid;grid-template-columns:1fr 320px;gap:20px;max-width:1500px;margin:20px auto 0;align-items:start}
 @media(max-width:1100px){.layout{grid-template-columns:1fr}}
 
@@ -93,12 +92,27 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
   background:#ff9800;color:#1a1c30;font-size:10px;font-weight:800;
   padding:3px 10px;border-radius:12px;letter-spacing:1px;white-space:nowrap;
 }
-.cd-card .img-wrap{filter:grayscale(1) brightness(.45);transition:.4s}
-.cd-card .img-wrap:hover{filter:grayscale(.7) brightness(.6)}
-.cd-card .name{font-size:13px;font-weight:700;color:var(--text);opacity:.85}
+/* FIX: imagen del CD bien alineada desde arriba y sin oscurecer tanto */
+.cd-card .img-wrap{
+  filter: grayscale(.85) brightness(.75);
+  transition:.4s;
+  aspect-ratio: 3/4;
+  overflow: hidden;
+}
+.cd-card .img-wrap:hover{
+  filter: grayscale(.5) brightness(.9);
+}
+.cd-card .img-wrap img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+.cd-card .name{font-size:13px;font-weight:700;color:var(--text);opacity:.95}
 .cd-card .cd-time{font-size:11px;color:#ff9800;font-weight:600;font-variant-numeric:tabular-nums}
 .cd-card .progress{
-  background:rgba(255,152,0,.15);border:1px solid #ff9800;border-radius:6px;height:14px;position:relative;overflow:hidden;
+  background:rgba(255,152,0,.15);border:1px solid #ff9800;border-radius:6px;height:16px;position:relative;overflow:hidden;
 }
 .cd-card .progress-fill{
   background:linear-gradient(90deg,#ff9800,#f5c542);height:100%;transition:width .5s ease;
@@ -115,7 +129,6 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .cd-card .salvar-btn.disabled{background:#444;color:#999;cursor:not-allowed;opacity:.6;transform:none}
 .cd-card .salvar-btn.voted{background:#4CAF50;color:#fff;cursor:default}
 
-/* --- LIGHTBOX --- */
 .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:100;align-items:center;justify-content:center;padding:20px}
 .lightbox.active{display:flex}
 .lightbox img{max-width:90vw;max-height:80vh;border-radius:12px}
@@ -125,7 +138,6 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding:20px;line-height:1.6;max-width:900px;margin-left:auto;margin-right:auto}
 footer .firma{color:var(--accent);font-weight:700}
 
-/* --- MODAL --- */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center;padding:20px}
 .modal.active{display:flex}
 .modal-content{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:400px;width:100%;text-align:center;animation:pop .25s}
@@ -143,7 +155,6 @@ footer .firma{color:var(--accent);font-weight:700}
 .modal-btn-cd{background:#ff9800;color:#1a1c30}
 .modal-btn:hover{filter:brightness(1.1)}
 
-/* --- TOASTS --- */
 #toastContainer{position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:500;display:flex;flex-direction:column;gap:10px;align-items:center;pointer-events:none;width:calc(100% - 40px);max-width:420px}
 .toast{background:var(--card);color:var(--text);border:1px solid var(--accent);border-left:4px solid var(--accent);border-radius:12px;padding:14px 20px;font-size:14px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.4);width:100%;text-align:center;animation:toastIn .35s ease-out,toastOut .35s ease-in 3.15s forwards;pointer-events:auto}
 .toast.error{border-color:#ff5c5c;border-left-color:#ff5c5c}
@@ -153,7 +164,6 @@ footer .firma{color:var(--accent);font-weight:700}
 @keyframes toastIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes toastOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-20px)}}
 
-/* --- GANADOR --- */
 .winner-container{max-width:1200px;margin:30px auto 20px;padding:0 10px;display:none;justify-content:center}
 .winner-container.visible{display:flex}
 .winner-card{max-width:320px;width:100%;background:var(--card);border:2px solid var(--accent);border-radius:20px;padding:20px;text-align:center;display:flex;flex-direction:column;gap:12px;position:relative;box-shadow:0 0 40px rgba(245,197,66,.4);animation:winnerFloat 2s ease-in-out infinite,winnerSpin 1.5s ease-in-out forwards}
@@ -396,7 +406,7 @@ footer .firma{color:var(--accent);font-weight:700}
   let rescates = {};
   let ganadorRescate = "";
   let rescatePendiente = "";
-  let accionModal = "votar"; // "votar" | "salvar"
+  let accionModal = "votar";
 
   // ============================================================
   // UTILIDADES
@@ -457,9 +467,14 @@ footer .firma{color:var(--accent);font-weight:700}
     var q = document.getElementById("filtro").value.toLowerCase();
     var visibles = 0;
     document.querySelectorAll("#grid .card").forEach(function(c) {
+      if (c.style.display === "none" && c.dataset.ocultaPorCd === "1") return;
       var ok = c.dataset.name.includes(q);
-      c.style.display = ok ? "" : "none";
-      if (ok) visibles++;
+      if (c.dataset.ocultaPorCd === "1") {
+        c.style.display = "none";
+      } else {
+        c.style.display = ok ? "" : "none";
+        if (ok) visibles++;
+      }
     });
     document.getElementById("contador").textContent = visibles + " personaje" + (visibles !== 1 ? "s" : "");
   };
@@ -488,16 +503,38 @@ footer .firma{color:var(--accent);font-weight:700}
   function votacionCerrada() { return finVotacion > 0 && Date.now() >= finVotacion; }
   function votacionFinalizada() { return votacionCerrada() || ganadorRescate !== ""; }
 
-  // Un personaje está en CD si cooldowns[nombre].activo && hasta > now
   function estaEnCd(nombre) {
     const cd = cooldowns[nombre];
     return !!(cd && cd.activo && cd.hasta > Date.now());
   }
 
-  // Devuelve el timestamp del CD (0 si no está en CD)
-  function cdHasta(nombre) {
-    const cd = cooldowns[nombre];
-    return cd && cd.activo ? cd.hasta : 0;
+  // ============================================================
+  // OCULTAR / MOSTRAR CARDS SEGÚN CD
+  // ============================================================
+
+  // Aplica el estado visual de cada card de la grid:
+  // - Si está en CD → display: none + data-ocultaPorCd="1"
+  // - Si NO está en CD → display normal (respetando el filtro de búsqueda)
+  function aplicarVisibilidadGrid() {
+    const q = (document.getElementById("filtro").value || "").toLowerCase();
+    let visibles = 0;
+    document.querySelectorAll("#grid .card").forEach(card => {
+      const btn = card.querySelector(".vote-btn");
+      if (!btn) return;
+      const nombre = btn.dataset.vote;
+      const enCd = estaEnCd(nombre);
+
+      if (enCd) {
+        card.style.display = "none";
+        card.dataset.ocultaPorCd = "1";
+      } else {
+        delete card.dataset.ocultaPorCd;
+        const coincide = card.dataset.name.includes(q);
+        card.style.display = coincide ? "" : "none";
+        if (coincide) visibles++;
+      }
+    });
+    document.getElementById("contador").textContent = visibles + " personaje" + (visibles !== 1 ? "s" : "");
   }
 
   // ============================================================
@@ -521,7 +558,6 @@ footer .firma{color:var(--accent);font-weight:700}
       btn.style.display = "";
 
       if (r !== "") {
-        // Ya rescató → no puede votar normal
         btn.classList.add("disabled");
         btn.textContent = "Ya usaste tu voto en rescate";
         btn.disabled = true;
@@ -545,7 +581,6 @@ footer .firma{color:var(--accent);font-weight:700}
     const finalizada = votacionFinalizada();
     const umbral = Math.ceil(totalMiembros / 2);
 
-    // Construir lista de CDs activos
     const activos = Object.entries(cooldowns)
       .filter(([_, cd]) => cd && cd.activo && cd.hasta > Date.now())
       .sort((a, b) => (rescates[b[0]] || 0) - (rescates[a[0]] || 0));
@@ -558,8 +593,6 @@ footer .firma{color:var(--accent);font-weight:700}
     cdList.innerHTML = "";
 
     activos.forEach(([nombre, cd]) => {
-      const card = document.querySelector(`#grid .card[data-name] .vote-btn[data-vote="${CSS.escape(nombre)}"]`);
-      // Buscamos la card original por el data-vote
       const cardOriginal = [...document.querySelectorAll("#grid .card")].find(c => {
         const b = c.querySelector(".vote-btn");
         return b && b.dataset.vote === nombre;
@@ -588,10 +621,10 @@ footer .firma{color:var(--accent);font-weight:700}
       cdList.appendChild(div);
     });
 
-    // Bind imágenes y botones de rescate
     cdList.querySelectorAll("img").forEach(bindLightbox);
     cdList.querySelectorAll(".salvar-btn").forEach(btn => {
       const nombre = btn.dataset.salvar;
+      const imgSrc = btn.closest(".cd-card").querySelector("img").src;
       if (finalizada) {
         btn.classList.add("disabled");
         btn.textContent = "Votación finalizada";
@@ -720,9 +753,7 @@ footer .firma{color:var(--accent);font-weight:700}
       renderCdPanel();
       setTimeout(() => mostrarToast("¡Rescate registrado! Ahora espera a que el clan apoye.", "rescue"), 300);
 
-      // ¿Alcanzó el umbral?
       if (nuevos >= umbral) {
-        // Marcar ganador por rescate + cerrar votación
         set(ref(db, 'config/ganador_rescate'), nombre);
         set(ref(db, 'config/fin_votacion'), Date.now() - 1);
         setTimeout(() => mostrarToast(`🔥 ¡${nombre} ha sido SALVADO y es el GANADOR!`, "rescue"), 1500);
@@ -733,7 +764,6 @@ footer .firma{color:var(--accent);font-weight:700}
     });
   }
 
-  // Bind de botones de voto normal
   document.querySelectorAll("#grid .vote-btn").forEach(function(btn) {
     btn.addEventListener("click", function() {
       if (votacionFinalizada()) { mostrarToast("La votación ya está cerrada.", "error"); return; }
@@ -832,12 +862,13 @@ footer .firma{color:var(--accent);font-weight:700}
       }
       actualizarCountdown();
       refrescarBotones();
+      aplicarVisibilidadGrid();
       renderCdPanel();
     });
 
     onValue(ref(db, 'cooldowns'), (snap) => {
       cooldowns = snap.val() || {};
-      // Limpiar CDs expirados visualmente
+      aplicarVisibilidadGrid();
       renderCdPanel();
     });
 
@@ -848,9 +879,10 @@ footer .firma{color:var(--accent);font-weight:700}
 
     // Re-render periódico por si expira un CD mientras se navega
     setInterval(() => {
+      aplicarVisibilidadGrid();
       renderCdPanel();
       actualizarCountdown();
-    }, 60000); // cada minuto
+    }, 60000);
   }
 
   function actualizarContadorVotantes() {
@@ -898,7 +930,6 @@ footer .firma{color:var(--accent);font-weight:700}
     winnerContainer.innerHTML = "";
     winnerContainer.classList.remove("visible");
 
-    // Si hay ganador por rescate, mostrar SU tarjeta como ganador absoluto
     if (ganadorRescate) {
       const ganadorCard = cards.find(c => {
         const b = c.querySelector('.vote-btn');
@@ -907,7 +938,6 @@ footer .firma{color:var(--accent);font-weight:700}
       if (ganadorCard) {
         const clone = ganadorCard.cloneNode(true);
         clone.className = "winner-card rescue-winner";
-        // Añadir badge de rescates
         const umbral = Math.ceil(totalMiembros / 2);
         const rescatesGanador = rescates[ganadorRescate] || 0;
         const badge = document.createElement("div");
@@ -926,7 +956,6 @@ footer .firma{color:var(--accent);font-weight:700}
       return;
     }
 
-    // Si no hay rescate, pero sí votación cerrada → ganador normal
     const cerrada = votacionCerrada();
     if (cerrada && cards.length > 0) {
       cards.sort((a, b) => {
