@@ -103,6 +103,21 @@ footer{text-align:center;color:var(--sub);font-size:12px;margin-top:40px;padding
   aspect-ratio: 3/4;
   border-radius: 12px;
   overflow: hidden;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.winner-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  cursor: pointer;
+  transition: .3s;
+}
+.winner-card img:hover {
+  transform: scale(1.03);
 }
 .winner-card .name {
   font-size: 20px;
