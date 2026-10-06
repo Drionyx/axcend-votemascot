@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -57,6 +57,71 @@ footer{text-align:center;color:var(--sub);font-size:12px;margin-top:40px;padding
 .modal-btn-cancel{background:var(--border);color:var(--text)}
 .modal-btn-confirm{background:var(--accent);color:#1a1c30}
 .modal-btn:hover{filter:brightness(1.1)}
+
+/* --- NUEVOS ESTILOS PARA EL GANADOR --- */
+.winner-container {
+  max-width: 1200px;
+  margin: 30px auto 20px;
+  padding: 0 10px;
+  display: none;
+  justify-content: center;
+}
+.winner-container.visible {
+  display: flex;
+}
+.winner-card {
+  max-width: 320px;
+  width: 100%;
+  background: var(--card);
+  border: 2px solid var(--accent);
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  box-shadow: 0 0 40px rgba(245, 197, 66, 0.4);
+  animation: winnerFloat 2s ease-in-out infinite, winnerSpin 1.5s ease-in-out forwards;
+}
+.winner-card::before {
+  content: "★ GANADOR ★";
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #1a1c30;
+  padding: 4px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.winner-card .img-wrap {
+  aspect-ratio: 3/4;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.winner-card .name {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--accent);
+}
+.winner-card .votos-badge {
+  font-size: 16px;
+  padding: 8px;
+}
+@keyframes winnerSpin {
+  0% { transform: rotateY(0deg) scale(1); }
+  40% { transform: rotateY(180deg) scale(1.05); }
+  100% { transform: rotateY(360deg) scale(1); }
+}
+@keyframes winnerFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
 </style>
 </head>
 <body>
@@ -68,6 +133,10 @@ footer{text-align:center;color:var(--sub);font-size:12px;margin-top:40px;padding
 <div class="countdown" id="countdown">Cargando...</div>
 <div class="votantes" id="votantes">Cargando votantes...</div>
 </header>
+
+<!-- CONTENEDOR DEL GANADOR -->
+<div class="winner-container" id="winnerContainer"></div>
+
 <div class="controls">
 <input id="filtro" placeholder="Buscar personaje..." oninput="filtrar()">
 <div class="count" id="contador">27 personajes</div>
@@ -341,20 +410,49 @@ footer{text-align:center;color:var(--sub);font-size:12px;margin-top:40px;padding
     });
   }
 
+  // --- RANKING Y ANIMACIÓN DEL GANADOR ---
   function aplicarRanking() {
     const grid = document.getElementById("grid");
+    const winnerContainer = document.getElementById("winnerContainer");
     const cards = Array.from(grid.querySelectorAll(".card"));
+    
+    // Limpieza previa
     cards.forEach(c => c.classList.remove("winner"));
+    winnerContainer.innerHTML = "";
+    winnerContainer.classList.remove("visible");
+
+    // Ordenar por votos (de mayor a menor)
     cards.sort((a, b) => {
       const vA = votosActuales[a.querySelector('.vote-btn').dataset.vote] || 0;
       const vB = votosActuales[b.querySelector('.vote-btn').dataset.vote] || 0;
       return vB - vA;
     });
-    cards.forEach(c => grid.appendChild(c));
-    if (cards.length > 0) {
-      const topVotos = votosActuales[cards[0].querySelector('.vote-btn').dataset.vote] || 0;
-      if (topVotos > 0) cards[0].classList.add("winner");
+
+    const cerrada = votacionCerrada();
+
+    // Si la votación está cerrada y hay un ganador con votos, moverlo al contenedor especial
+    if (cerrada && cards.length > 0) {
+      const topCard = cards[0];
+      const topVotos = votosActuales[topCard.querySelector('.vote-btn').dataset.vote] || 0;
+      
+      if (topVotos > 0) {
+        // Clonar la carta del ganador para el contenedor especial
+        const winnerClone = topCard.cloneNode(true);
+        winnerClone.className = "winner-card"; // Aplicar estilo de ganador
+        winnerContainer.appendChild(winnerClone);
+        winnerContainer.classList.add("visible");
+        
+        // Añadir evento de lightbox al clon del ganador
+        winnerClone.querySelector("img").addEventListener("click", function() {
+          document.getElementById("lb-img").src = this.src;
+          document.getElementById("lb-name").textContent = this.alt;
+          document.getElementById("lightbox").classList.add("active");
+        });
+      }
     }
+    
+    // Reordenar el resto en la cuadrícula (el ganador original sigue estando en la lista ordenada, pero no se resalta)
+    cards.forEach(c => grid.appendChild(c));
   }
 
   function formatearTiempo(ms) {
