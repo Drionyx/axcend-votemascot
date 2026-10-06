@@ -27,9 +27,9 @@ body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:v
 #login button{padding:14px;border-radius:10px;border:none;background:var(--accent);color:#1a1c30;font-weight:700;font-size:15px;cursor:pointer;transition:.2s}
 #login button:hover{filter:brightness(1.1)}
 #loginMsg{color:#ff5c5c;font-size:13px;min-height:18px}
-#admin{display:none;width:100%;max-width:600px}
+#admin{display:none;width:100%;max-width:700px}
 #admin.visible{display:block}
-.panel{background:var(--card);border:2px solid var(--accent);border-radius:16px;padding:24px;max-height:90vh;overflow-y:auto}
+.panel{background:var(--card);border:2px solid var(--accent);border-radius:16px;padding:24px;max-height:92vh;overflow-y:auto}
 .panel h2{margin:0 0 8px;color:var(--accent);text-align:center;font-size:22px}
 .panel .sub{text-align:center;color:var(--sub);font-size:12px;margin:0 0 20px}
 .section{margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
@@ -41,12 +41,22 @@ body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:v
 .btn:hover{border-color:var(--accent);background:var(--card)}
 .btn-danger{border-color:#ff5c5c;color:#ff5c5c}
 .btn-danger:hover{background:#3a1a1a}
+.btn-warn{border-color:#ff9800;color:#ff9800}
+.btn-warn:hover{background:#3a2410}
 label{display:block;font-size:13px;color:var(--sub);margin:10px 0 6px}
 input[type="text"],input[type="number"],input[type="datetime-local"]{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;margin-bottom:8px;outline:none;color-scheme:dark;font-family:inherit}
 body.light input{color-scheme:light}
 input:focus{border-color:var(--accent)}
 .status-ok{color:#4CAF50}
 .status-no{color:#ff5c5c}
+.cd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:8px}
+.cd-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;transition:.2s;user-select:none}
+.cd-item:hover{border-color:var(--accent)}
+.cd-item input[type="checkbox"]{accent-color:#ff9800;width:16px;height:16px;cursor:pointer;flex-shrink:0}
+.cd-item.en-cd{border-color:#ff9800;background:rgba(255,152,0,.08)}
+.cd-item .nombre{flex:1;word-break:break-word}
+.cd-item .tag{font-size:10px;color:#ff9800;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.rescate-info{font-size:12px;color:var(--sub);margin-top:8px;padding:8px;background:var(--bg);border-radius:6px;border-left:3px solid #ff9800}
 </style>
 </head>
 <body>
@@ -70,6 +80,7 @@ input:focus{border-color:var(--accent)}
       <p>Votos emitidos: <span id="aVotantes">-</span> / <span id="aMiembros">-</span></p>
       <p>Votación cerrada: <span id="aCerrada">-</span></p>
       <p>Fecha límite: <span id="aFechaActual">-</span></p>
+      <p>Ganador por rescate: <span id="aGanadorRescate">-</span></p>
     </div>
 
     <div class="section">
@@ -77,6 +88,26 @@ input:focus{border-color:var(--accent)}
       <button class="btn" id="btnCerrarAhora">⛔ Cerrar votación ahora</button>
       <button class="btn" id="btnReabrir">🔓 Reabrir votación (sin límite)</button>
       <button class="btn btn-danger" id="btnResetTotal">💥 Reset TOTAL (votos a 0 + libera a todos)</button>
+    </div>
+
+    <div class="section">
+      <h3>⏳ Cooldown (CD) de personajes</h3>
+      <p style="font-size:12px;color:var(--sub);margin:0 0 8px">
+        Marca los personajes que entrarán en CD. No podrán votarse, pero sí "salvarse" si ≥ 50% del clan los rescata.
+      </p>
+
+      <label for="inputCdDias">Duración del CD (días):</label>
+      <input type="number" id="inputCdDias" min="1" max="365" placeholder="60">
+
+      <div class="cd-grid" id="cdGrid">
+        <!-- Generado por JS -->
+      </div>
+
+      <button class="btn btn-warn" id="btnAplicarCd" style="margin-top:12px">⏳ Aplicar CD a marcados</button>
+      <button class="btn" id="btnQuitarCd">♻️ Quitar CD a marcados</button>
+      <button class="btn btn-danger" id="btnResetRescates">🗑 Resetear votos de rescate</button>
+
+      <div class="rescate-info" id="rescateInfo">-</div>
     </div>
 
     <div class="section">
@@ -90,7 +121,7 @@ input:focus{border-color:var(--accent)}
     <div class="section">
       <h3>Configuración</h3>
       <label for="inputMiembros">Total de miembros del clan:</label>
-      <input type="number" id="inputMiembros" min="1" placeholder="40">
+      <input type="number" id="inputMiembros" min="1" placeholder="41">
       <button class="btn" id="btnGuardarMiembros">Guardar miembros</button>
 
       <label for="inputMensaje">Mensaje de la cabecera (vacío = oculto):</label>
@@ -122,8 +153,20 @@ input:focus{border-color:var(--accent)}
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
+  // Lista de personajes (debe coincidir con las data-vote del index)
+  const PERSONAJES = [
+    "Akaoni Atsushi","Baade","Capt Locke","Choi Yuhee","Choi Yuhyun",
+    "Code B","Code K","Croc Nile","Dallawan","Fogue","Guala","Hakui",
+    "Kagekuni","Kantos","Kumoyama","Leo von Narcis","Mikeroo","Model AZ",
+    "Orem","Owlbert","Paul the Bear","Shibahiko","Spunk","Sylas",
+    "Tayangsuyi","Tyrantino","Yorick"
+  ];
+
   let isAdmin = false;
   let finVotacion = 0;
+  let totalMiembros = 41;
+  let cooldownsActuales = {};
+  let rescatesActuales = {};
 
   function aplicarTema() {
     const saved = localStorage.getItem("axcend_admin_theme");
@@ -183,15 +226,18 @@ input:focus{border-color:var(--accent)}
       if (!snap.exists()) return;
       const c = snap.val();
       finVotacion = c.fin_votacion || 0;
-      document.getElementById("aMiembros").textContent = c.total_miembros || 40;
+      totalMiembros = c.total_miembros || 41;
+      document.getElementById("aMiembros").textContent = totalMiembros;
 
       const cerrada = finVotacion > 0 && Date.now() >= finVotacion;
       const elCerrada = document.getElementById("aCerrada");
       elCerrada.textContent = cerrada ? "Sí" : "No";
       elCerrada.className = cerrada ? "status-no" : "status-ok";
 
-      document.getElementById("inputMiembros").value = c.total_miembros || 40;
+      document.getElementById("inputMiembros").value = totalMiembros;
       document.getElementById("inputMensaje").value = c.mensaje || "";
+
+      document.getElementById("aGanadorRescate").textContent = c.ganador_rescate || "—";
 
       const inpF = document.getElementById("inputFecha");
       const txtF = document.getElementById("aFechaActual");
@@ -208,6 +254,52 @@ input:focus{border-color:var(--accent)}
       const count = snap.exists() ? Object.keys(snap.val()).length : 0;
       document.getElementById("aVotantes").textContent = count;
     });
+
+    onValue(ref(db, "cooldowns"), (snap) => {
+      cooldownsActuales = snap.val() || {};
+      renderCdGrid();
+    });
+
+    onValue(ref(db, "rescates"), (snap) => {
+      rescatesActuales = snap.val() || {};
+      actualizarRescateInfo();
+    });
+  }
+
+  function renderCdGrid() {
+    const grid = document.getElementById("cdGrid");
+    const umbral = Math.ceil(totalMiembros / 2);
+    grid.innerHTML = "";
+    PERSONAJES.forEach(nombre => {
+      const cd = cooldownsActuales[nombre];
+      const activo = cd && cd.activo && cd.hasta > Date.now();
+      const rescates = rescatesActuales[nombre] || 0;
+
+      const item = document.createElement("label");
+      item.className = "cd-item" + (activo ? " en-cd" : "");
+      item.innerHTML = `
+        <input type="checkbox" value="${nombre}" ${activo ? "checked" : ""}>
+        <span class="nombre">${nombre}</span>
+        ${activo ? `<span class="tag">${rescates}/${umbral}</span>` : ""}
+      `;
+      grid.appendChild(item);
+    });
+  }
+
+  function actualizarRescateInfo() {
+    const umbral = Math.ceil(totalMiembros / 2);
+    const activos = Object.entries(cooldownsActuales)
+      .filter(([_, cd]) => cd && cd.activo && cd.hasta > Date.now());
+    if (activos.length === 0) {
+      document.getElementById("rescateInfo").textContent = "No hay personajes en CD actualmente.";
+      return;
+    }
+    const lineas = activos.map(([nombre]) => {
+      const r = rescatesActuales[nombre] || 0;
+      return `• ${nombre}: <strong>${r}/${umbral}</strong> rescates`;
+    }).join("<br>");
+    document.getElementById("rescateInfo").innerHTML =
+      `<strong>Rescates en curso (umbral: ${umbral}):</strong><br>${lineas}`;
   }
 
   function tsToLocalInput(ts) {
@@ -221,9 +313,59 @@ input:focus{border-color:var(--accent)}
     });
   }
 
+  function accionAplicarCd() {
+    if (!isAdmin) return;
+    const marcados = [...document.querySelectorAll("#cdGrid input:checked")].map(i => i.value);
+    if (marcados.length === 0) { alert("Marca al menos un personaje."); return; }
+
+    const dias = parseInt(document.getElementById("inputCdDias").value) || 60;
+    if (dias < 1) { alert("Días inválidos."); return; }
+
+    if (!confirm(`Aplicar CD de ${dias} días a:\n\n${marcados.join("\n")}\n\n¿Continuar?`)) return;
+
+    const ahora = Date.now();
+    const hasta = ahora + dias * 24 * 60 * 60 * 1000;
+    const updates = {};
+    marcados.forEach(nombre => {
+      updates[`cooldowns/${nombre}`] = {
+        activo: true,
+        desde: ahora,
+        hasta: hasta,
+        motivo: "CD manual"
+      };
+    });
+
+    Promise.all(Object.entries(updates).map(([path, val]) => set(ref(db, path), val)))
+      .then(() => alert(`✅ CD aplicado a ${marcados.length} personaje(s) durante ${dias} días.`))
+      .catch(err => alert("❌ " + err.message));
+  }
+
+  function accionQuitarCd() {
+    if (!isAdmin) return;
+    const marcados = [...document.querySelectorAll("#cdGrid input:checked")].map(i => i.value);
+    if (marcados.length === 0) { alert("Marca al menos un personaje."); return; }
+    if (!confirm(`¿Quitar CD a:\n\n${marcados.join("\n")}?`)) return;
+
+    Promise.all(marcados.map(nombre => remove(ref(db, `cooldowns/${nombre}`))))
+      .then(() => alert("✅ CD quitado."))
+      .catch(err => alert("❌ " + err.message));
+  }
+
+  function accionResetRescates() {
+    if (!isAdmin) return;
+    if (!confirm("⚠️ Esto borrará TODOS los votos de rescate y permitirá a los rescatadores votar de nuevo.\n\n¿Continuar?")) return;
+    if (!confirm("¿Estás seguro?")) return;
+
+    Promise.all([
+      remove(ref(db, "rescates")),
+      remove(ref(db, "rescatadores"))
+    ]).then(() => alert("✅ Rescates reseteados."))
+      .catch(err => alert("❌ " + err.message));
+  }
+
   function accionResetTotal() {
     if (!isAdmin) return;
-    if (!confirm("⚠️ RESET TOTAL\n\nEsto pondrá TODOS los votos a 0 y liberará a todos los votantes.\n\n¿Continuar?")) return;
+    if (!confirm("⚠️ RESET TOTAL\n\nEsto pondrá TODOS los votos a 0, borrará CDs, rescates, rescatadores y liberará a todos.\n\n¿Continuar?")) return;
     if (!confirm("¿Estás TOTALMENTE seguro? Esta acción no se puede deshacer.")) return;
     get(ref(db, "votos")).then((snap) => {
       const votosActualesSnap = snap.val() || {};
@@ -232,7 +374,11 @@ input:focus{border-color:var(--accent)}
       Promise.all([
         set(ref(db, "votos"), votosVacios),
         remove(ref(db, "votantes")),
-        set(ref(db, "config/reset_token"), "v" + Date.now())
+        remove(ref(db, "cooldowns")),
+        remove(ref(db, "rescates")),
+        remove(ref(db, "rescatadores")),
+        set(ref(db, "config/reset_token"), "v" + Date.now()),
+        set(ref(db, "config/ganador_rescate"), "")
       ]).then(() => alert("✅ Reset total completado."))
         .catch(err => alert("❌ " + err.message));
     });
@@ -247,7 +393,10 @@ input:focus{border-color:var(--accent)}
   function accionReabrir() {
     if (!isAdmin) return;
     if (!confirm("¿Reabrir la votación sin límite?")) return;
-    set(ref(db, "config/fin_votacion"), 0).then(() => alert("✅ Votación reabierta."));
+    Promise.all([
+      set(ref(db, "config/fin_votacion"), 0),
+      set(ref(db, "config/ganador_rescate"), "")
+    ]).then(() => alert("✅ Votación reabierta."));
   }
 
   function accionGuardarFecha() {
@@ -297,6 +446,15 @@ input:focus{border-color:var(--accent)}
   document.getElementById("btnGuardarMiembros").addEventListener("click", accionGuardarMiembros);
   document.getElementById("btnGuardarMensaje").addEventListener("click", accionGuardarMensaje);
   document.getElementById("btnCerrarSesion").addEventListener("click", accionCerrarSesion);
+  document.getElementById("btnAplicarCd").addEventListener("click", accionAplicarCd);
+  document.getElementById("btnQuitarCd").addEventListener("click", accionQuitarCd);
+  document.getElementById("btnResetRescates").addEventListener("click", accionResetRescates);
+
+  // Guardar cd_dias en config al cambiarlo
+  document.getElementById("inputCdDias").addEventListener("change", (e) => {
+    const v = parseInt(e.target.value) || 60;
+    if (isAdmin) set(ref(db, "config/cd_dias"), v);
+  });
 </script>
 </body>
 </html>
