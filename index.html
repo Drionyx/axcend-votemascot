@@ -3,124 +3,376 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AXCEND · Admin</title>
+<title>AXCEND - LATAM -</title>
 <style>
 :root{--bg:#0f1020;--card:#1a1c30;--text:#eee;--accent:#f5c542;--sub:#9aa0b5;--border:#2a2d45}
 body.light{--bg:#f2f3f7;--card:#ffffff;--text:#1a1c30;--accent:#d4a017;--sub:#555;--border:#e0e0e8}
 *{box-sizing:border-box}
-body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:20px;transition:.3s}
-.theme-toggle{position:fixed;top:16px;right:16px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:20px;padding:8px 14px;cursor:pointer;font-size:14px;z-index:10}
-#login{display:flex;flex-direction:column;gap:16px;max-width:400px;width:100%;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center;margin-top:80px}
-#login.hidden{display:none}
-#login h1{margin:0;color:var(--accent);font-size:22px}
-#login p{color:var(--sub);font-size:14px;margin:0}
-#login input{padding:14px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:16px;text-align:center;outline:none;font-family:monospace;letter-spacing:2px}
-#login input:focus{border-color:var(--accent)}
-#login button{padding:14px;border-radius:10px;border:none;background:var(--accent);color:#1a1c30;font-weight:700;font-size:15px;cursor:pointer}
-#login button:hover{filter:brightness(1.1)}
-#loginMsg{color:#ff5c5c;font-size:13px;min-height:18px}
-#admin{display:none;width:100%;max-width:640px}
-#admin.visible{display:block}
-.panel{background:var(--card);border:2px solid var(--accent);border-radius:16px;padding:24px}
-.panel h2{margin:0 0 8px;color:var(--accent);text-align:center;font-size:22px}
-.panel .sub{text-align:center;color:var(--sub);font-size:12px;margin:0 0 20px}
-.section{margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
-.section:last-child{border-bottom:none;padding-bottom:0;margin-bottom:0}
-.section h3{font-size:13px;color:var(--sub);text-transform:uppercase;letter-spacing:1px;margin:0 0 12px}
-.section p{margin:6px 0;font-size:14px}
-.section p span{color:var(--accent);font-weight:700}
-.btn{display:block;width:100%;padding:12px;border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:10px;font-weight:600;cursor:pointer;font-size:14px;margin-bottom:8px;text-align:left;font-family:inherit;transition:.2s}
-.btn:hover{border-color:var(--accent);background:var(--card)}
-.btn-danger{border-color:#ff5c5c;color:#ff5c5c}
-.btn-danger:hover{background:#3a1a1a}
-label{display:block;font-size:13px;color:var(--sub);margin:10px 0 6px}
-input[type="text"],input[type="number"],input[type="datetime-local"]{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;margin-bottom:8px;outline:none;color-scheme:dark;font-family:inherit}
-body.light input{color-scheme:light}
-input:focus{border-color:var(--accent)}
-.status-ok{color:#4CAF50}
-.status-no{color:#ff5c5c}
-.cd-item{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;margin-bottom:6px;font-size:13px}
-.cd-item .info{flex:1}
-.cd-item .name{color:var(--text);font-weight:600}
-.cd-item .time{color:#ff9a3c;font-size:11px;font-weight:700;font-variant-numeric:tabular-nums}
-.cd-item .votes{color:var(--sub);font-size:11px}
-.cd-item button{padding:6px 12px;border:1px solid #ff5c5c;background:transparent;color:#ff5c5c;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit}
-.cd-item button:hover{background:#3a1a1a}
-.empty-msg{color:var(--sub);font-size:12px;text-align:center;padding:12px}
+body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text);padding:16px;transition:.3s}
+header{text-align:center;margin-bottom:20px;position:relative}
+h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:2px;font-weight:800}
+.sub{color:var(--sub);font-size:clamp(13px,3vw,16px);margin-top:8px;letter-spacing:.5px}
+.mensaje{margin:14px auto 0;max-width:700px;padding:12px 18px;background:var(--card);border:1px solid var(--accent);border-radius:10px;color:var(--text);font-size:14px;display:none}
+.mensaje.visible{display:block}
+.countdown{margin-top:12px;display:inline-block;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:8px 18px;font-size:14px;font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.countdown.cerrada{color:#ff5c5c;border-color:#ff5c5c}
+.votantes{margin-top:8px;font-size:13px;color:var(--sub);font-weight:600}
+.votantes strong{color:var(--accent)}
+.theme-btn{position:absolute;top:0;right:0;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:20px;padding:8px 14px;cursor:pointer;font-size:14px}
+.controls{display:flex;gap:10px;margin:20px auto;max-width:900px;flex-wrap:wrap}
+.controls input{flex:1;min-width:200px;padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:15px;outline:none}
+.controls .count{padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--sub);font-size:14px;white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;max-width:1200px;margin:0 auto}
+@media(max-width:600px){.grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px;text-align:center;transition:.3s;display:flex;flex-direction:column;gap:8px;position:relative}
+.card:hover{transform:translateY(-4px);border-color:var(--accent)}
+.card.winner{border-color:#f5c542;box-shadow:0 0 24px rgba(245,197,66,.5);transform:translateY(-4px)}
+.card.winner::after{content:"👑";position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:32px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6));z-index:2}
+.card.winner:hover{transform:translateY(-4px)}
+.img-wrap{aspect-ratio:3/4;border-radius:10px;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
+.card img{width:100%;height:100%;object-fit:cover;object-position:top center;cursor:pointer;transition:.3s}
+.card img:hover{transform:scale(1.05)}
+.name{font-size:13px;font-weight:600;word-break:break-word;color:var(--text)}
+.votos-badge{font-size:12px;font-weight:700;color:var(--accent);background:rgba(245,197,66,.12);border-radius:6px;padding:4px}
+.vote-btn{background:var(--accent);color:#1a1c30;border:none;border-radius:8px;padding:8px;font-weight:700;cursor:pointer;font-size:13px;transition:.2s}
+.vote-btn:hover{filter:brightness(1.15)}
+.vote-btn.voted{background:#4CAF50;color:#fff}
+.vote-btn.disabled{background:#444;color:#999;cursor:not-allowed;opacity:.6}
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:100;align-items:center;justify-content:center;padding:20px}
+.lightbox.active{display:flex}
+.lightbox img{max-width:90vw;max-height:80vh;border-radius:12px}
+.lightbox .close{position:absolute;top:20px;right:30px;color:#fff;font-size:36px;cursor:pointer;font-weight:300}
+.lightbox .lb-name{position:absolute;bottom:30px;color:#fff;font-size:18px;text-align:center;width:100%}
+footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding:20px;line-height:1.6;max-width:900px;margin-left:auto;margin-right:auto}
+footer .firma{color:var(--accent);font-weight:700}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal.active{display:flex}
+.modal-content{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:400px;width:100%;text-align:center;animation:pop .25s}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-img-wrap{aspect-ratio:3/4;max-width:180px;margin:0 auto 16px;border-radius:10px;overflow:hidden;background:#000}
+.modal-img-wrap img{width:100%;height:100%;object-fit:cover;object-position:top center}
+.modal-content h2{color:var(--accent);margin:0 0 8px;font-size:20px}
+.modal-text{color:var(--sub);margin:0 0 20px;font-size:14px;line-height:1.5}
+.modal-buttons{display:flex;gap:10px}
+.modal-btn{flex:1;padding:12px;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px;transition:.2s}
+.modal-btn-cancel{background:var(--border);color:var(--text)}
+.modal-btn-confirm{background:var(--accent);color:#1a1c30}
+.modal-btn:hover{filter:brightness(1.1)}
+
+/* --- TOAST (reemplaza los alert del navegador) --- */
+#toastContainer {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  pointer-events: none;
+  width: calc(100% - 40px);
+  max-width: 420px;
+}
+.toast {
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--accent);
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  text-align: center;
+  animation: toastIn .35s ease-out, toastOut .35s ease-in 3.15s forwards;
+  pointer-events: auto;
+}
+.toast.error {
+  border-color: #ff5c5c;
+  border-left-color: #ff5c5c;
+}
+.toast.success {
+  border-color: #4CAF50;
+  border-left-color: #4CAF50;
+}
+.toast-icon {
+  margin-right: 8px;
+  font-size: 16px;
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes toastOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-20px); }
+}
+
+/* --- NUEVOS ESTILOS PARA EL GANADOR --- */
+.winner-container {
+  max-width: 1200px;
+  margin: 30px auto 20px;
+  padding: 0 10px;
+  display: none;
+  justify-content: center;
+}
+.winner-container.visible {
+  display: flex;
+}
+.winner-card {
+  max-width: 320px;
+  width: 100%;
+  background: var(--card);
+  border: 2px solid var(--accent);
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  box-shadow: 0 0 40px rgba(245, 197, 66, 0.4);
+  animation: winnerFloat 2s ease-in-out infinite, winnerSpin 1.5s ease-in-out forwards;
+}
+.winner-card::before {
+  content: "★ GANADOR ★";
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #1a1c30;
+  padding: 4px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.winner-card .img-wrap {
+  aspect-ratio: 3/4;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.winner-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  cursor: pointer;
+  transition: .3s;
+}
+.winner-card img:hover {
+  transform: scale(1.03);
+}
+.winner-card .name {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--accent);
+}
+.winner-card .votos-badge {
+  font-size: 16px;
+  padding: 8px;
+}
+@keyframes winnerSpin {
+  0% { transform: rotateY(0deg) scale(1); }
+  40% { transform: rotateY(180deg) scale(1.05); }
+  100% { transform: rotateY(360deg) scale(1); }
+}
+@keyframes winnerFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
 </style>
 </head>
 <body>
-<button class="theme-toggle" onclick="toggleTheme()">&#9788; Tema</button>
+<header>
+<button class="theme-btn" onclick="toggleTheme()">&#9788; Tema</button>
+<h1>AXCEND - LATAM -</h1>
+<div class="sub">Vota por tu mascota favorita del clan</div>
+<div class="mensaje" id="mensaje"></div>
+<div class="countdown" id="countdown">Cargando...</div>
+<div class="votantes" id="votantes">Cargando votantes...</div>
+</header>
 
-<div id="login">
-  <h1>🔧 AXCEND Admin</h1>
-  <p>Introduce la clave de administrador</p>
-  <input type="password" id="keyword" placeholder="• • • • • • • • •" autocomplete="off" spellcheck="false">
-  <button id="loginBtn">Acceder</button>
-  <div id="loginMsg"></div>
+<!-- CONTENEDOR DE TOASTS -->
+<div id="toastContainer"></div>
+
+<!-- CONTENEDOR DEL GANADOR -->
+<div class="winner-container" id="winnerContainer"></div>
+
+<div class="controls">
+<input id="filtro" placeholder="Buscar personaje..." oninput="filtrar()">
+<div class="count" id="contador">27 personajes</div>
+</div>
+<div class="grid" id="grid">
+<div class='card' data-name='akaoni atsushi'>
+<div class='img-wrap'><img src='Activos/Akaoni_Atsushi.webp' alt='Akaoni Atsushi' loading='lazy'></div>
+<div class='name'>Akaoni Atsushi</div>
+<button class='vote-btn' data-vote='Akaoni Atsushi'>Votar</button>
+</div>
+<div class='card' data-name='baade'>
+<div class='img-wrap'><img src='Activos/Baade.webp' alt='Baade' loading='lazy'></div>
+<div class='name'>Baade</div>
+<button class='vote-btn' data-vote='Baade'>Votar</button>
+</div>
+<div class='card' data-name='capt. locke'>
+<div class='img-wrap'><img src='Activos/Capt._Locke.webp' alt='Capt. Locke' loading='lazy'></div>
+<div class='name'>Capt. Locke</div>
+<button class='vote-btn' data-vote='Capt Locke'>Votar</button>
+</div>
+<div class='card' data-name='choi yuhee'>
+<div class='img-wrap'><img src='Activos/Choi_Yuhee.webp' alt='Choi Yuhee' loading='lazy'></div>
+<div class='name'>Choi Yuhee</div>
+<button class='vote-btn' data-vote='Choi Yuhee'>Votar</button>
+</div>
+<div class='card' data-name='choi yuhyun'>
+<div class='img-wrap'><img src='Activos/Choi_Yuhyun.webp' alt='Choi Yuhyun' loading='lazy'></div>
+<div class='name'>Choi Yuhyun</div>
+<button class='vote-btn' data-vote='Choi Yuhyun'>Votar</button>
+</div>
+<div class='card' data-name='code b'>
+<div class='img-wrap'><img src='Activos/Code_B.webp' alt='Code B' loading='lazy'></div>
+<div class='name'>Code B</div>
+<button class='vote-btn' data-vote='Code B'>Votar</button>
+</div>
+<div class='card' data-name='code k'>
+<div class='img-wrap'><img src='Activos/Code_K.webp' alt='Code K' loading='lazy'></div>
+<div class='name'>Code K</div>
+<button class='vote-btn' data-vote='Code K'>Votar</button>
+</div>
+<div class='card' data-name='croc nile'>
+<div class='img-wrap'><img src='Activos/Croc_Nile.webp' alt='Croc Nile' loading='lazy'></div>
+<div class='name'>Croc Nile</div>
+<button class='vote-btn' data-vote='Croc Nile'>Votar</button>
+</div>
+<div class='card' data-name='dallawan'>
+<div class='img-wrap'><img src='Activos/Dallawan.webp' alt='Dallawan' loading='lazy'></div>
+<div class='name'>Dallawan</div>
+<button class='vote-btn' data-vote='Dallawan'>Votar</button>
+</div>
+<div class='card' data-name='fogue'>
+<div class='img-wrap'><img src='Activos/Fogue.webp' alt='Fogue' loading='lazy'></div>
+<div class='name'>Fogue</div>
+<button class='vote-btn' data-vote='Fogue'>Votar</button>
+</div>
+<div class='card' data-name='guala'>
+<div class='img-wrap'><img src='Activos/Guala.webp' alt='Guala' loading='lazy'></div>
+<div class='name'>Guala</div>
+<button class='vote-btn' data-vote='Guala'>Votar</button>
+</div>
+<div class='card' data-name='hakui'>
+<div class='img-wrap'><img src='Activos/Hakui.webp' alt='Hakui' loading='lazy'></div>
+<div class='name'>Hakui</div>
+<button class='vote-btn' data-vote='Hakui'>Votar</button>
+</div>
+<div class='card' data-name='kagekuni'>
+<div class='img-wrap'><img src='Activos/Kagekuni.webp' alt='Kagekuni' loading='lazy'></div>
+<div class='name'>Kagekuni</div>
+<button class='vote-btn' data-vote='Kagekuni'>Votar</button>
+</div>
+<div class='card' data-name='kantos'>
+<div class='img-wrap'><img src='Activos/Kantos.webp' alt='Kantos' loading='lazy'></div>
+<div class='name'>Kantos</div>
+<button class='vote-btn' data-vote='Kantos'>Votar</button>
+</div>
+<div class='card' data-name='kumoyama'>
+<div class='img-wrap'><img src='Activos/Kumoyama.webp' alt='Kumoyama' loading='lazy'></div>
+<div class='name'>Kumoyama</div>
+<button class='vote-btn' data-vote='Kumoyama'>Votar</button>
+</div>
+<div class='card' data-name='leo von narcis'>
+<div class='img-wrap'><img src='Activos/Leo_von_Narcis.webp' alt='Leo von Narcis' loading='lazy'></div>
+<div class='name'>Leo von Narcis</div>
+<button class='vote-btn' data-vote='Leo von Narcis'>Votar</button>
+</div>
+<div class='card' data-name='mikeroo'>
+<div class='img-wrap'><img src='Activos/Mikeroo.webp' alt='Mikeroo' loading='lazy'></div>
+<div class='name'>Mikeroo</div>
+<button class='vote-btn' data-vote='Mikeroo'>Votar</button>
+</div>
+<div class='card' data-name='model az'>
+<div class='img-wrap'><img src='Activos/Model_AZ.webp' alt='Model AZ' loading='lazy'></div>
+<div class='name'>Model AZ</div>
+<button class='vote-btn' data-vote='Model AZ'>Votar</button>
+</div>
+<div class='card' data-name='orem'>
+<div class='img-wrap'><img src='Activos/Orem.webp' alt='Orem' loading='lazy'></div>
+<div class='name'>Orem</div>
+<button class='vote-btn' data-vote='Orem'>Votar</button>
+</div>
+<div class='card' data-name='owlbert'>
+<div class='img-wrap'><img src='Activos/Owlbert.webp' alt='Owlbert' loading='lazy'></div>
+<div class='name'>Owlbert</div>
+<button class='vote-btn' data-vote='Owlbert'>Votar</button>
+</div>
+<div class='card' data-name='paul the bear'>
+<div class='img-wrap'><img src='Activos/Paul_the_Bear.webp' alt='Paul the Bear' loading='lazy'></div>
+<div class='name'>Paul the Bear</div>
+<button class='vote-btn' data-vote='Paul the Bear'>Votar</button>
+</div>
+<div class='card' data-name='shibahiko'>
+<div class='img-wrap'><img src='Activos/Shibahiko.webp' alt='Shibahiko' loading='lazy'></div>
+<div class='name'>Shibahiko</div>
+<button class='vote-btn' data-vote='Shibahiko'>Votar</button>
+</div>
+<div class='card' data-name='spunk'>
+<div class='img-wrap'><img src='Activos/Spunk.webp' alt='Spunk' loading='lazy'></div>
+<div class='name'>Spunk</div>
+<button class='vote-btn' data-vote='Spunk'>Votar</button>
+</div>
+<div class='card' data-name='sylas'>
+<div class='img-wrap'><img src='Activos/Sylas.webp' alt='Sylas' loading='lazy'></div>
+<div class='name'>Sylas</div>
+<button class='vote-btn' data-vote='Sylas'>Votar</button>
+</div>
+<div class='card' data-name='tayangsuyi'>
+<div class='img-wrap'><img src='Activos/Tayangsuyi.webp' alt='Tayangsuyi' loading='lazy'></div>
+<div class='name'>Tayangsuyi</div>
+<button class='vote-btn' data-vote='Tayangsuyi'>Votar</button>
+</div>
+<div class='card' data-name='tyrantino'>
+<div class='img-wrap'><img src='Activos/Tyrantino.webp' alt='Tyrantino' loading='lazy'></div>
+<div class='name'>Tyrantino</div>
+<button class='vote-btn' data-vote='Tyrantino'>Votar</button>
+</div>
+<div class='card' data-name='yorick'>
+<div class='img-wrap'><img src='Activos/Yorick.webp' alt='Yorick' loading='lazy'></div>
+<div class='name'>Yorick</div>
+<button class='vote-btn' data-vote='Yorick'>Votar</button>
+</div>
+</div>
+<footer>
+  Este sitio fue hecho con dedicación por <span class="firma">Drionyx Bahamut</span>. &middot; Para los miembros del clan, a seguir disfrutando todos juntos de este juego bien RICO, BAROSO y SUCULENTO!
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="cerrarLightbox()">
+<span class="close">&times;</span>
+<img id="lb-img" src="" alt="">
+<div class="lb-name" id="lb-name"></div>
 </div>
 
-<div id="admin">
-  <div class="panel">
-    <h2>🔧 Panel de Admin</h2>
-    <p class="sub">Sesión activa</p>
-
-    <div class="section">
-      <h3>Estado</h3>
-      <p>Votos emitidos: <span id="aVotantes">-</span> / <span id="aMiembros">-</span></p>
-      <p>Votación cerrada: <span id="aCerrada">-</span></p>
-      <p>Fecha límite: <span id="aFechaActual">-</span></p>
-    </div>
-
-    <div class="section">
-      <h3>Acciones</h3>
-      <button class="btn" id="btnCerrarAhora">⛔ Cerrar votación ahora</button>
-      <button class="btn" id="btnReabrir">🔓 Reabrir votación (sin límite)</button>
-      <button class="btn btn-danger" id="btnResetTotal">💥 Reset TOTAL (votos a 0 + libera a todos)</button>
-    </div>
-
-    <div class="section">
-      <h3>Fecha límite</h3>
-      <label for="inputFecha">Fecha y hora de cierre:</label>
-      <input type="datetime-local" id="inputFecha">
-      <button class="btn" id="btnGuardarFecha">💾 Guardar fecha límite</button>
-      <button class="btn btn-danger" id="btnQuitarFecha">🗑 Quitar fecha límite</button>
-    </div>
-
-    <div class="section">
-      <h3>Enfriamiento por personaje</h3>
-      <label for="inputCooldown">Días de enfriamiento (0 = desactivado):</label>
-      <input type="number" id="inputCooldown" min="0" placeholder="60">
-      <button class="btn" id="btnGuardarCooldown">💾 Guardar enfriamiento</button>
-      <p style="font-size:11px;color:var(--sub);margin-top:6px">Al guardar, se aplicará a partir del próximo voto. Los personajes votados previamente usarán el nuevo valor si aún no había cooldown.</p>
-    </div>
-
-    <div class="section">
-      <h3>Personajes en enfriamiento</h3>
-      <div id="cdList"><p class="empty-msg">Cargando...</p></div>
-    </div>
-
-    <div class="section">
-      <h3>Configuración</h3>
-      <label for="inputMiembros">Total de miembros del clan:</label>
-      <input type="number" id="inputMiembros" min="1" placeholder="40">
-      <button class="btn" id="btnGuardarMiembros">Guardar miembros</button>
-
-      <label for="inputMensaje">Mensaje de la cabecera (vacío = oculto):</label>
-      <input type="text" id="inputMensaje" maxlength="200" placeholder="Ej: Votación abierta hasta el 31/12">
-      <button class="btn" id="btnGuardarMensaje">Guardar mensaje</button>
-    </div>
-
-    <div class="section">
-      <h3>Sesión</h3>
-      <button class="btn" id="btnCerrarSesion">🚪 Cerrar sesión de admin</button>
-    </div>
-  </div>
+<div class="modal" id="modalConfirm">
+<div class="modal-content">
+<div class="modal-img-wrap"><img id="modalImg" src="" alt=""></div>
+<h2 id="modalName"></h2>
+<p class="modal-text">¿Confirmas tu voto? Solo se puede votar una vez.</p>
+<div class="modal-buttons">
+<button class="modal-btn modal-btn-cancel" onclick="cerrarModal()">Cancelar</button>
+<button class="modal-btn modal-btn-confirm" onclick="confirmarVoto()">Sí, votar</button>
+</div>
+</div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, get, set, remove, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  import { getDatabase, ref, runTransaction, get, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBaKgNmCCTdFoE2YkU1B4a8AjnwwGFeBJ4",
@@ -135,252 +387,315 @@ input:focus{border-color:var(--accent)}
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  let isAdmin = false;
-  let finVotacion = 0;
-  let cooldownDias = 60;
-  let totalMiembros = 40;
-  let cooldownsActuales = {};
-  let votosActuales = {};
+  const VOTE_KEY = "axcend_vote";
+  const VOTER_ID_KEY = "axcend_voter_id";
 
-  function aplicarTema() {
-    const saved = localStorage.getItem("axcend_admin_theme");
+  let finVotacion = 0;
+  let mostrarResultados = false;
+  let resetToken = "";
+  let resultadosMostrados = false;
+  let votosListenerActivo = false;
+  let votosActuales = {};
+  let votoPendiente = "";
+
+  // --- TOAST (reemplaza los alert del navegador) ---
+  function mostrarToast(mensaje, tipo = "success") {
+    const container = document.getElementById("toastContainer");
+    const toast = document.createElement("div");
+    toast.className = "toast " + tipo;
+    const icon = tipo === "error" ? "⚠️" : "✅";
+    toast.innerHTML = `<span class="toast-icon">${icon}</span>${mensaje}`;
+    container.appendChild(toast);
+    setTimeout(() => { toast.remove(); }, 3500);
+  }
+
+  function getVoterId() {
+    let id = localStorage.getItem(VOTER_ID_KEY);
+    if (!id) {
+      id = "v" + Date.now() + "_" + Math.random().toString(36).slice(2, 10);
+      localStorage.setItem(VOTER_ID_KEY, id);
+    }
+    return id;
+  }
+
+  const params = new URLSearchParams(location.search);
+  if (params.get("reset") === "1") {
+    localStorage.removeItem(VOTE_KEY);
+    params.delete("reset");
+    const nuevaUrl = location.pathname + (params.toString() ? "?" + params.toString() : "") + location.hash;
+    history.replaceState({}, "", nuevaUrl);
+  }
+
+  function getVote() { return localStorage.getItem(VOTE_KEY) || ""; }
+  function setVote(n) { localStorage.setItem(VOTE_KEY, n); }
+
+  function aplicarTemaInicial() {
+    const saved = localStorage.getItem("axcend_theme");
     if (saved === "light") document.body.classList.add("light");
     else if (saved === "dark") document.body.classList.remove("light");
     else if (!window.matchMedia('(prefers-color-scheme: dark)').matches) document.body.classList.add("light");
   }
+  aplicarTemaInicial();
+
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (localStorage.getItem("axcend_theme")) return;
+    document.body.classList.toggle("light", !e.matches);
+  });
+
   window.toggleTheme = function() {
     document.body.classList.toggle("light");
-    localStorage.setItem("axcend_admin_theme", document.body.classList.contains("light") ? "light" : "dark");
+    localStorage.setItem("axcend_theme", document.body.classList.contains("light") ? "light" : "dark");
   };
-  aplicarTema();
 
-  async function sha256(text) {
-    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
-    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
-  }
+  window.filtrar = function() {
+    var q = document.getElementById("filtro").value.toLowerCase();
+    var visibles = 0;
+    document.querySelectorAll(".card").forEach(function(c) {
+      var ok = c.dataset.name.includes(q);
+      c.style.display = ok ? "" : "none";
+      if (ok) visibles++;
+    });
+    document.getElementById("contador").textContent = visibles + " personaje" + (visibles !== 1 ? "s" : "");
+  };
 
-  const loginDiv = document.getElementById("login");
-  const adminDiv = document.getElementById("admin");
-  const loginMsg = document.getElementById("loginMsg");
-  const keywordInput = document.getElementById("keyword");
+  document.querySelectorAll(".card img").forEach(function(img) {
+    img.addEventListener("click", function() {
+      document.getElementById("lb-img").src = img.src;
+      document.getElementById("lb-name").textContent = img.alt;
+      document.getElementById("lightbox").classList.add("active");
+    });
+  });
 
-  document.getElementById("loginBtn").addEventListener("click", intentarLogin);
-  keywordInput.addEventListener("keydown", (e) => { if (e.key === "Enter") intentarLogin(); });
+  window.cerrarLightbox = function() { document.getElementById("lightbox").classList.remove("active"); };
+  document.addEventListener("keydown", function(e) { if (e.key === "Escape") cerrarLightbox(); });
 
-  async function intentarLogin() {
-    loginMsg.textContent = "";
-    const valor = keywordInput.value.trim();
-    if (!valor) return;
-    try {
-      const snap = await get(ref(db, "config/admin_key_hash"));
-      if (!snap.exists()) { loginMsg.textContent = "⚠️ No hay hash configurado."; return; }
-      const hashEsperado = String(snap.val()).trim().toLowerCase();
-      const hashIngresado = await sha256(valor);
-      if (hashIngresado === hashEsperado) {
-        isAdmin = true;
-        loginDiv.classList.add("hidden");
-        adminDiv.classList.add("visible");
-        iniciarPanel();
+  function votacionCerrada() { return finVotacion > 0 && Date.now() >= finVotacion; }
+
+  function refrescarBotones() {
+    var v = getVote();
+    var cerrada = votacionCerrada();
+    document.querySelectorAll(".vote-btn").forEach(function(btn) {
+      var nombre = btn.dataset.vote;
+      btn.classList.remove("voted", "disabled");
+      btn.disabled = false;
+      if (cerrada) {
+        btn.style.display = "none";
       } else {
-        loginMsg.textContent = "❌ Clave incorrecta.";
-        keywordInput.value = "";
+        btn.style.display = "";
+        if (v === nombre) {
+          btn.classList.add("voted"); btn.textContent = "Tu voto"; btn.disabled = true;
+        } else if (v !== "") {
+          btn.classList.add("disabled"); btn.textContent = "Ya votaste por otro"; btn.disabled = true;
+        } else {
+          btn.textContent = "Votar";
+        }
       }
-    } catch (err) { loginMsg.textContent = "❌ Error: " + err.message; }
+    });
   }
 
-  function tsToLocalInput(ts) {
-    const d = new Date(ts);
-    const off = d.getTimezoneOffset() * 60000;
-    return new Date(d.getTime() - off).toISOString().slice(0, 16);
+  // --- RANKING Y ANIMACIÓN DEL GANADOR ---
+  function aplicarRanking() {
+    const grid = document.getElementById("grid");
+    const winnerContainer = document.getElementById("winnerContainer");
+    const cards = Array.from(grid.querySelectorAll(".card"));
+    
+    cards.forEach(c => c.classList.remove("winner"));
+    winnerContainer.innerHTML = "";
+    winnerContainer.classList.remove("visible");
+
+    cards.sort((a, b) => {
+      const vA = votosActuales[a.querySelector('.vote-btn').dataset.vote] || 0;
+      const vB = votosActuales[b.querySelector('.vote-btn').dataset.vote] || 0;
+      return vB - vA;
+    });
+
+    const cerrada = votacionCerrada();
+
+    if (cerrada && cards.length > 0) {
+      const topCard = cards[0];
+      const topVotos = votosActuales[topCard.querySelector('.vote-btn').dataset.vote] || 0;
+      
+      if (topVotos > 0) {
+        const winnerClone = topCard.cloneNode(true);
+        winnerClone.className = "winner-card";
+        winnerContainer.appendChild(winnerClone);
+        winnerContainer.classList.add("visible");
+        
+        winnerClone.querySelector("img").addEventListener("click", function() {
+          document.getElementById("lb-img").src = this.src;
+          document.getElementById("lb-name").textContent = this.alt;
+          document.getElementById("lightbox").classList.add("active");
+        });
+      }
+    }
+    
+    cards.forEach(c => grid.appendChild(c));
   }
-  function formatearFechaBonita(ts) {
-    return new Date(ts).toLocaleString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
-  }
-  function formatearCD(ms) {
+
+  function formatearTiempo(ms) {
     const d = Math.floor(ms / 86400000);
     const h = Math.floor((ms % 86400000) / 3600000);
     const m = Math.floor((ms % 3600000) / 60000);
-    if (d > 0) return `${d}d ${String(h).padStart(2,'0')}h`;
-    if (h > 0) return `${h}h ${String(m).padStart(2,'0')}m`;
-    return `${m}m`;
+    const s = Math.floor((ms % 60000) / 1000);
+    return `${String(d).padStart(2,'0')}d ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;
   }
 
-  function iniciarPanel() {
-    onValue(ref(db, "config"), (snap) => {
-      if (!snap.exists()) return;
-      const c = snap.val();
-      finVotacion = c.fin_votacion || 0;
-      totalMiembros = c.total_miembros || 40;
-      cooldownDias = (c.cooldown_dias != null) ? c.cooldown_dias : 60;
-
-      document.getElementById("aMiembros").textContent = totalMiembros;
-      const cerrada = finVotacion > 0 && Date.now() >= finVotacion;
-      const elCerrada = document.getElementById("aCerrada");
-      elCerrada.textContent = cerrada ? "Sí" : "No";
-      elCerrada.className = cerrada ? "status-no" : "status-ok";
-
-      document.getElementById("inputMiembros").value = totalMiembros;
-      document.getElementById("inputMensaje").value = c.mensaje || "";
-      document.getElementById("inputCooldown").value = cooldownDias;
-
-      const inpF = document.getElementById("inputFecha");
-      const txtF = document.getElementById("aFechaActual");
-      if (c.fin_votacion && c.fin_votacion > 1) {
-        inpF.value = tsToLocalInput(c.fin_votacion);
-        txtF.textContent = formatearFechaBonita(c.fin_votacion);
-      } else {
-        inpF.value = "";
-        txtF.textContent = "Sin fecha límite";
-      }
-    });
-
-    onValue(ref(db, "votantes"), (snap) => {
-      const count = snap.exists() ? Object.keys(snap.val()).length : 0;
-      document.getElementById("aVotantes").textContent = count;
-    });
-
-    onValue(ref(db, "cooldowns"), (snap) => {
-      cooldownsActuales = snap.val() || {};
-      renderCDList();
-    });
-
-    onValue(ref(db, "votos"), (snap) => {
-      votosActuales = snap.val() || {};
-      renderCDList();
-    });
-  }
-
-  function renderCDList() {
-    const list = document.getElementById("cdList");
-    const ahora = Date.now();
-    const cdMs = cooldownDias * 86400000;
-
-    const enCD = Object.entries(cooldownsActuales)
-      .filter(([nombre, ts]) => {
-        if (!ts) return false;
-        const restante = (ts + cdMs) - ahora;
-        return restante > 0;
-      })
-      .sort((a, b) => b[1] - a[1]);
-
-    if (enCD.length === 0) {
-      list.innerHTML = '<p class="empty-msg">Ningún personaje en enfriamiento.</p>';
+  function actualizarCountdown() {
+    const el = document.getElementById('countdown');
+    if (!finVotacion) {
+      el.textContent = 'Sin fecha límite';
+      el.classList.remove('cerrada');
+      document.title = "AXCEND - LATAM -";
       return;
     }
+    const restante = finVotacion - Date.now();
+    if (restante <= 0) {
+      el.textContent = '⛔ Votación cerrada — Resultados finales';
+      el.classList.add('cerrada');
+      document.title = "⛔ Votación cerrada";
+      if (!resultadosMostrados) {
+        resultadosMostrados = true;
+        mostrarVotosEnCartas();
+      }
+    } else {
+      const txt = formatearTiempo(restante);
+      el.textContent = '⏳ Cierra en: ' + txt;
+      el.classList.remove('cerrada');
+      document.title = `⏳ ${txt} restante para tu voto!`;
+    }
+  }
 
-    list.innerHTML = "";
-    const votosNecesarios = Math.ceil(totalMiembros * 0.5);
+  function cargarConfig() {
+    onValue(ref(db, 'config'), (snapshot) => {
+      if (snapshot.exists()) {
+        const cfg = snapshot.val();
+        finVotacion = cfg.fin_votacion || 0;
+        mostrarResultados = cfg.mostrar_resultados || false;
+        const nuevoToken = cfg.reset_token || "";
 
-    enCD.forEach(([nombre, ts]) => {
-      const restante = (ts + cdMs) - ahora;
-      const votos = votosActuales[nombre] || 0;
-      const item = document.createElement("div");
-      item.className = "cd-item";
-      item.innerHTML = `
-        <div class="info">
-          <div class="name">${nombre}</div>
-          <div class="time">⏱ ${formatearCD(restante)}</div>
-          <div class="votes">${votos}/${votosNecesarios} votos para salvar</div>
-        </div>
-        <button data-nombre="${nombre}">Liberar</button>
-      `;
-      item.querySelector("button").addEventListener("click", () => liberarPersonaje(nombre));
-      list.appendChild(item);
+        const msgEl = document.getElementById('mensaje');
+        if (cfg.mensaje && cfg.mensaje.trim() !== "") {
+          msgEl.textContent = cfg.mensaje;
+          msgEl.classList.add('visible');
+        } else {
+          msgEl.classList.remove('visible');
+        }
+
+        if (cfg.total_miembros) {
+          document.getElementById('votantes').dataset.total = cfg.total_miembros;
+          actualizarContadorVotantes();
+        }
+
+        if (resetToken !== "" && nuevoToken !== resetToken) {
+          localStorage.removeItem(VOTE_KEY);
+          resultadosMostrados = false;
+          mostrarToast("La votación ha sido reiniciada. Puedes votar de nuevo.", "success");
+        }
+        resetToken = nuevoToken;
+
+        const cerrada = votacionCerrada();
+        if ((mostrarResultados || cerrada) && !resultadosMostrados) {
+          resultadosMostrados = true;
+          mostrarVotosEnCartas();
+        }
+      }
+      actualizarCountdown();
+      refrescarBotones();
     });
   }
 
-  async function liberarPersonaje(nombre) {
-    if (!isAdmin) return;
-    if (!confirm(`¿Liberar a "${nombre}" del enfriamiento ahora mismo?`)) return;
-    try {
-      await set(ref(db, "cooldowns/" + nombre), 0);
-      await set(ref(db, "votos/" + nombre), 0);
-      alert(`✅ ${nombre} liberado.`);
-    } catch (err) { alert("❌ " + err.message); }
-  }
-
-  function accionResetTotal() {
-    if (!isAdmin) return;
-    if (!confirm("⚠️ RESET TOTAL\n\nEsto pondrá TODOS los votos a 0 y liberará a todos los votantes y cooldowns.\n\n¿Continuar?")) return;
-    if (!confirm("¿Estás TOTALMENTE seguro?")) return;
-    get(ref(db, "votos")).then((snap) => {
-      const votosActualesSnap = snap.val() || {};
-      const votosVacios = {};
-      Object.keys(votosActualesSnap).forEach(k => votosVacios[k] = 0);
-      Promise.all([
-        set(ref(db, "votos"), votosVacios),
-        remove(ref(db, "votantes")),
-        remove(ref(db, "cooldowns")),
-        set(ref(db, "config/reset_token"), "v" + Date.now())
-      ]).then(() => alert("✅ Reset total completado."))
-        .catch(err => alert("❌ " + err.message));
+  function actualizarContadorVotantes() {
+    const el = document.getElementById('votantes');
+    const total = parseInt(el.dataset.total || "40");
+    get(ref(db, 'votantes')).then((snap) => {
+      const count = snap.exists() ? Object.keys(snap.val()).length : 0;
+      el.innerHTML = `<strong>${count}</strong> de <strong>${total}</strong> han votado`;
     });
   }
 
-  function accionCerrarAhora() {
-    if (!isAdmin) return;
-    if (!confirm("¿Cerrar la votación AHORA?")) return;
-    set(ref(db, "config/fin_votacion"), Date.now() - 1).then(() => alert("✅ Votación cerrada."));
+  function mostrarVotosEnCartas() {
+    if (votosListenerActivo) return;
+    votosListenerActivo = true;
+    onValue(ref(db, 'votos'), (snapshot) => {
+      votosActuales = snapshot.val() || {};
+      document.querySelectorAll('.card').forEach(card => {
+        const btn = card.querySelector('.vote-btn');
+        if (!btn) return;
+        const nombre = btn.dataset.vote;
+        const cantidad = votosActuales[nombre] || 0;
+        let badge = card.querySelector('.votos-badge');
+        if (!badge) {
+          badge = document.createElement('div');
+          badge.className = 'votos-badge';
+          card.insertBefore(badge, btn);
+        }
+        badge.textContent = '🗳 ' + cantidad + ' voto' + (cantidad !== 1 ? 's' : '');
+      });
+      aplicarRanking();
+    });
+    onValue(ref(db, 'votantes'), () => actualizarContadorVotantes());
   }
 
-  function accionReabrir() {
-    if (!isAdmin) return;
-    if (!confirm("¿Reabrir la votación sin límite?")) return;
-    set(ref(db, "config/fin_votacion"), 0).then(() => alert("✅ Votación reabierta."));
+  setInterval(actualizarCountdown, 1000);
+
+  function abrirModal(nombre, imgSrc) {
+    votoPendiente = nombre;
+    document.getElementById("modalImg").src = imgSrc;
+    document.getElementById("modalName").textContent = nombre;
+    document.getElementById("modalConfirm").classList.add("active");
+  }
+  window.cerrarModal = function() {
+    document.getElementById("modalConfirm").classList.remove("active");
+    votoPendiente = "";
+  };
+  window.confirmarVoto = function() {
+    const nombre = votoPendiente;
+    cerrarModal();
+    if (!nombre) return;
+    ejecutarVoto(nombre);
+  };
+
+  function ejecutarVoto(nombre) {
+    const votoRef = ref(db, 'votos/' + nombre);
+    const voterId = getVoterId();
+    runTransaction(votoRef, (v) => (v || 0) + 1).then(() => {
+      set(ref(db, 'votantes/' + voterId), nombre);
+      setVote(nombre);
+      refrescarBotones();
+      setTimeout(() => mostrarToast("¡Voto registrado con éxito!", "success"), 300);
+    }).catch((error) => {
+      console.error("Error al votar: ", error);
+      mostrarToast("Hubo un error al registrar tu voto. Inténtalo de nuevo.", "error");
+    });
   }
 
-  function accionGuardarFecha() {
-    if (!isAdmin) return;
-    const val = document.getElementById("inputFecha").value;
-    if (!val) { alert("Selecciona fecha y hora."); return; }
-    const ts = new Date(val).getTime();
-    if (isNaN(ts)) { alert("Fecha inválida."); return; }
-    set(ref(db, "config/fin_votacion"), ts).then(() => alert("✅ Fecha guardada:\n" + formatearFechaBonita(ts)));
-  }
+  document.querySelectorAll(".vote-btn").forEach(function(btn) {
+    btn.addEventListener("click", function() {
+      if (votacionCerrada()) { mostrarToast("La votación ya está cerrada.", "error"); return; }
+      if (getVote() !== "") return;
+      const nombre = btn.dataset.vote;
+      const img = btn.parentElement.querySelector("img").src;
+      abrirModal(nombre, img);
+    });
+  });
 
-  function accionQuitarFecha() {
-    if (!isAdmin) return;
-    if (!confirm("¿Quitar fecha límite?")) return;
-    set(ref(db, "config/fin_votacion"), 0).then(() => alert("✅ Fecha eliminada."));
-  }
+  // --- ATAJO: secuencia numérica abre admin.html ---
+  const ADMIN_CODE = "2552321";
+  let adminKeyBuffer = "";
+  document.addEventListener("keydown", function(e) {
+    if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+    if (e.key.length !== 1) return;
+    adminKeyBuffer += e.key.toLowerCase();
+    if (adminKeyBuffer.length > 20) adminKeyBuffer = adminKeyBuffer.slice(-20);
+    if (adminKeyBuffer.endsWith(ADMIN_CODE)) {
+      adminKeyBuffer = "";
+      window.open("admin.html", "_blank");
+    }
+  });
 
-  function accionGuardarCooldown() {
-    if (!isAdmin) return;
-    const val = parseInt(document.getElementById("inputCooldown").value);
-    if (isNaN(val) || val < 0) { alert("Introduce un número válido (0 o más)."); return; }
-    set(ref(db, "config/cooldown_dias"), val).then(() => alert("✅ Enfriamiento configurado a " + val + " días."));
-  }
-
-  function accionGuardarMiembros() {
-    if (!isAdmin) return;
-    const val = parseInt(document.getElementById("inputMiembros").value);
-    if (!val || val < 1) { alert("Número inválido."); return; }
-    set(ref(db, "config/total_miembros"), val).then(() => alert("✅ Miembros actualizados a " + val));
-  }
-
-  function accionGuardarMensaje() {
-    if (!isAdmin) return;
-    const val = document.getElementById("inputMensaje").value.trim();
-    set(ref(db, "config/mensaje"), val).then(() => alert(val ? "✅ Mensaje guardado." : "✅ Mensaje borrado."));
-  }
-
-  function accionCerrarSesion() {
-    isAdmin = false;
-    adminDiv.classList.remove("visible");
-    loginDiv.classList.remove("hidden");
-    keywordInput.value = "";
-    loginMsg.textContent = "";
-  }
-
-  document.getElementById("btnResetTotal").addEventListener("click", accionResetTotal);
-  document.getElementById("btnCerrarAhora").addEventListener("click", accionCerrarAhora);
-  document.getElementById("btnReabrir").addEventListener("click", accionReabrir);
-  document.getElementById("btnGuardarFecha").addEventListener("click", accionGuardarFecha);
-  document.getElementById("btnQuitarFecha").addEventListener("click", accionQuitarFecha);
-  document.getElementById("btnGuardarCooldown").addEventListener("click", accionGuardarCooldown);
-  document.getElementById("btnGuardarMiembros").addEventListener("click", accionGuardarMiembros);
-  document.getElementById("btnGuardarMensaje").addEventListener("click", accionGuardarMensaje);
-  document.getElementById("btnCerrarSesion").addEventListener("click", accionCerrarSesion);
+  cargarConfig();
+  refrescarBotones();
+  actualizarContadorVotantes();
 </script>
 </body>
 </html>
