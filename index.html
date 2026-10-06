@@ -5,11 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AXCEND - LATAM - | Vota por tu mascota favorita</title>
 
-<!-- ===== Descripción general ===== -->
 <meta name="description" content="Vota por tu mascota favorita del clan AXCEND - LATAM -. Un voto por persona, resultados al cerrar la votación.">
 <meta name="theme-color" content="#0f1020">
 
-<!-- ===== Open Graph (Discord, WhatsApp, Telegram, Facebook, LinkedIn) ===== -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="AXCEND - LATAM -">
 <meta property="og:title" content="AXCEND - LATAM - | Vota por tu mascota favorita">
@@ -23,14 +21,12 @@
 <meta property="og:image:alt" content="Votación de mascotas del clan AXCEND - LATAM -">
 <meta property="og:locale" content="es_ES">
 
-<!-- ===== Twitter / X Cards ===== -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="AXCEND - LATAM - | Vota por tu mascota favorita">
 <meta name="twitter:description" content="Vota por tu mascota favorita del clan AXCEND - LATAM -. Un voto por persona, resultados al cerrar la votación.">
 <meta name="twitter:image" content="https://drionyx.github.io/axcend-votemascot/preview.jpg">
 <meta name="twitter:image:alt" content="Votación de mascotas del clan AXCEND - LATAM -">
 
-<!-- ===== Favicons ===== -->
 <link rel="icon" href="./favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="./favicon.png">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
@@ -50,16 +46,26 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .votantes{margin-top:8px;font-size:13px;color:var(--sub);font-weight:600}
 .votantes strong{color:var(--accent)}
 .theme-btn{position:absolute;top:0;right:0;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:20px;padding:8px 14px;cursor:pointer;font-size:14px}
-.controls{display:flex;gap:10px;margin:20px auto;max-width:900px;flex-wrap:wrap}
+
+/* --- LAYOUT PRINCIPAL (grid + panel CD) --- */
+.layout{display:grid;grid-template-columns:1fr 320px;gap:20px;max-width:1500px;margin:20px auto 0;align-items:start}
+@media(max-width:1100px){.layout{grid-template-columns:1fr}}
+
+.col-main{min-width:0}
+.col-cd{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow-y:auto}
+@media(max-width:1100px){.col-cd{position:static;max-height:none}}
+
+.controls{display:flex;gap:10px;margin:0 0 16px;flex-wrap:wrap}
 .controls input{flex:1;min-width:200px;padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:15px;outline:none}
 .controls .count{padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--sub);font-size:14px;white-space:nowrap}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;max-width:1200px;margin:0 auto}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}
 @media(max-width:600px){.grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}}
+
 .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px;text-align:center;transition:.3s;display:flex;flex-direction:column;gap:8px;position:relative}
 .card:hover{transform:translateY(-4px);border-color:var(--accent)}
 .card.winner{border-color:#f5c542;box-shadow:0 0 24px rgba(245,197,66,.5);transform:translateY(-4px)}
 .card.winner::after{content:"👑";position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:32px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6));z-index:2}
-.card.winner:hover{transform:translateY(-4px)}
 .img-wrap{aspect-ratio:3/4;border-radius:10px;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
 .card img{width:100%;height:100%;object-fit:cover;object-position:top center;cursor:pointer;transition:.3s}
 .card img:hover{transform:scale(1.05)}
@@ -69,157 +75,99 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .vote-btn:hover{filter:brightness(1.15)}
 .vote-btn.voted{background:#4CAF50;color:#fff}
 .vote-btn.disabled{background:#444;color:#999;cursor:not-allowed;opacity:.6}
+
+/* --- PANEL CD --- */
+.cd-panel{background:var(--card);border:2px solid #ff9800;border-radius:16px;padding:16px;box-shadow:0 0 20px rgba(255,152,0,.15)}
+.cd-panel h2{margin:0 0 6px;color:#ff9800;font-size:16px;text-align:center;text-transform:uppercase;letter-spacing:1px}
+.cd-panel .hint{font-size:11px;color:var(--sub);text-align:center;margin:0 0 14px;line-height:1.5}
+.cd-empty{font-size:12px;color:var(--sub);text-align:center;padding:20px 10px;font-style:italic}
+.cd-list{display:flex;flex-direction:column;gap:14px}
+
+.cd-card{background:var(--bg);border:2px solid #ff9800;border-radius:14px;padding:10px;text-align:center;position:relative;animation:cdPulse 2.5s ease-in-out infinite}
+@keyframes cdPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,152,0,.4)}
+  50%{box-shadow:0 0 16px 4px rgba(255,152,0,.35)}
+}
+.cd-card .cd-badge{
+  position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  background:#ff9800;color:#1a1c30;font-size:10px;font-weight:800;
+  padding:3px 10px;border-radius:12px;letter-spacing:1px;white-space:nowrap;
+}
+.cd-card .img-wrap{filter:grayscale(1) brightness(.45);transition:.4s}
+.cd-card .img-wrap:hover{filter:grayscale(.7) brightness(.6)}
+.cd-card .name{font-size:13px;font-weight:700;color:var(--text);opacity:.85}
+.cd-card .cd-time{font-size:11px;color:#ff9800;font-weight:600;font-variant-numeric:tabular-nums}
+.cd-card .progress{
+  background:rgba(255,152,0,.15);border:1px solid #ff9800;border-radius:6px;height:14px;position:relative;overflow:hidden;
+}
+.cd-card .progress-fill{
+  background:linear-gradient(90deg,#ff9800,#f5c542);height:100%;transition:width .5s ease;
+}
+.cd-card .progress-text{
+  position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.7);
+}
+.cd-card .salvar-btn{
+  background:#ff9800;color:#1a1c30;border:none;border-radius:8px;padding:10px;font-weight:800;
+  cursor:pointer;font-size:13px;transition:.2s;letter-spacing:.5px;
+}
+.cd-card .salvar-btn:hover{filter:brightness(1.15);transform:scale(1.02)}
+.cd-card .salvar-btn.disabled{background:#444;color:#999;cursor:not-allowed;opacity:.6;transform:none}
+.cd-card .salvar-btn.voted{background:#4CAF50;color:#fff;cursor:default}
+
+/* --- LIGHTBOX --- */
 .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:100;align-items:center;justify-content:center;padding:20px}
 .lightbox.active{display:flex}
 .lightbox img{max-width:90vw;max-height:80vh;border-radius:12px}
 .lightbox .close{position:absolute;top:20px;right:30px;color:#fff;font-size:36px;cursor:pointer;font-weight:300}
 .lightbox .lb-name{position:absolute;bottom:30px;color:#fff;font-size:18px;text-align:center;width:100%}
+
 footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding:20px;line-height:1.6;max-width:900px;margin-left:auto;margin-right:auto}
 footer .firma{color:var(--accent);font-weight:700}
+
+/* --- MODAL --- */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center;padding:20px}
 .modal.active{display:flex}
 .modal-content{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:400px;width:100%;text-align:center;animation:pop .25s}
 @keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-content.cd-modal{border:2px solid #ff9800}
 .modal-img-wrap{aspect-ratio:3/4;max-width:180px;margin:0 auto 16px;border-radius:10px;overflow:hidden;background:#000}
 .modal-img-wrap img{width:100%;height:100%;object-fit:cover;object-position:top center}
 .modal-content h2{color:var(--accent);margin:0 0 8px;font-size:20px}
+.modal-content.cd-modal h2{color:#ff9800}
 .modal-text{color:var(--sub);margin:0 0 20px;font-size:14px;line-height:1.5}
 .modal-buttons{display:flex;gap:10px}
 .modal-btn{flex:1;padding:12px;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px;transition:.2s}
 .modal-btn-cancel{background:var(--border);color:var(--text)}
 .modal-btn-confirm{background:var(--accent);color:#1a1c30}
+.modal-btn-cd{background:#ff9800;color:#1a1c30}
 .modal-btn:hover{filter:brightness(1.1)}
 
-/* --- TOAST (reemplaza los alert del navegador) --- */
-#toastContainer {
-  position: fixed;
-  top: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 500;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: center;
-  pointer-events: none;
-  width: calc(100% - 40px);
-  max-width: 420px;
-}
-.toast {
-  background: var(--card);
-  color: var(--text);
-  border: 1px solid var(--accent);
-  border-left: 4px solid var(--accent);
-  border-radius: 12px;
-  padding: 14px 20px;
-  font-size: 14px;
-  font-weight: 500;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-  width: 100%;
-  text-align: center;
-  animation: toastIn .35s ease-out, toastOut .35s ease-in 3.15s forwards;
-  pointer-events: auto;
-}
-.toast.error {
-  border-color: #ff5c5c;
-  border-left-color: #ff5c5c;
-}
-.toast.success {
-  border-color: #4CAF50;
-  border-left-color: #4CAF50;
-}
-.toast-icon {
-  margin-right: 8px;
-  font-size: 16px;
-}
-@keyframes toastIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes toastOut {
-  from { opacity: 1; transform: translateY(0); }
-  to { opacity: 0; transform: translateY(-20px); }
-}
+/* --- TOASTS --- */
+#toastContainer{position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:500;display:flex;flex-direction:column;gap:10px;align-items:center;pointer-events:none;width:calc(100% - 40px);max-width:420px}
+.toast{background:var(--card);color:var(--text);border:1px solid var(--accent);border-left:4px solid var(--accent);border-radius:12px;padding:14px 20px;font-size:14px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.4);width:100%;text-align:center;animation:toastIn .35s ease-out,toastOut .35s ease-in 3.15s forwards;pointer-events:auto}
+.toast.error{border-color:#ff5c5c;border-left-color:#ff5c5c}
+.toast.success{border-color:#4CAF50;border-left-color:#4CAF50}
+.toast.rescue{border-color:#ff9800;border-left-color:#ff9800}
+.toast-icon{margin-right:8px;font-size:16px}
+@keyframes toastIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes toastOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-20px)}}
 
-/* --- NUEVOS ESTILOS PARA EL GANADOR --- */
-.winner-container {
-  max-width: 1200px;
-  margin: 30px auto 20px;
-  padding: 0 10px;
-  display: none;
-  justify-content: center;
-}
-.winner-container.visible {
-  display: flex;
-}
-.winner-card {
-  max-width: 320px;
-  width: 100%;
-  background: var(--card);
-  border: 2px solid var(--accent);
-  border-radius: 20px;
-  padding: 20px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  position: relative;
-  box-shadow: 0 0 40px rgba(245, 197, 66, 0.4);
-  animation: winnerFloat 2s ease-in-out infinite, winnerSpin 1.5s ease-in-out forwards;
-}
-.winner-card::before {
-  content: "★ GANADOR ★";
-  position: absolute;
-  top: -14px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--accent);
-  color: #1a1c30;
-  padding: 4px 16px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  white-space: nowrap;
-}
-.winner-card .img-wrap {
-  aspect-ratio: 3/4;
-  border-radius: 12px;
-  overflow: hidden;
-  background: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.winner-card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top center;
-  cursor: pointer;
-  transition: .3s;
-}
-.winner-card img:hover {
-  transform: scale(1.03);
-}
-.winner-card .name {
-  font-size: 20px;
-  font-weight: 800;
-  color: var(--accent);
-}
-.winner-card .votos-badge {
-  font-size: 16px;
-  padding: 8px;
-}
-@keyframes winnerSpin {
-  0% { transform: rotateY(0deg) scale(1); }
-  40% { transform: rotateY(180deg) scale(1.05); }
-  100% { transform: rotateY(360deg) scale(1); }
-}
-@keyframes winnerFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
+/* --- GANADOR --- */
+.winner-container{max-width:1200px;margin:30px auto 20px;padding:0 10px;display:none;justify-content:center}
+.winner-container.visible{display:flex}
+.winner-card{max-width:320px;width:100%;background:var(--card);border:2px solid var(--accent);border-radius:20px;padding:20px;text-align:center;display:flex;flex-direction:column;gap:12px;position:relative;box-shadow:0 0 40px rgba(245,197,66,.4);animation:winnerFloat 2s ease-in-out infinite,winnerSpin 1.5s ease-in-out forwards}
+.winner-card::before{content:"★ GANADOR ★";position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--accent);color:#1a1c30;padding:4px 16px;border-radius:20px;font-size:12px;font-weight:800;letter-spacing:1px;white-space:nowrap}
+.winner-card.rescue-winner{border-color:#ff9800;box-shadow:0 0 60px rgba(255,152,0,.6)}
+.winner-card.rescue-winner::before{content:"🔥 SALVADO 🔥";background:#ff9800}
+.winner-card .img-wrap{aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
+.winner-card img{width:100%;height:100%;object-fit:cover;object-position:top center;cursor:pointer;transition:.3s}
+.winner-card img:hover{transform:scale(1.03)}
+.winner-card .name{font-size:20px;font-weight:800;color:var(--accent)}
+.winner-card.rescue-winner .name{color:#ff9800}
+.winner-card .votos-badge{font-size:16px;padding:8px}
+@keyframes winnerSpin{0%{transform:rotateY(0deg) scale(1)}40%{transform:rotateY(180deg) scale(1.05)}100%{transform:rotateY(360deg) scale(1)}}
+@keyframes winnerFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 </style>
 </head>
 <body>
@@ -232,153 +180,166 @@ footer .firma{color:var(--accent);font-weight:700}
 <div class="votantes" id="votantes">Cargando votantes...</div>
 </header>
 
-<!-- CONTENEDOR DE TOASTS -->
 <div id="toastContainer"></div>
 
-<!-- CONTENEDOR DEL GANADOR -->
 <div class="winner-container" id="winnerContainer"></div>
 
-<div class="controls">
-<input id="filtro" placeholder="Buscar personaje..." oninput="filtrar()">
-<div class="count" id="contador">27 personajes</div>
+<div class="layout">
+  <div class="col-main">
+    <div class="controls">
+      <input id="filtro" placeholder="Buscar personaje..." oninput="filtrar()">
+      <div class="count" id="contador">27 personajes</div>
+    </div>
+    <div class="grid" id="grid">
+      <div class='card' data-name='akaoni atsushi'>
+        <div class='img-wrap'><img src='Activos/Akaoni_Atsushi.webp' alt='Akaoni Atsushi' loading='lazy'></div>
+        <div class='name'>Akaoni Atsushi</div>
+        <button class='vote-btn' data-vote='Akaoni Atsushi'>Votar</button>
+      </div>
+      <div class='card' data-name='baade'>
+        <div class='img-wrap'><img src='Activos/Baade.webp' alt='Baade' loading='lazy'></div>
+        <div class='name'>Baade</div>
+        <button class='vote-btn' data-vote='Baade'>Votar</button>
+      </div>
+      <div class='card' data-name='capt. locke'>
+        <div class='img-wrap'><img src='Activos/Capt._Locke.webp' alt='Capt. Locke' loading='lazy'></div>
+        <div class='name'>Capt. Locke</div>
+        <button class='vote-btn' data-vote='Capt Locke'>Votar</button>
+      </div>
+      <div class='card' data-name='choi yuhee'>
+        <div class='img-wrap'><img src='Activos/Choi_Yuhee.webp' alt='Choi Yuhee' loading='lazy'></div>
+        <div class='name'>Choi Yuhee</div>
+        <button class='vote-btn' data-vote='Choi Yuhee'>Votar</button>
+      </div>
+      <div class='card' data-name='choi yuhyun'>
+        <div class='img-wrap'><img src='Activos/Choi_Yuhyun.webp' alt='Choi Yuhyun' loading='lazy'></div>
+        <div class='name'>Choi Yuhyun</div>
+        <button class='vote-btn' data-vote='Choi Yuhyun'>Votar</button>
+      </div>
+      <div class='card' data-name='code b'>
+        <div class='img-wrap'><img src='Activos/Code_B.webp' alt='Code B' loading='lazy'></div>
+        <div class='name'>Code B</div>
+        <button class='vote-btn' data-vote='Code B'>Votar</button>
+      </div>
+      <div class='card' data-name='code k'>
+        <div class='img-wrap'><img src='Activos/Code_K.webp' alt='Code K' loading='lazy'></div>
+        <div class='name'>Code K</div>
+        <button class='vote-btn' data-vote='Code K'>Votar</button>
+      </div>
+      <div class='card' data-name='croc nile'>
+        <div class='img-wrap'><img src='Activos/Croc_Nile.webp' alt='Croc Nile' loading='lazy'></div>
+        <div class='name'>Croc Nile</div>
+        <button class='vote-btn' data-vote='Croc Nile'>Votar</button>
+      </div>
+      <div class='card' data-name='dallawan'>
+        <div class='img-wrap'><img src='Activos/Dallawan.webp' alt='Dallawan' loading='lazy'></div>
+        <div class='name'>Dallawan</div>
+        <button class='vote-btn' data-vote='Dallawan'>Votar</button>
+      </div>
+      <div class='card' data-name='fogue'>
+        <div class='img-wrap'><img src='Activos/Fogue.webp' alt='Fogue' loading='lazy'></div>
+        <div class='name'>Fogue</div>
+        <button class='vote-btn' data-vote='Fogue'>Votar</button>
+      </div>
+      <div class='card' data-name='guala'>
+        <div class='img-wrap'><img src='Activos/Guala.webp' alt='Guala' loading='lazy'></div>
+        <div class='name'>Guala</div>
+        <button class='vote-btn' data-vote='Guala'>Votar</button>
+      </div>
+      <div class='card' data-name='hakui'>
+        <div class='img-wrap'><img src='Activos/Hakui.webp' alt='Hakui' loading='lazy'></div>
+        <div class='name'>Hakui</div>
+        <button class='vote-btn' data-vote='Hakui'>Votar</button>
+      </div>
+      <div class='card' data-name='kagekuni'>
+        <div class='img-wrap'><img src='Activos/Kagekuni.webp' alt='Kagekuni' loading='lazy'></div>
+        <div class='name'>Kagekuni</div>
+        <button class='vote-btn' data-vote='Kagekuni'>Votar</button>
+      </div>
+      <div class='card' data-name='kantos'>
+        <div class='img-wrap'><img src='Activos/Kantos.webp' alt='Kantos' loading='lazy'></div>
+        <div class='name'>Kantos</div>
+        <button class='vote-btn' data-vote='Kantos'>Votar</button>
+      </div>
+      <div class='card' data-name='kumoyama'>
+        <div class='img-wrap'><img src='Activos/Kumoyama.webp' alt='Kumoyama' loading='lazy'></div>
+        <div class='name'>Kumoyama</div>
+        <button class='vote-btn' data-vote='Kumoyama'>Votar</button>
+      </div>
+      <div class='card' data-name='leo von narcis'>
+        <div class='img-wrap'><img src='Activos/Leo_von_Narcis.webp' alt='Leo von Narcis' loading='lazy'></div>
+        <div class='name'>Leo von Narcis</div>
+        <button class='vote-btn' data-vote='Leo von Narcis'>Votar</button>
+      </div>
+      <div class='card' data-name='mikeroo'>
+        <div class='img-wrap'><img src='Activos/Mikeroo.webp' alt='Mikeroo' loading='lazy'></div>
+        <div class='name'>Mikeroo</div>
+        <button class='vote-btn' data-vote='Mikeroo'>Votar</button>
+      </div>
+      <div class='card' data-name='model az'>
+        <div class='img-wrap'><img src='Activos/Model_AZ.webp' alt='Model AZ' loading='lazy'></div>
+        <div class='name'>Model AZ</div>
+        <button class='vote-btn' data-vote='Model AZ'>Votar</button>
+      </div>
+      <div class='card' data-name='orem'>
+        <div class='img-wrap'><img src='Activos/Orem.webp' alt='Orem' loading='lazy'></div>
+        <div class='name'>Orem</div>
+        <button class='vote-btn' data-vote='Orem'>Votar</button>
+      </div>
+      <div class='card' data-name='owlbert'>
+        <div class='img-wrap'><img src='Activos/Owlbert.webp' alt='Owlbert' loading='lazy'></div>
+        <div class='name'>Owlbert</div>
+        <button class='vote-btn' data-vote='Owlbert'>Votar</button>
+      </div>
+      <div class='card' data-name='paul the bear'>
+        <div class='img-wrap'><img src='Activos/Paul_the_Bear.webp' alt='Paul the Bear' loading='lazy'></div>
+        <div class='name'>Paul the Bear</div>
+        <button class='vote-btn' data-vote='Paul the Bear'>Votar</button>
+      </div>
+      <div class='card' data-name='shibahiko'>
+        <div class='img-wrap'><img src='Activos/Shibahiko.webp' alt='Shibahiko' loading='lazy'></div>
+        <div class='name'>Shibahiko</div>
+        <button class='vote-btn' data-vote='Shibahiko'>Votar</button>
+      </div>
+      <div class='card' data-name='spunk'>
+        <div class='img-wrap'><img src='Activos/Spunk.webp' alt='Spunk' loading='lazy'></div>
+        <div class='name'>Spunk</div>
+        <button class='vote-btn' data-vote='Spunk'>Votar</button>
+      </div>
+      <div class='card' data-name='sylas'>
+        <div class='img-wrap'><img src='Activos/Sylas.webp' alt='Sylas' loading='lazy'></div>
+        <div class='name'>Sylas</div>
+        <button class='vote-btn' data-vote='Sylas'>Votar</button>
+      </div>
+      <div class='card' data-name='tayangsuyi'>
+        <div class='img-wrap'><img src='Activos/Tayangsuyi.webp' alt='Tayangsuyi' loading='lazy'></div>
+        <div class='name'>Tayangsuyi</div>
+        <button class='vote-btn' data-vote='Tayangsuyi'>Votar</button>
+      </div>
+      <div class='card' data-name='tyrantino'>
+        <div class='img-wrap'><img src='Activos/Tyrantino.webp' alt='Tyrantino' loading='lazy'></div>
+        <div class='name'>Tyrantino</div>
+        <button class='vote-btn' data-vote='Tyrantino'>Votar</button>
+      </div>
+      <div class='card' data-name='yorick'>
+        <div class='img-wrap'><img src='Activos/Yorick.webp' alt='Yorick' loading='lazy'></div>
+        <div class='name'>Yorick</div>
+        <button class='vote-btn' data-vote='Yorick'>Votar</button>
+      </div>
+    </div>
+  </div>
+
+  <aside class="col-cd">
+    <div class="cd-panel">
+      <h2>🔥 En Cuarentena 🔥</h2>
+      <p class="hint">Estos personajes no pueden votarse, pero puedes <strong>salvarlos</strong>. Si reúnen el <strong>50% del clan</strong>, ganan la votación.</p>
+      <div id="cdList" class="cd-list">
+        <div class="cd-empty">Nadie está en cuarentena.</div>
+      </div>
+    </div>
+  </aside>
 </div>
-<div class="grid" id="grid">
-<div class='card' data-name='akaoni atsushi'>
-<div class='img-wrap'><img src='Activos/Akaoni_Atsushi.webp' alt='Akaoni Atsushi' loading='lazy'></div>
-<div class='name'>Akaoni Atsushi</div>
-<button class='vote-btn' data-vote='Akaoni Atsushi'>Votar</button>
-</div>
-<div class='card' data-name='baade'>
-<div class='img-wrap'><img src='Activos/Baade.webp' alt='Baade' loading='lazy'></div>
-<div class='name'>Baade</div>
-<button class='vote-btn' data-vote='Baade'>Votar</button>
-</div>
-<div class='card' data-name='capt. locke'>
-<div class='img-wrap'><img src='Activos/Capt._Locke.webp' alt='Capt. Locke' loading='lazy'></div>
-<div class='name'>Capt. Locke</div>
-<button class='vote-btn' data-vote='Capt Locke'>Votar</button>
-</div>
-<div class='card' data-name='choi yuhee'>
-<div class='img-wrap'><img src='Activos/Choi_Yuhee.webp' alt='Choi Yuhee' loading='lazy'></div>
-<div class='name'>Choi Yuhee</div>
-<button class='vote-btn' data-vote='Choi Yuhee'>Votar</button>
-</div>
-<div class='card' data-name='choi yuhyun'>
-<div class='img-wrap'><img src='Activos/Choi_Yuhyun.webp' alt='Choi Yuhyun' loading='lazy'></div>
-<div class='name'>Choi Yuhyun</div>
-<button class='vote-btn' data-vote='Choi Yuhyun'>Votar</button>
-</div>
-<div class='card' data-name='code b'>
-<div class='img-wrap'><img src='Activos/Code_B.webp' alt='Code B' loading='lazy'></div>
-<div class='name'>Code B</div>
-<button class='vote-btn' data-vote='Code B'>Votar</button>
-</div>
-<div class='card' data-name='code k'>
-<div class='img-wrap'><img src='Activos/Code_K.webp' alt='Code K' loading='lazy'></div>
-<div class='name'>Code K</div>
-<button class='vote-btn' data-vote='Code K'>Votar</button>
-</div>
-<div class='card' data-name='croc nile'>
-<div class='img-wrap'><img src='Activos/Croc_Nile.webp' alt='Croc Nile' loading='lazy'></div>
-<div class='name'>Croc Nile</div>
-<button class='vote-btn' data-vote='Croc Nile'>Votar</button>
-</div>
-<div class='card' data-name='dallawan'>
-<div class='img-wrap'><img src='Activos/Dallawan.webp' alt='Dallawan' loading='lazy'></div>
-<div class='name'>Dallawan</div>
-<button class='vote-btn' data-vote='Dallawan'>Votar</button>
-</div>
-<div class='card' data-name='fogue'>
-<div class='img-wrap'><img src='Activos/Fogue.webp' alt='Fogue' loading='lazy'></div>
-<div class='name'>Fogue</div>
-<button class='vote-btn' data-vote='Fogue'>Votar</button>
-</div>
-<div class='card' data-name='guala'>
-<div class='img-wrap'><img src='Activos/Guala.webp' alt='Guala' loading='lazy'></div>
-<div class='name'>Guala</div>
-<button class='vote-btn' data-vote='Guala'>Votar</button>
-</div>
-<div class='card' data-name='hakui'>
-<div class='img-wrap'><img src='Activos/Hakui.webp' alt='Hakui' loading='lazy'></div>
-<div class='name'>Hakui</div>
-<button class='vote-btn' data-vote='Hakui'>Votar</button>
-</div>
-<div class='card' data-name='kagekuni'>
-<div class='img-wrap'><img src='Activos/Kagekuni.webp' alt='Kagekuni' loading='lazy'></div>
-<div class='name'>Kagekuni</div>
-<button class='vote-btn' data-vote='Kagekuni'>Votar</button>
-</div>
-<div class='card' data-name='kantos'>
-<div class='img-wrap'><img src='Activos/Kantos.webp' alt='Kantos' loading='lazy'></div>
-<div class='name'>Kantos</div>
-<button class='vote-btn' data-vote='Kantos'>Votar</button>
-</div>
-<div class='card' data-name='kumoyama'>
-<div class='img-wrap'><img src='Activos/Kumoyama.webp' alt='Kumoyama' loading='lazy'></div>
-<div class='name'>Kumoyama</div>
-<button class='vote-btn' data-vote='Kumoyama'>Votar</button>
-</div>
-<div class='card' data-name='leo von narcis'>
-<div class='img-wrap'><img src='Activos/Leo_von_Narcis.webp' alt='Leo von Narcis' loading='lazy'></div>
-<div class='name'>Leo von Narcis</div>
-<button class='vote-btn' data-vote='Leo von Narcis'>Votar</button>
-</div>
-<div class='card' data-name='mikeroo'>
-<div class='img-wrap'><img src='Activos/Mikeroo.webp' alt='Mikeroo' loading='lazy'></div>
-<div class='name'>Mikeroo</div>
-<button class='vote-btn' data-vote='Mikeroo'>Votar</button>
-</div>
-<div class='card' data-name='model az'>
-<div class='img-wrap'><img src='Activos/Model_AZ.webp' alt='Model AZ' loading='lazy'></div>
-<div class='name'>Model AZ</div>
-<button class='vote-btn' data-vote='Model AZ'>Votar</button>
-</div>
-<div class='card' data-name='orem'>
-<div class='img-wrap'><img src='Activos/Orem.webp' alt='Orem' loading='lazy'></div>
-<div class='name'>Orem</div>
-<button class='vote-btn' data-vote='Orem'>Votar</button>
-</div>
-<div class='card' data-name='owlbert'>
-<div class='img-wrap'><img src='Activos/Owlbert.webp' alt='Owlbert' loading='lazy'></div>
-<div class='name'>Owlbert</div>
-<button class='vote-btn' data-vote='Owlbert'>Votar</button>
-</div>
-<div class='card' data-name='paul the bear'>
-<div class='img-wrap'><img src='Activos/Paul_the_Bear.webp' alt='Paul the Bear' loading='lazy'></div>
-<div class='name'>Paul the Bear</div>
-<button class='vote-btn' data-vote='Paul the Bear'>Votar</button>
-</div>
-<div class='card' data-name='shibahiko'>
-<div class='img-wrap'><img src='Activos/Shibahiko.webp' alt='Shibahiko' loading='lazy'></div>
-<div class='name'>Shibahiko</div>
-<button class='vote-btn' data-vote='Shibahiko'>Votar</button>
-</div>
-<div class='card' data-name='spunk'>
-<div class='img-wrap'><img src='Activos/Spunk.webp' alt='Spunk' loading='lazy'></div>
-<div class='name'>Spunk</div>
-<button class='vote-btn' data-vote='Spunk'>Votar</button>
-</div>
-<div class='card' data-name='sylas'>
-<div class='img-wrap'><img src='Activos/Sylas.webp' alt='Sylas' loading='lazy'></div>
-<div class='name'>Sylas</div>
-<button class='vote-btn' data-vote='Sylas'>Votar</button>
-</div>
-<div class='card' data-name='tayangsuyi'>
-<div class='img-wrap'><img src='Activos/Tayangsuyi.webp' alt='Tayangsuyi' loading='lazy'></div>
-<div class='name'>Tayangsuyi</div>
-<button class='vote-btn' data-vote='Tayangsuyi'>Votar</button>
-</div>
-<div class='card' data-name='tyrantino'>
-<div class='img-wrap'><img src='Activos/Tyrantino.webp' alt='Tyrantino' loading='lazy'></div>
-<div class='name'>Tyrantino</div>
-<button class='vote-btn' data-vote='Tyrantino'>Votar</button>
-</div>
-<div class='card' data-name='yorick'>
-<div class='img-wrap'><img src='Activos/Yorick.webp' alt='Yorick' loading='lazy'></div>
-<div class='name'>Yorick</div>
-<button class='vote-btn' data-vote='Yorick'>Votar</button>
-</div>
-</div>
+
 <footer>
   Este sitio fue hecho con dedicación por <span class="firma">Drionyx Bahamut</span>. &middot; Para los miembros del clan, a seguir disfrutando todos juntos de este juego bien RICO, BAROSO y SUCULENTO!
 </footer>
@@ -393,10 +354,10 @@ footer .firma{color:var(--accent);font-weight:700}
 <div class="modal-content">
 <div class="modal-img-wrap"><img id="modalImg" src="" alt=""></div>
 <h2 id="modalName"></h2>
-<p class="modal-text">¿Confirmas tu voto? Solo se puede votar una vez.</p>
+<p class="modal-text" id="modalText">¿Confirmas tu voto? Solo se puede votar una vez.</p>
 <div class="modal-buttons">
 <button class="modal-btn modal-btn-cancel" onclick="cerrarModal()">Cancelar</button>
-<button class="modal-btn modal-btn-confirm" onclick="confirmarVoto()">Sí, votar</button>
+<button class="modal-btn modal-btn-confirm" id="modalConfirmBtn" onclick="confirmarVoto()">Sí, votar</button>
 </div>
 </div>
 </div>
@@ -420,6 +381,7 @@ footer .firma{color:var(--accent);font-weight:700}
 
   const VOTE_KEY = "axcend_vote";
   const VOTER_ID_KEY = "axcend_voter_id";
+  const RESCUE_KEY = "axcend_rescate";
 
   let finVotacion = 0;
   let mostrarResultados = false;
@@ -429,12 +391,22 @@ footer .firma{color:var(--accent);font-weight:700}
   let votosActuales = {};
   let votoPendiente = "";
 
-  // --- TOAST (reemplaza los alert del navegador) ---
+  let totalMiembros = 41;
+  let cooldowns = {};
+  let rescates = {};
+  let ganadorRescate = "";
+  let rescatePendiente = "";
+  let accionModal = "votar"; // "votar" | "salvar"
+
+  // ============================================================
+  // UTILIDADES
+  // ============================================================
+
   function mostrarToast(mensaje, tipo = "success") {
     const container = document.getElementById("toastContainer");
     const toast = document.createElement("div");
     toast.className = "toast " + tipo;
-    const icon = tipo === "error" ? "⚠️" : "✅";
+    const icon = tipo === "error" ? "⚠️" : tipo === "rescue" ? "🔥" : "✅";
     toast.innerHTML = `<span class="toast-icon">${icon}</span>${mensaje}`;
     container.appendChild(toast);
     setTimeout(() => { toast.remove(); }, 3500);
@@ -452,6 +424,7 @@ footer .firma{color:var(--accent);font-weight:700}
   const params = new URLSearchParams(location.search);
   if (params.get("reset") === "1") {
     localStorage.removeItem(VOTE_KEY);
+    localStorage.removeItem(RESCUE_KEY);
     params.delete("reset");
     const nuevaUrl = location.pathname + (params.toString() ? "?" + params.toString() : "") + location.hash;
     history.replaceState({}, "", nuevaUrl);
@@ -459,6 +432,8 @@ footer .firma{color:var(--accent);font-weight:700}
 
   function getVote() { return localStorage.getItem(VOTE_KEY) || ""; }
   function setVote(n) { localStorage.setItem(VOTE_KEY, n); }
+  function getRescue() { return localStorage.getItem(RESCUE_KEY) || ""; }
+  function setRescue(n) { localStorage.setItem(RESCUE_KEY, n); }
 
   function aplicarTemaInicial() {
     const saved = localStorage.getItem("axcend_theme");
@@ -481,7 +456,7 @@ footer .firma{color:var(--accent);font-weight:700}
   window.filtrar = function() {
     var q = document.getElementById("filtro").value.toLowerCase();
     var visibles = 0;
-    document.querySelectorAll(".card").forEach(function(c) {
+    document.querySelectorAll("#grid .card").forEach(function(c) {
       var ok = c.dataset.name.includes(q);
       c.style.display = ok ? "" : "none";
       if (ok) visibles++;
@@ -489,79 +464,291 @@ footer .firma{color:var(--accent);font-weight:700}
     document.getElementById("contador").textContent = visibles + " personaje" + (visibles !== 1 ? "s" : "");
   };
 
-  document.querySelectorAll(".card img").forEach(function(img) {
+  // ============================================================
+  // LIGHTBOX
+  // ============================================================
+
+  function bindLightbox(img) {
     img.addEventListener("click", function() {
-      document.getElementById("lb-img").src = img.src;
-      document.getElementById("lb-name").textContent = img.alt;
+      document.getElementById("lb-img").src = this.src;
+      document.getElementById("lb-name").textContent = this.alt;
       document.getElementById("lightbox").classList.add("active");
     });
-  });
+  }
+
+  document.querySelectorAll(".card img").forEach(bindLightbox);
 
   window.cerrarLightbox = function() { document.getElementById("lightbox").classList.remove("active"); };
   document.addEventListener("keydown", function(e) { if (e.key === "Escape") cerrarLightbox(); });
 
+  // ============================================================
+  // ESTADO VOTACIÓN
+  // ============================================================
+
   function votacionCerrada() { return finVotacion > 0 && Date.now() >= finVotacion; }
+  function votacionFinalizada() { return votacionCerrada() || ganadorRescate !== ""; }
+
+  // Un personaje está en CD si cooldowns[nombre].activo && hasta > now
+  function estaEnCd(nombre) {
+    const cd = cooldowns[nombre];
+    return !!(cd && cd.activo && cd.hasta > Date.now());
+  }
+
+  // Devuelve el timestamp del CD (0 si no está en CD)
+  function cdHasta(nombre) {
+    const cd = cooldowns[nombre];
+    return cd && cd.activo ? cd.hasta : 0;
+  }
+
+  // ============================================================
+  // REFRESCAR BOTONES DE VOTO NORMAL
+  // ============================================================
 
   function refrescarBotones() {
-    var v = getVote();
-    var cerrada = votacionCerrada();
-    document.querySelectorAll(".vote-btn").forEach(function(btn) {
-      var nombre = btn.dataset.vote;
+    const v = getVote();
+    const r = getRescue();
+    const finalizada = votacionFinalizada();
+
+    document.querySelectorAll("#grid .vote-btn").forEach(function(btn) {
+      const nombre = btn.dataset.vote;
       btn.classList.remove("voted", "disabled");
       btn.disabled = false;
-      if (cerrada) {
+
+      if (finalizada) {
         btn.style.display = "none";
+        return;
+      }
+      btn.style.display = "";
+
+      if (r !== "") {
+        // Ya rescató → no puede votar normal
+        btn.classList.add("disabled");
+        btn.textContent = "Ya usaste tu voto en rescate";
+        btn.disabled = true;
+      } else if (v === nombre) {
+        btn.classList.add("voted"); btn.textContent = "Tu voto"; btn.disabled = true;
+      } else if (v !== "") {
+        btn.classList.add("disabled"); btn.textContent = "Ya votaste por otro"; btn.disabled = true;
       } else {
-        btn.style.display = "";
-        if (v === nombre) {
-          btn.classList.add("voted"); btn.textContent = "Tu voto"; btn.disabled = true;
-        } else if (v !== "") {
-          btn.classList.add("disabled"); btn.textContent = "Ya votaste por otro"; btn.disabled = true;
-        } else {
-          btn.textContent = "Votar";
-        }
+        btn.textContent = "Votar";
       }
     });
   }
 
-  // --- RANKING Y ANIMACIÓN DEL GANADOR ---
-  function aplicarRanking() {
-    const grid = document.getElementById("grid");
-    const winnerContainer = document.getElementById("winnerContainer");
-    const cards = Array.from(grid.querySelectorAll(".card"));
-    
-    cards.forEach(c => c.classList.remove("winner"));
-    winnerContainer.innerHTML = "";
-    winnerContainer.classList.remove("visible");
+  // ============================================================
+  // PANEL CD + BOTONES DE RESCATE
+  // ============================================================
 
-    cards.sort((a, b) => {
-      const vA = votosActuales[a.querySelector('.vote-btn').dataset.vote] || 0;
-      const vB = votosActuales[b.querySelector('.vote-btn').dataset.vote] || 0;
-      return vB - vA;
-    });
+  function renderCdPanel() {
+    const cdList = document.getElementById("cdList");
+    const r = getRescue();
+    const finalizada = votacionFinalizada();
+    const umbral = Math.ceil(totalMiembros / 2);
 
-    const cerrada = votacionCerrada();
+    // Construir lista de CDs activos
+    const activos = Object.entries(cooldowns)
+      .filter(([_, cd]) => cd && cd.activo && cd.hasta > Date.now())
+      .sort((a, b) => (rescates[b[0]] || 0) - (rescates[a[0]] || 0));
 
-    if (cerrada && cards.length > 0) {
-      const topCard = cards[0];
-      const topVotos = votosActuales[topCard.querySelector('.vote-btn').dataset.vote] || 0;
-      
-      if (topVotos > 0) {
-        const winnerClone = topCard.cloneNode(true);
-        winnerClone.className = "winner-card";
-        winnerContainer.appendChild(winnerClone);
-        winnerContainer.classList.add("visible");
-        
-        winnerClone.querySelector("img").addEventListener("click", function() {
-          document.getElementById("lb-img").src = this.src;
-          document.getElementById("lb-name").textContent = this.alt;
-          document.getElementById("lightbox").classList.add("active");
-        });
-      }
+    if (activos.length === 0) {
+      cdList.innerHTML = '<div class="cd-empty">Nadie está en cuarentena.</div>';
+      return;
     }
-    
-    cards.forEach(c => grid.appendChild(c));
+
+    cdList.innerHTML = "";
+
+    activos.forEach(([nombre, cd]) => {
+      const card = document.querySelector(`#grid .card[data-name] .vote-btn[data-vote="${CSS.escape(nombre)}"]`);
+      // Buscamos la card original por el data-vote
+      const cardOriginal = [...document.querySelectorAll("#grid .card")].find(c => {
+        const b = c.querySelector(".vote-btn");
+        return b && b.dataset.vote === nombre;
+      });
+      if (!cardOriginal) return;
+
+      const imgSrc = cardOriginal.querySelector("img").src;
+      const imgAlt = cardOriginal.querySelector("img").alt;
+      const votosRescate = rescates[nombre] || 0;
+      const pct = Math.min(100, Math.round((votosRescate / umbral) * 100));
+      const dias = Math.max(0, Math.ceil((cd.hasta - Date.now()) / 86400000));
+
+      const div = document.createElement("div");
+      div.className = "cd-card";
+      div.innerHTML = `
+        <div class="cd-badge">EN CD · ${dias}d</div>
+        <div class="img-wrap"><img src="${imgSrc}" alt="${imgAlt}" loading="lazy"></div>
+        <div class="name">${nombre}</div>
+        <div class="cd-time">⏳ ${dias} día${dias !== 1 ? "s" : ""} restantes</div>
+        <div class="progress">
+          <div class="progress-fill" style="width:${pct}%"></div>
+          <div class="progress-text">${votosRescate} / ${umbral} rescates</div>
+        </div>
+        <button class="salvar-btn" data-salvar="${nombre}">🔥 SALVAR</button>
+      `;
+      cdList.appendChild(div);
+    });
+
+    // Bind imágenes y botones de rescate
+    cdList.querySelectorAll("img").forEach(bindLightbox);
+    cdList.querySelectorAll(".salvar-btn").forEach(btn => {
+      const nombre = btn.dataset.salvar;
+      if (finalizada) {
+        btn.classList.add("disabled");
+        btn.textContent = "Votación finalizada";
+        btn.disabled = true;
+      } else if (r === nombre) {
+        btn.classList.add("voted");
+        btn.textContent = "✓ Tu rescate";
+        btn.disabled = true;
+      } else if (r !== "") {
+        btn.classList.add("disabled");
+        btn.textContent = "Ya usaste tu rescate";
+        btn.disabled = true;
+      } else if (getVote() !== "") {
+        btn.classList.add("disabled");
+        btn.textContent = "Ya usaste tu voto";
+        btn.disabled = true;
+      } else {
+        btn.addEventListener("click", () => abrirModalRescate(nombre, imgSrc));
+      }
+    });
   }
+
+  // ============================================================
+  // MODAL
+  // ============================================================
+
+  function abrirModal(nombre, imgSrc) {
+    accionModal = "votar";
+    votoPendiente = nombre;
+    document.getElementById("modalImg").src = imgSrc;
+    document.getElementById("modalName").textContent = nombre;
+    document.getElementById("modalText").textContent = "¿Confirmas tu voto? Solo se puede votar una vez. Si votas aquí, ya no podrás rescatar a nadie.";
+    const btn = document.getElementById("modalConfirmBtn");
+    btn.textContent = "Sí, votar";
+    btn.className = "modal-btn modal-btn-confirm";
+    document.querySelector(".modal-content").classList.remove("cd-modal");
+    document.getElementById("modalConfirm").classList.add("active");
+  }
+
+  function abrirModalRescate(nombre, imgSrc) {
+    accionModal = "salvar";
+    rescatePendiente = nombre;
+    document.getElementById("modalImg").src = imgSrc;
+    document.getElementById("modalName").textContent = nombre;
+    document.getElementById("modalText").textContent = "¿Usar tu voto de rescate aquí? Si ya votaste por alguien activo, perderás ese voto al rescatar.";
+    const btn = document.getElementById("modalConfirmBtn");
+    btn.textContent = "🔥 Sí, rescatar";
+    btn.className = "modal-btn modal-btn-cd";
+    document.querySelector(".modal-content").classList.add("cd-modal");
+    document.getElementById("modalConfirm").classList.add("active");
+  }
+
+  window.cerrarModal = function() {
+    document.getElementById("modalConfirm").classList.remove("active");
+    votoPendiente = "";
+    rescatePendiente = "";
+  };
+
+  window.confirmarVoto = function() {
+    if (accionModal === "salvar") {
+      const nombre = rescatePendiente;
+      cerrarModal();
+      if (nombre) ejecutarRescate(nombre);
+    } else {
+      const nombre = votoPendiente;
+      cerrarModal();
+      if (nombre) ejecutarVoto(nombre);
+    }
+  };
+
+  // ============================================================
+  // VOTO NORMAL
+  // ============================================================
+
+  function ejecutarVoto(nombre) {
+    if (getRescue() !== "") {
+      mostrarToast("Ya usaste tu voto en rescate. No puedes votar por activos.", "error");
+      return;
+    }
+    if (estaEnCd(nombre)) {
+      mostrarToast("Ese personaje está en CD. Solo puedes rescatarlo.", "error");
+      return;
+    }
+
+    const votoRef = ref(db, 'votos/' + nombre);
+    const voterId = getVoterId();
+    runTransaction(votoRef, (v) => (v || 0) + 1).then(() => {
+      set(ref(db, 'votantes/' + voterId), nombre);
+      setVote(nombre);
+      refrescarBotones();
+      renderCdPanel();
+      setTimeout(() => mostrarToast("¡Voto registrado con éxito!", "success"), 300);
+    }).catch((error) => {
+      console.error("Error al votar: ", error);
+      mostrarToast("Hubo un error al registrar tu voto. Inténtalo de nuevo.", "error");
+    });
+  }
+
+  // ============================================================
+  // RESCATE
+  // ============================================================
+
+  function ejecutarRescate(nombre) {
+    if (getVote() !== "") {
+      mostrarToast("Ya votaste por un activo. No puedes rescatar.", "error");
+      return;
+    }
+    if (!estaEnCd(nombre)) {
+      mostrarToast("Ese personaje ya no está en CD.", "error");
+      return;
+    }
+    if (getRescue() !== "") {
+      mostrarToast("Ya usaste tu voto de rescate.", "error");
+      return;
+    }
+
+    const rescateRef = ref(db, 'rescates/' + nombre);
+    const voterId = getVoterId();
+    const umbral = Math.ceil(totalMiembros / 2);
+
+    runTransaction(rescateRef, (v) => (v || 0) + 1).then((result) => {
+      const nuevos = result.snapshot.val() || 0;
+      set(ref(db, 'rescatadores/' + voterId), nombre);
+      setRescue(nombre);
+      refrescarBotones();
+      renderCdPanel();
+      setTimeout(() => mostrarToast("¡Rescate registrado! Ahora espera a que el clan apoye.", "rescue"), 300);
+
+      // ¿Alcanzó el umbral?
+      if (nuevos >= umbral) {
+        // Marcar ganador por rescate + cerrar votación
+        set(ref(db, 'config/ganador_rescate'), nombre);
+        set(ref(db, 'config/fin_votacion'), Date.now() - 1);
+        setTimeout(() => mostrarToast(`🔥 ¡${nombre} ha sido SALVADO y es el GANADOR!`, "rescue"), 1500);
+      }
+    }).catch((error) => {
+      console.error("Error al rescatar: ", error);
+      mostrarToast("Hubo un error al registrar tu rescate. Inténtalo de nuevo.", "error");
+    });
+  }
+
+  // Bind de botones de voto normal
+  document.querySelectorAll("#grid .vote-btn").forEach(function(btn) {
+    btn.addEventListener("click", function() {
+      if (votacionFinalizada()) { mostrarToast("La votación ya está cerrada.", "error"); return; }
+      if (getRescue() !== "") { mostrarToast("Ya usaste tu voto en rescate.", "error"); return; }
+      if (getVote() !== "") return;
+      const nombre = btn.dataset.vote;
+      if (estaEnCd(nombre)) { mostrarToast("Ese personaje está en CD.", "error"); return; }
+      const img = btn.parentElement.querySelector("img").src;
+      abrirModal(nombre, img);
+    });
+  });
+
+  // ============================================================
+  // COUNTDOWN
+  // ============================================================
 
   function formatearTiempo(ms) {
     const d = Math.floor(ms / 86400000);
@@ -573,6 +760,14 @@ footer .firma{color:var(--accent);font-weight:700}
 
   function actualizarCountdown() {
     const el = document.getElementById('countdown');
+
+    if (ganadorRescate) {
+      el.textContent = `🔥 ${ganadorRescate} ha sido SALVADO y es el ganador`;
+      el.classList.add('cerrada');
+      document.title = "🔥 Ganador por rescate";
+      return;
+    }
+
     if (!finVotacion) {
       el.textContent = 'Sin fecha límite';
       el.classList.remove('cerrada');
@@ -596,12 +791,18 @@ footer .firma{color:var(--accent);font-weight:700}
     }
   }
 
+  // ============================================================
+  // CONFIG
+  // ============================================================
+
   function cargarConfig() {
     onValue(ref(db, 'config'), (snapshot) => {
       if (snapshot.exists()) {
         const cfg = snapshot.val();
         finVotacion = cfg.fin_votacion || 0;
         mostrarResultados = cfg.mostrar_resultados || false;
+        totalMiembros = cfg.total_miembros || 41;
+        ganadorRescate = cfg.ganador_rescate || "";
         const nuevoToken = cfg.reset_token || "";
 
         const msgEl = document.getElementById('mensaje');
@@ -612,44 +813,65 @@ footer .firma{color:var(--accent);font-weight:700}
           msgEl.classList.remove('visible');
         }
 
-        if (cfg.total_miembros) {
-          document.getElementById('votantes').dataset.total = cfg.total_miembros;
-          actualizarContadorVotantes();
-        }
+        document.getElementById('votantes').dataset.total = totalMiembros;
+        actualizarContadorVotantes();
 
         if (resetToken !== "" && nuevoToken !== resetToken) {
           localStorage.removeItem(VOTE_KEY);
+          localStorage.removeItem(RESCUE_KEY);
           resultadosMostrados = false;
           mostrarToast("La votación ha sido reiniciada. Puedes votar de nuevo.", "success");
         }
         resetToken = nuevoToken;
 
         const cerrada = votacionCerrada();
-        if ((mostrarResultados || cerrada) && !resultadosMostrados) {
+        if ((mostrarResultados || cerrada || ganadorRescate) && !resultadosMostrados) {
           resultadosMostrados = true;
           mostrarVotosEnCartas();
         }
       }
       actualizarCountdown();
       refrescarBotones();
+      renderCdPanel();
     });
+
+    onValue(ref(db, 'cooldowns'), (snap) => {
+      cooldowns = snap.val() || {};
+      // Limpiar CDs expirados visualmente
+      renderCdPanel();
+    });
+
+    onValue(ref(db, 'rescates'), (snap) => {
+      rescates = snap.val() || {};
+      renderCdPanel();
+    });
+
+    // Re-render periódico por si expira un CD mientras se navega
+    setInterval(() => {
+      renderCdPanel();
+      actualizarCountdown();
+    }, 60000); // cada minuto
   }
 
   function actualizarContadorVotantes() {
     const el = document.getElementById('votantes');
-    const total = parseInt(el.dataset.total || "40");
+    const total = parseInt(el.dataset.total || "41");
     get(ref(db, 'votantes')).then((snap) => {
       const count = snap.exists() ? Object.keys(snap.val()).length : 0;
       el.innerHTML = `<strong>${count}</strong> de <strong>${total}</strong> han votado`;
     });
   }
 
+  // ============================================================
+  // RESULTADOS Y GANADOR
+  // ============================================================
+
   function mostrarVotosEnCartas() {
     if (votosListenerActivo) return;
     votosListenerActivo = true;
     onValue(ref(db, 'votos'), (snapshot) => {
       votosActuales = snapshot.val() || {};
-      document.querySelectorAll('.card').forEach(card => {
+      document.querySelectorAll('#grid .card').forEach(card => {
         const btn = card.querySelector('.vote-btn');
         if (!btn) return;
         const nombre = btn.dataset.vote;
@@ -667,50 +889,72 @@ footer .firma{color:var(--accent);font-weight:700}
     onValue(ref(db, 'votantes'), () => actualizarContadorVotantes());
   }
 
-  setInterval(actualizarCountdown, 1000);
+  function aplicarRanking() {
+    const grid = document.getElementById("grid");
+    const winnerContainer = document.getElementById("winnerContainer");
+    const cards = Array.from(grid.querySelectorAll(".card"));
 
-  function abrirModal(nombre, imgSrc) {
-    votoPendiente = nombre;
-    document.getElementById("modalImg").src = imgSrc;
-    document.getElementById("modalName").textContent = nombre;
-    document.getElementById("modalConfirm").classList.add("active");
+    cards.forEach(c => c.classList.remove("winner"));
+    winnerContainer.innerHTML = "";
+    winnerContainer.classList.remove("visible");
+
+    // Si hay ganador por rescate, mostrar SU tarjeta como ganador absoluto
+    if (ganadorRescate) {
+      const ganadorCard = cards.find(c => {
+        const b = c.querySelector('.vote-btn');
+        return b && b.dataset.vote === ganadorRescate;
+      });
+      if (ganadorCard) {
+        const clone = ganadorCard.cloneNode(true);
+        clone.className = "winner-card rescue-winner";
+        // Añadir badge de rescates
+        const umbral = Math.ceil(totalMiembros / 2);
+        const rescatesGanador = rescates[ganadorRescate] || 0;
+        const badge = document.createElement("div");
+        badge.className = "votos-badge";
+        badge.textContent = `🔥 ${rescatesGanador} / ${umbral} rescates`;
+        clone.appendChild(badge);
+
+        winnerContainer.appendChild(clone);
+        winnerContainer.classList.add("visible");
+        clone.querySelector("img").addEventListener("click", function() {
+          document.getElementById("lb-img").src = this.src;
+          document.getElementById("lb-name").textContent = this.alt;
+          document.getElementById("lightbox").classList.add("active");
+        });
+      }
+      return;
+    }
+
+    // Si no hay rescate, pero sí votación cerrada → ganador normal
+    const cerrada = votacionCerrada();
+    if (cerrada && cards.length > 0) {
+      cards.sort((a, b) => {
+        const vA = votosActuales[a.querySelector('.vote-btn').dataset.vote] || 0;
+        const vB = votosActuales[b.querySelector('.vote-btn').dataset.vote] || 0;
+        return vB - vA;
+      });
+      const topCard = cards[0];
+      const topVotos = votosActuales[topCard.querySelector('.vote-btn').dataset.vote] || 0;
+      if (topVotos > 0) {
+        const winnerClone = topCard.cloneNode(true);
+        winnerClone.className = "winner-card";
+        winnerContainer.appendChild(winnerClone);
+        winnerContainer.classList.add("visible");
+        winnerClone.querySelector("img").addEventListener("click", function() {
+          document.getElementById("lb-img").src = this.src;
+          document.getElementById("lb-name").textContent = this.alt;
+          document.getElementById("lightbox").classList.add("active");
+        });
+      }
+      cards.forEach(c => grid.appendChild(c));
+    }
   }
-  window.cerrarModal = function() {
-    document.getElementById("modalConfirm").classList.remove("active");
-    votoPendiente = "";
-  };
-  window.confirmarVoto = function() {
-    const nombre = votoPendiente;
-    cerrarModal();
-    if (!nombre) return;
-    ejecutarVoto(nombre);
-  };
 
-  function ejecutarVoto(nombre) {
-    const votoRef = ref(db, 'votos/' + nombre);
-    const voterId = getVoterId();
-    runTransaction(votoRef, (v) => (v || 0) + 1).then(() => {
-      set(ref(db, 'votantes/' + voterId), nombre);
-      setVote(nombre);
-      refrescarBotones();
-      setTimeout(() => mostrarToast("¡Voto registrado con éxito!", "success"), 300);
-    }).catch((error) => {
-      console.error("Error al votar: ", error);
-      mostrarToast("Hubo un error al registrar tu voto. Inténtalo de nuevo.", "error");
-    });
-  }
+  // ============================================================
+  // ATAJO ADMIN
+  // ============================================================
 
-  document.querySelectorAll(".vote-btn").forEach(function(btn) {
-    btn.addEventListener("click", function() {
-      if (votacionCerrada()) { mostrarToast("La votación ya está cerrada.", "error"); return; }
-      if (getVote() !== "") return;
-      const nombre = btn.dataset.vote;
-      const img = btn.parentElement.querySelector("img").src;
-      abrirModal(nombre, img);
-    });
-  });
-
-  // --- ATAJO: secuencia numérica abre admin.html ---
   const ADMIN_CODE = "2552321";
   let adminKeyBuffer = "";
   document.addEventListener("keydown", function(e) {
@@ -724,9 +968,14 @@ footer .firma{color:var(--accent);font-weight:700}
     }
   });
 
+  // ============================================================
+  // INIT
+  // ============================================================
+
   cargarConfig();
   refrescarBotones();
   actualizarContadorVotantes();
+  setInterval(actualizarCountdown, 1000);
 </script>
 </body>
 </html>
