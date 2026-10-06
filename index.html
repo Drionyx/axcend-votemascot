@@ -59,6 +59,57 @@ footer .firma{color:var(--accent);font-weight:700}
 .modal-btn-confirm{background:var(--accent);color:#1a1c30}
 .modal-btn:hover{filter:brightness(1.1)}
 
+/* --- TOAST (reemplaza los alert del navegador) --- */
+#toastContainer {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  pointer-events: none;
+  width: calc(100% - 40px);
+  max-width: 420px;
+}
+.toast {
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--accent);
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  text-align: center;
+  animation: toastIn .35s ease-out, toastOut .35s ease-in 3.15s forwards;
+  pointer-events: auto;
+}
+.toast.error {
+  border-color: #ff5c5c;
+  border-left-color: #ff5c5c;
+}
+.toast.success {
+  border-color: #4CAF50;
+  border-left-color: #4CAF50;
+}
+.toast-icon {
+  margin-right: 8px;
+  font-size: 16px;
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes toastOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-20px); }
+}
+
 /* --- NUEVOS ESTILOS PARA EL GANADOR --- */
 .winner-container {
   max-width: 1200px;
@@ -149,6 +200,9 @@ footer .firma{color:var(--accent);font-weight:700}
 <div class="countdown" id="countdown">Cargando...</div>
 <div class="votantes" id="votantes">Cargando votantes...</div>
 </header>
+
+<!-- CONTENEDOR DE TOASTS -->
+<div id="toastContainer"></div>
 
 <!-- CONTENEDOR DEL GANADOR -->
 <div class="winner-container" id="winnerContainer"></div>
@@ -344,6 +398,17 @@ footer .firma{color:var(--accent);font-weight:700}
   let votosActuales = {};
   let votoPendiente = "";
 
+  // --- TOAST (reemplaza los alert del navegador) ---
+  function mostrarToast(mensaje, tipo = "success") {
+    const container = document.getElementById("toastContainer");
+    const toast = document.createElement("div");
+    toast.className = "toast " + tipo;
+    const icon = tipo === "error" ? "⚠️" : "✅";
+    toast.innerHTML = `<span class="toast-icon">${icon}</span>${mensaje}`;
+    container.appendChild(toast);
+    setTimeout(() => { toast.remove(); }, 3500);
+  }
+
   function getVoterId() {
     let id = localStorage.getItem(VOTER_ID_KEY);
     if (!id) {
@@ -524,7 +589,7 @@ footer .firma{color:var(--accent);font-weight:700}
         if (resetToken !== "" && nuevoToken !== resetToken) {
           localStorage.removeItem(VOTE_KEY);
           resultadosMostrados = false;
-          alert("La votación ha sido reiniciada por el administrador. Puedes votar de nuevo.");
+          mostrarToast("La votación ha sido reiniciada. Puedes votar de nuevo.", "success");
         }
         resetToken = nuevoToken;
 
@@ -597,16 +662,16 @@ footer .firma{color:var(--accent);font-weight:700}
       set(ref(db, 'votantes/' + voterId), nombre);
       setVote(nombre);
       refrescarBotones();
-      setTimeout(() => alert("¡Voto registrado con éxito!"), 100);
+      setTimeout(() => mostrarToast("¡Voto registrado con éxito!", "success"), 300);
     }).catch((error) => {
       console.error("Error al votar: ", error);
-      alert("Hubo un error. Inténtalo de nuevo.");
+      mostrarToast("Hubo un error al registrar tu voto. Inténtalo de nuevo.", "error");
     });
   }
 
   document.querySelectorAll(".vote-btn").forEach(function(btn) {
     btn.addEventListener("click", function() {
-      if (votacionCerrada()) { alert("La votación ya está cerrada."); return; }
+      if (votacionCerrada()) { mostrarToast("La votación ya está cerrada.", "error"); return; }
       if (getVote() !== "") return;
       const nombre = btn.dataset.vote;
       const img = btn.parentElement.querySelector("img").src;
