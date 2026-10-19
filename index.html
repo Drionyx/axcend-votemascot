@@ -52,8 +52,37 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .countdown.empate{color:#ff9800;border-color:#ff9800}
 .votantes{margin-top:8px;font-size:13px;color:var(--sub);font-weight:600}
 .votantes strong{color:var(--accent)}
-.theme-btn{position:absolute;top:0;right:0;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:20px;padding:8px 14px;cursor:pointer;font-size:14px}
 
+/* --- BOTÓN TEMA CIRCULAR --- */
+.theme-btn{
+  position:fixed;
+  top:14px;
+  right:14px;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:var(--card);
+  color:var(--text);
+  border:1px solid var(--border);
+  cursor:pointer;
+  font-size:20px;
+  z-index:50;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 2px 10px rgba(0,0,0,.35);
+  transition:.2s;
+  padding:0;
+  line-height:1;
+}
+.theme-btn:hover{transform:scale(1.08);filter:brightness(1.15);border-color:var(--accent)}
+.theme-btn:active{transform:scale(.95)}
+@media(max-width:600px){
+  .theme-btn{width:36px;height:36px;font-size:17px;top:8px;right:8px}
+  header{padding-top:36px}
+}
+
+/* --- USER BADGE --- */
 .user-badge{margin:12px auto 0;display:inline-flex;align-items:center;gap:10px;padding:7px 14px;background:var(--card);border:1px solid var(--accent);border-radius:20px;font-size:13px;color:var(--text);max-width:100%}
 .user-badge .ub-icon{font-size:14px}
 .user-badge strong{color:var(--accent)}
@@ -61,12 +90,37 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .user-badge button{background:transparent;border:1px solid var(--border);color:var(--sub);padding:3px 10px;border-radius:12px;cursor:pointer;font-size:11px;font-family:inherit;font-weight:600;transition:.2s}
 .user-badge button:hover{border-color:var(--accent);color:var(--accent)}
 
+/* --- LOGIN OVERLAY --- */
 #loginOverlay{position:fixed;inset:0;background:rgba(15,16,32,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:900;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .3s ease}
 #loginOverlay.hidden{display:none}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .login-modal{background:var(--card);border:2px solid var(--accent);border-radius:20px;padding:36px 30px 28px;max-width:440px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 50px rgba(245,197,66,.15);animation:pop .45s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden}
 .login-modal::before{content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 0%,rgba(245,197,66,.12),transparent 50%);pointer-events:none}
 .login-modal > *{position:relative}
+.login-modal .login-close{
+  position:absolute;
+  top:10px;
+  right:10px;
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  border:none;
+  background:rgba(255,255,255,.08);
+  color:var(--text);
+  font-size:20px;
+  line-height:1;
+  cursor:pointer;
+  z-index:5;
+  transition:.2s;
+  padding:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.login-modal .login-close:hover{
+  background:rgba(255,255,255,.2);
+  transform:scale(1.1);
+}
 .login-modal .lm-crest{font-size:44px;margin-bottom:8px;filter:drop-shadow(0 4px 12px rgba(245,197,66,.4))}
 .login-modal h2{color:var(--accent);margin:0 0 6px;font-size:22px;letter-spacing:2px;font-weight:800}
 .login-modal .lm-tagline{color:var(--sub);font-size:12px;text-transform:uppercase;letter-spacing:1.5px;margin:0 0 18px}
@@ -76,9 +130,10 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .login-modal .lm-msg{min-height:20px;font-size:13px;color:#ff5c5c;margin:10px 0 6px;font-weight:500}
 .login-modal .lm-msg.ok{color:#4CAF50}
 .login-modal .lm-msg.loading{color:var(--sub)}
-.login-modal button{width:100%;padding:14px;border-radius:12px;border:none;background:var(--accent);color:#1a1c30;font-size:15px;font-weight:800;cursor:pointer;transition:.2s;font-family:inherit;letter-spacing:.5px}
-.login-modal button:hover:not(:disabled){filter:brightness(1.1);transform:translateY(-1px)}
-.login-modal button:disabled{opacity:.6;cursor:not-allowed}
+.login-modal button[type="button"]#btnEntrar,
+.login-modal #btnEntrar{width:100%;padding:14px;border-radius:12px;border:none;background:var(--accent);color:#1a1c30;font-size:15px;font-weight:800;cursor:pointer;transition:.2s;font-family:inherit;letter-spacing:.5px}
+.login-modal #btnEntrar:hover:not(:disabled){filter:brightness(1.1);transform:translateY(-1px)}
+.login-modal #btnEntrar:disabled{opacity:.6;cursor:not-allowed}
 .login-modal .lm-note{font-size:11px;color:var(--sub);margin:16px 0 0;opacity:.8;line-height:1.4}
 
 .layout{display:grid;grid-template-columns:1fr 320px;gap:20px;max-width:1500px;margin:20px auto 0;align-items:start}
@@ -111,7 +166,7 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .vote-btn{background:var(--accent);color:#1a1c30;border:none;border-radius:8px;padding:8px;font-weight:700;cursor:pointer;font-size:13px;transition:.2s}
 .vote-btn:hover{filter:brightness(1.15)}
 .vote-btn.voted{background:#4CAF50;color:#fff}
-.vote-btn.disabled{background:#444;color:#999;cursor:not-allowed;opacity:.6}
+.vote-btn.disabled{background:#444;color:#999;cursor:pointer;opacity:.7}
 
 .cd-panel{background:var(--card);border:2px solid #ff9800;border-radius:16px;padding:16px;box-shadow:0 0 20px rgba(255,152,0,.15)}
 .cd-panel h2{margin:0 0 6px;color:#ff9800;font-size:16px;text-align:center;text-transform:uppercase;letter-spacing:1px}
@@ -131,7 +186,7 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .cd-card .progress-text{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:800;color:#fff;letter-spacing:.4px;text-shadow:0 1px 3px rgba(0,0,0,.85),0 0 6px rgba(0,0,0,.5)}
 .cd-card .salvar-btn{background:#ff9800;color:#1a1c30;border:none;border-radius:8px;padding:11px;font-weight:800;cursor:pointer;font-size:13.5px;transition:.2s;letter-spacing:.6px;margin-top:2px}
 .cd-card .salvar-btn:hover{filter:brightness(1.15);transform:scale(1.02)}
-.cd-card .salvar-btn.disabled{background:#444;color:#999;cursor:not-allowed;opacity:.6;transform:none}
+.cd-card .salvar-btn.disabled{background:#444;color:#999;cursor:pointer;opacity:.7;transform:none}
 .cd-card .salvar-btn.voted{background:#4CAF50;color:#fff;cursor:default}
 
 .lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:1000;align-items:center;justify-content:center;padding:20px}
@@ -217,7 +272,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
 </head>
 <body>
 <header>
-<button class="theme-btn" onclick="toggleTheme()">&#9788; Tema</button>
+<button class="theme-btn" onclick="toggleTheme()" aria-label="Cambiar tema" title="Cambiar tema">&#9788;</button>
 <h1>AXCEND - LATAM -</h1>
 <div class="sub">Vota por tu mascota favorita del clan</div>
 
@@ -427,6 +482,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
 
 <div id="loginOverlay" class="hidden">
   <div class="login-modal">
+    <button class="login-close" id="btnCerrarLogin" aria-label="Cerrar" title="Cerrar">×</button>
     <div class="lm-crest">🏆</div>
     <h2>AXCEND - LATAM -</h2>
     <p class="lm-tagline">Votación de mascotas del clan</p>
@@ -553,7 +609,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     const overlay = document.getElementById("loginOverlay");
     overlay.classList.remove("hidden");
     const input = document.getElementById("inputUsername");
-    input.value = "";
+    input.value = getUsernameOriginal() || "";
     document.getElementById("loginMsg").textContent = "";
     document.getElementById("loginMsg").className = "lm-msg";
     document.getElementById("btnEntrar").disabled = false;
@@ -570,22 +626,24 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     if (original.length < 2) { msg.textContent = "El nombre debe tener al menos 2 caracteres."; msg.className = "lm-msg"; return; }
     const normalized = normalizarNombre(original);
     if (normalized.length < 2) { msg.textContent = "El nombre contiene caracteres no válidos."; msg.className = "lm-msg"; return; }
-    msg.textContent = "Verificando disponibilidad..."; msg.className = "lm-msg loading";
+    msg.textContent = "Verificando..."; msg.className = "lm-msg loading";
     btn.disabled = true; btn.textContent = "Verificando...";
     try {
-      const disponible = await verificarDisponible(normalized);
-      if (!disponible) {
-        msg.textContent = "❌ Ese nombre ya ha votado. Si crees que es un error, avisa al admin.";
-        msg.className = "lm-msg"; btn.disabled = false; btn.textContent = "Entrar a votar";
-        return;
-      }
+      // Solo comprobamos si ya votó para avisar al usuario (NO bloquea la entrada)
+      const yaVoto = !(await verificarDisponible(normalized));
       setUsername(original, normalized);
       cerrarLoginModal();
       actualizarHeaderUsuario();
       iniciarListenerUsuario();
-      mostrarToast("¡Bienvenido, " + original + "!", "success");
+      if (yaVoto) {
+        mostrarToast(`Bienvenido, ${original}. Ya votaste — puedes ver la votación pero no votar de nuevo.`, "success");
+      } else {
+        mostrarToast(`¡Bienvenido, ${original}!`, "success");
+      }
       refrescarBotones(); renderCdPanel();
-      agregarLog('admin', 'login', `👤 Ingresó al sitio: ${original}`, { username: normalized, usernameOriginal: original });
+      agregarLog('admin', 'login',
+        `👤 Ingresó: ${original}${yaVoto ? ' (ya había votado)' : ''}`,
+        { username: normalized, usernameOriginal: original, yaVoto });
     } catch (e) {
       msg.textContent = "Error: " + e.message; msg.className = "lm-msg";
       btn.disabled = false; btn.textContent = "Entrar a votar";
@@ -593,6 +651,15 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
   }
   document.getElementById("btnEntrar").addEventListener("click", procesarLogin);
   document.getElementById("inputUsername").addEventListener("keydown", (e) => { if (e.key === "Enter") procesarLogin(); });
+  document.getElementById("btnCerrarLogin").addEventListener("click", () => { cerrarLoginModal(); });
+  document.getElementById("loginOverlay").addEventListener("click", (e) => {
+    if (e.target.id === "loginOverlay") cerrarLoginModal();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !document.getElementById("loginOverlay").classList.contains("hidden")) {
+      cerrarLoginModal();
+    }
+  });
   document.getElementById("btnCambiarNombre").addEventListener("click", () => {
     if (localStorage.getItem(VOTE_KEY) || localStorage.getItem(RESCUE_KEY)) {
       mostrarToast("Ya votaste. Solo el admin puede liberar tu nombre.", "error"); return;
@@ -616,11 +683,23 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
   function iniciarListenerUsuario() {
     if (!usernameActual) return;
     onValue(ref(db, 'votantes/' + usernameActual), (snap) => {
-      if (snap.exists()) setVote(snap.val().personaje); else localStorage.removeItem(VOTE_KEY);
+      if (snap.exists()) {
+        const val = snap.val();
+        const personaje = typeof val === 'string' ? val : (val.personaje || '');
+        setVote(personaje);
+      } else {
+        localStorage.removeItem(VOTE_KEY);
+      }
       actualizarHeaderUsuario(); refrescarBotones();
     });
     onValue(ref(db, 'rescatadores/' + usernameActual), (snap) => {
-      if (snap.exists()) setRescue(snap.val().personaje); else localStorage.removeItem(RESCUE_KEY);
+      if (snap.exists()) {
+        const val = snap.val();
+        const personaje = typeof val === 'string' ? val : (val.personaje || '');
+        setRescue(personaje);
+      } else {
+        localStorage.removeItem(RESCUE_KEY);
+      }
       actualizarHeaderUsuario(); refrescarBotones(); renderCdPanel();
     });
   }
@@ -718,17 +797,32 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
   }
 
   function refrescarBotones() {
-    const v = getVote(); const r = getRescue(); const finalizada = votacionFinalizada(); const logueado = !!usernameActual;
+    const v = getVote();
+    const r = getRescue();
+    const finalizada = votacionFinalizada();
+    const logueado = !!usernameActual;
+
     document.querySelectorAll("#grid .vote-btn").forEach(function(btn) {
       const nombre = btn.dataset.vote;
-      btn.classList.remove("voted", "disabled"); btn.disabled = false;
+      btn.classList.remove("voted", "disabled");
+      btn.disabled = false;
+
       if (finalizada) { btn.style.display = "none"; return; }
       btn.style.display = "";
-      if (!logueado) { btn.classList.add("disabled"); btn.textContent = "Ingresa tu nombre"; btn.disabled = true; }
-      else if (r !== "") { btn.classList.add("disabled"); btn.textContent = "Ya usaste tu voto en rescate"; btn.disabled = true; }
-      else if (v === nombre) { btn.classList.add("voted"); btn.textContent = "✓ Tu voto"; btn.disabled = true; }
-      else if (v !== "") { btn.classList.add("disabled"); btn.textContent = "Ya votaste por otro"; btn.disabled = true; }
-      else { btn.textContent = "Votar"; }
+
+      if (!logueado) {
+        // No disabled → el click abre el modal de login
+        btn.classList.add("disabled");
+        btn.textContent = "Ingresa tu nombre";
+      } else if (r !== "") {
+        btn.classList.add("disabled"); btn.textContent = "Ya usaste tu voto en rescate"; btn.disabled = true;
+      } else if (v === nombre) {
+        btn.classList.add("voted"); btn.textContent = "✓ Tu voto"; btn.disabled = true;
+      } else if (v !== "") {
+        btn.classList.add("disabled"); btn.textContent = "Ya votaste por otro"; btn.disabled = true;
+      } else {
+        btn.textContent = "Votar";
+      }
     });
   }
 
@@ -770,7 +864,11 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       const nombre = btn.dataset.salvar;
       const imgSrc = btn.closest(".cd-card").querySelector("img").src;
       if (finalizada) { btn.classList.add("disabled"); btn.textContent = "Votación finalizada"; btn.disabled = true; }
-      else if (!logueado) { btn.classList.add("disabled"); btn.textContent = "Ingresa tu nombre"; btn.disabled = true; }
+      else if (!logueado) {
+        // No disabled → el click abre el modal de login
+        btn.classList.add("disabled");
+        btn.textContent = "Ingresa tu nombre";
+      }
       else if (r === nombre) { btn.classList.add("voted"); btn.textContent = "✓ Tu rescate"; btn.disabled = true; }
       else if (r !== "") { btn.classList.add("disabled"); btn.textContent = "Ya usaste tu rescate"; btn.disabled = true; }
       else if (getVote() !== "") { btn.classList.add("disabled"); btn.textContent = "Ya usaste tu voto"; btn.disabled = true; }
