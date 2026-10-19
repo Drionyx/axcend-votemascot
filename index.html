@@ -87,8 +87,9 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .user-badge .ub-icon{font-size:14px}
 .user-badge strong{color:var(--accent)}
 .user-badge .ub-lock{font-size:12px;opacity:.7}
-.user-badge button{background:transparent;border:1px solid var(--border);color:var(--sub);padding:3px 10px;border-radius:12px;cursor:pointer;font-size:11px;font-family:inherit;font-weight:600;transition:.2s}
-.user-badge button:hover{border-color:var(--accent);color:var(--accent)}
+.user-badge button{background:transparent;border:1px solid var(--border);color:var(--sub);padding:4px 10px;border-radius:12px;cursor:pointer;font-size:11px;font-family:inherit;font-weight:600;transition:.2s;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.user-badge button:hover{border-color:var(--accent);color:var(--accent);background:rgba(245,197,66,.08)}
+.user-badge button:active{transform:scale(.95)}
 
 /* --- LOGIN OVERLAY --- */
 #loginOverlay{position:fixed;inset:0;background:rgba(15,16,32,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:900;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .3s ease}
@@ -130,7 +131,6 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .login-modal .lm-msg{min-height:20px;font-size:13px;color:#ff5c5c;margin:10px 0 6px;font-weight:500}
 .login-modal .lm-msg.ok{color:#4CAF50}
 .login-modal .lm-msg.loading{color:var(--sub)}
-.login-modal button[type="button"]#btnEntrar,
 .login-modal #btnEntrar{width:100%;padding:14px;border-radius:12px;border:none;background:var(--accent);color:#1a1c30;font-size:15px;font-weight:800;cursor:pointer;transition:.2s;font-family:inherit;letter-spacing:.5px}
 .login-modal #btnEntrar:hover:not(:disabled){filter:brightness(1.1);transform:translateY(-1px)}
 .login-modal #btnEntrar:disabled{opacity:.6;cursor:not-allowed}
@@ -280,7 +280,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
   <span class="ub-icon">👤</span>
   <span id="userBadgeText">Votando como: <strong>—</strong></span>
   <span class="ub-lock" id="userBadgeLock" style="display:none">🔒</span>
-  <button id="btnCambiarNombre" style="display:none">Cambiar</button>
+  <button id="btnCambiarNombre" title="Cambiar de usuario">⇄ Cambiar</button>
 </div>
 
 <div class="mensaje" id="mensaje"></div>
@@ -539,6 +539,8 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
   let accionModal = "votar";
   let usernameActual = "";
   let usernameOriginalActual = "";
+  let unsubscribeVotanteActual = null;
+  let unsubscribeRescatadorActual = null;
 
   // ============================================================
   // PWA
@@ -629,7 +631,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     msg.textContent = "Verificando..."; msg.className = "lm-msg loading";
     btn.disabled = true; btn.textContent = "Verificando...";
     try {
-      // Solo comprobamos si ya votó para avisar al usuario (NO bloquea la entrada)
       const yaVoto = !(await verificarDisponible(normalized));
       setUsername(original, normalized);
       cerrarLoginModal();
@@ -660,11 +661,44 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       cerrarLoginModal();
     }
   });
+
+  // ============================================================
+  // BOTÓN "CAMBIAR USUARIO"
+  // ============================================================
   document.getElementById("btnCambiarNombre").addEventListener("click", () => {
-    if (localStorage.getItem(VOTE_KEY) || localStorage.getItem(RESCUE_KEY)) {
-      mostrarToast("Ya votaste. Solo el admin puede liberar tu nombre.", "error"); return;
-    }
-    mostrarLoginModal();
+    const nombre = usernameOriginalActual || "usuario actual";
+    if (!confirm(
+      `⇄ CAMBIAR DE USUARIO\n\n` +
+      `Actualmente estás como "${nombre}".\n\n` +
+      `Al cambiar, podrás ingresar con otro nombre. Tu voto (si ya votaste) queda registrado en el sistema y no se pierde.\n\n` +
+      `¿Continuar?`
+    )) return;
+
+    detenerListenersUsuario();
+
+    localStorage.removeItem(USER_KEY);
+    localStorage.removeItem(USER_ORIG_KEY);
+    localStorage.removeItem(VOTE_KEY);
+    localStorage.removeItem(RESCUE_KEY);
+
+    usernameActual = "";
+    usernameOriginalActual = "";
+    votoPendiente = "";
+    rescatePendiente = "";
+
+    sessionStorage.removeItem('confetti_rescate');
+    sessionStorage.removeItem('confetti_ganador');
+
+    actualizarHeaderUsuario();
+    refrescarBotones();
+    renderCdPanel();
+
+    mostrarToast("Sesión cerrada. Ingresa el nuevo usuario.", "success");
+
+    setTimeout(() => {
+      document.getElementById("inputUsername").value = "";
+      mostrarLoginModal();
+    }, 300);
   });
 
   function actualizarHeaderUsuario() {
@@ -677,12 +711,22 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     txt.innerHTML = `Votando como: <strong>${usernameOriginalActual}</strong>`;
     const yaVoto = !!localStorage.getItem(VOTE_KEY) || !!localStorage.getItem(RESCUE_KEY);
     lock.style.display = yaVoto ? "inline" : "none";
-    btn.style.display = yaVoto ? "none" : "inline-block";
+    btn.style.display = "inline-block"; // SIEMPRE visible
+  }
+
+  function detenerListenersUsuario() {
+    if (unsubscribeVotanteActual) { unsubscribeVotanteActual(); unsubscribeVotanteActual = null; }
+    if (unsubscribeRescatadorActual) { unsubscribeRescatadorActual(); unsubscribeRescatadorActual = null; }
   }
 
   function iniciarListenerUsuario() {
     if (!usernameActual) return;
-    onValue(ref(db, 'votantes/' + usernameActual), (snap) => {
+
+    detenerListenersUsuario();
+    const userAlIniciar = usernameActual;
+
+    unsubscribeVotanteActual = onValue(ref(db, 'votantes/' + usernameActual), (snap) => {
+      if (userAlIniciar !== usernameActual) return;
       if (snap.exists()) {
         const val = snap.val();
         const personaje = typeof val === 'string' ? val : (val.personaje || '');
@@ -692,7 +736,9 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       }
       actualizarHeaderUsuario(); refrescarBotones();
     });
-    onValue(ref(db, 'rescatadores/' + usernameActual), (snap) => {
+
+    unsubscribeRescatadorActual = onValue(ref(db, 'rescatadores/' + usernameActual), (snap) => {
+      if (userAlIniciar !== usernameActual) return;
       if (snap.exists()) {
         const val = snap.val();
         const personaje = typeof val === 'string' ? val : (val.personaje || '');
@@ -811,7 +857,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       btn.style.display = "";
 
       if (!logueado) {
-        // No disabled → el click abre el modal de login
         btn.classList.add("disabled");
         btn.textContent = "Ingresa tu nombre";
       } else if (r !== "") {
@@ -865,7 +910,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       const imgSrc = btn.closest(".cd-card").querySelector("img").src;
       if (finalizada) { btn.classList.add("disabled"); btn.textContent = "Votación finalizada"; btn.disabled = true; }
       else if (!logueado) {
-        // No disabled → el click abre el modal de login
         btn.classList.add("disabled");
         btn.textContent = "Ingresa tu nombre";
       }
