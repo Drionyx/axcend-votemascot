@@ -2,11 +2,14 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>AXCEND - LATAM - | Vota por tu mascota favorita</title>
 
 <meta name="description" content="Vota por tu mascota favorita del clan AXCEND - LATAM -. Un voto por persona, resultados al cerrar la votación.">
 <meta name="theme-color" content="#0f1020">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AXCEND Vota">
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="AXCEND - LATAM -">
@@ -30,6 +33,9 @@
 <link rel="icon" href="./favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="./favicon.png">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="manifest" href="./manifest.json">
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
 <style>
 :root{--bg:#0f1020;--card:#1a1c30;--text:#eee;--accent:#f5c542;--sub:#9aa0b5;--border:#2a2d45}
@@ -43,13 +49,40 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .mensaje.visible{display:block}
 .countdown{margin-top:12px;display:inline-block;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:8px 18px;font-size:14px;font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
 .countdown.cerrada{color:#ff5c5c;border-color:#ff5c5c}
+.countdown.empate{color:#ff9800;border-color:#ff9800}
 .votantes{margin-top:8px;font-size:13px;color:var(--sub);font-weight:600}
 .votantes strong{color:var(--accent)}
 .theme-btn{position:absolute;top:0;right:0;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:20px;padding:8px 14px;cursor:pointer;font-size:14px}
 
+.user-badge{margin:12px auto 0;display:inline-flex;align-items:center;gap:10px;padding:7px 14px;background:var(--card);border:1px solid var(--accent);border-radius:20px;font-size:13px;color:var(--text);max-width:100%}
+.user-badge .ub-icon{font-size:14px}
+.user-badge strong{color:var(--accent)}
+.user-badge .ub-lock{font-size:12px;opacity:.7}
+.user-badge button{background:transparent;border:1px solid var(--border);color:var(--sub);padding:3px 10px;border-radius:12px;cursor:pointer;font-size:11px;font-family:inherit;font-weight:600;transition:.2s}
+.user-badge button:hover{border-color:var(--accent);color:var(--accent)}
+
+#loginOverlay{position:fixed;inset:0;background:rgba(15,16,32,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:900;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .3s ease}
+#loginOverlay.hidden{display:none}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.login-modal{background:var(--card);border:2px solid var(--accent);border-radius:20px;padding:36px 30px 28px;max-width:440px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 50px rgba(245,197,66,.15);animation:pop .45s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden}
+.login-modal::before{content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 0%,rgba(245,197,66,.12),transparent 50%);pointer-events:none}
+.login-modal > *{position:relative}
+.login-modal .lm-crest{font-size:44px;margin-bottom:8px;filter:drop-shadow(0 4px 12px rgba(245,197,66,.4))}
+.login-modal h2{color:var(--accent);margin:0 0 6px;font-size:22px;letter-spacing:2px;font-weight:800}
+.login-modal .lm-tagline{color:var(--sub);font-size:12px;text-transform:uppercase;letter-spacing:1.5px;margin:0 0 18px}
+.login-modal .lm-desc{color:var(--text);font-size:14px;line-height:1.5;margin:0 0 20px;opacity:.9}
+.login-modal input[type="text"]{width:100%;padding:14px 16px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:16px;text-align:center;outline:none;font-family:inherit;letter-spacing:.5px;transition:.2s}
+.login-modal input[type="text"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(245,197,66,.15)}
+.login-modal .lm-msg{min-height:20px;font-size:13px;color:#ff5c5c;margin:10px 0 6px;font-weight:500}
+.login-modal .lm-msg.ok{color:#4CAF50}
+.login-modal .lm-msg.loading{color:var(--sub)}
+.login-modal button{width:100%;padding:14px;border-radius:12px;border:none;background:var(--accent);color:#1a1c30;font-size:15px;font-weight:800;cursor:pointer;transition:.2s;font-family:inherit;letter-spacing:.5px}
+.login-modal button:hover:not(:disabled){filter:brightness(1.1);transform:translateY(-1px)}
+.login-modal button:disabled{opacity:.6;cursor:not-allowed}
+.login-modal .lm-note{font-size:11px;color:var(--sub);margin:16px 0 0;opacity:.8;line-height:1.4}
+
 .layout{display:grid;grid-template-columns:1fr 320px;gap:20px;max-width:1500px;margin:20px auto 0;align-items:start}
 @media(max-width:1100px){.layout{grid-template-columns:1fr}}
-
 .col-main{min-width:0}
 .col-cd{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow-y:auto}
 @media(max-width:1100px){.col-cd{position:static;max-height:none}}
@@ -65,6 +98,11 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .card:hover{transform:translateY(-4px);border-color:var(--accent)}
 .card.winner{border-color:#f5c542;box-shadow:0 0 24px rgba(245,197,66,.5);transform:translateY(-4px)}
 .card.winner::after{content:"👑";position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:32px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6));z-index:2}
+@keyframes votePop{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(76,175,80,0)}30%{transform:scale(1.1);box-shadow:0 0 30px 10px rgba(76,175,80,.65)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(76,175,80,0)}}
+.card.vote-pop{animation:votePop .85s cubic-bezier(.34,1.56,.64,1);z-index:5;border-color:#4CAF50!important}
+@keyframes rescuePop{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,152,0,0)}30%{transform:scale(1.1);box-shadow:0 0 30px 10px rgba(255,152,0,.65)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,152,0,0)}}
+.card.vote-pop-rescue{animation:rescuePop .85s cubic-bezier(.34,1.56,.64,1);z-index:5;border-color:#ff9800!important}
+
 .img-wrap{aspect-ratio:3/4;border-radius:10px;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
 .card img{width:100%;height:100%;object-fit:cover;object-position:top center;cursor:pointer;transition:.3s}
 .card img:hover{transform:scale(1.05)}
@@ -75,111 +113,36 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .vote-btn.voted{background:#4CAF50;color:#fff}
 .vote-btn.disabled{background:#444;color:#999;cursor:not-allowed;opacity:.6}
 
-/* --- PANEL CD --- */
 .cd-panel{background:var(--card);border:2px solid #ff9800;border-radius:16px;padding:16px;box-shadow:0 0 20px rgba(255,152,0,.15)}
 .cd-panel h2{margin:0 0 6px;color:#ff9800;font-size:16px;text-align:center;text-transform:uppercase;letter-spacing:1px}
 .cd-panel .hint{font-size:11px;color:var(--sub);text-align:center;margin:0 0 14px;line-height:1.5}
 .cd-empty{font-size:12px;color:var(--sub);text-align:center;padding:20px 10px;font-style:italic}
 .cd-list{display:flex;flex-direction:column;gap:14px}
-
-.cd-card{
-  background:var(--bg);
-  border:2px solid #ff9800;
-  border-radius:14px;
-  padding:12px;
-  text-align:center;
-  position:relative;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  animation:cdPulse 2.5s ease-in-out infinite;
-}
-@keyframes cdPulse{
-  0%,100%{box-shadow:0 0 0 0 rgba(255,152,0,.4)}
-  50%{box-shadow:0 0 16px 4px rgba(255,152,0,.35)}
-}
-.cd-card .cd-badge{
-  position:absolute;top:-10px;left:50%;transform:translateX(-50%);
-  background:#ff9800;color:#1a1c30;font-size:10px;font-weight:800;
-  padding:3px 10px;border-radius:12px;letter-spacing:1px;white-space:nowrap;
-}
-.cd-card .img-wrap{
-  filter: grayscale(.85) brightness(.75);
-  transition:.4s;
-  aspect-ratio: 3/4;
-  overflow: hidden;
-}
-.cd-card .img-wrap:hover{
-  filter: grayscale(.5) brightness(.9);
-}
-.cd-card .img-wrap img{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top center;
-  display: block;
-}
+.cd-card{background:var(--bg);border:2px solid #ff9800;border-radius:14px;padding:12px;text-align:center;position:relative;display:flex;flex-direction:column;gap:10px;animation:cdPulse 2.5s ease-in-out infinite}
+@keyframes cdPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,152,0,.4)}50%{box-shadow:0 0 16px 4px rgba(255,152,0,.35)}}
+.cd-card .cd-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#ff9800;color:#1a1c30;font-size:10px;font-weight:800;padding:3px 10px;border-radius:12px;letter-spacing:1px;white-space:nowrap}
+.cd-card .img-wrap{filter:grayscale(.85) brightness(.75);transition:.4s;aspect-ratio:3/4;overflow:hidden}
+.cd-card .img-wrap:hover{filter:grayscale(.5) brightness(.9)}
+.cd-card .img-wrap img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
 .cd-card .name{font-size:13px;font-weight:700;color:var(--text);opacity:.95}
-.cd-card .cd-time{
-  font-size:13px;
-  color:#ff9800;
-  font-weight:700;
-  font-variant-numeric:tabular-nums;
-  letter-spacing:.3px;
-  margin-top:2px;
-}
-.cd-card .progress{
-  background:rgba(255,152,0,.15);
-  border:1px solid #ff9800;
-  border-radius:8px;
-  height:24px;
-  position:relative;
-  overflow:hidden;
-}
-.cd-card .progress-fill{
-  background:linear-gradient(90deg,#ff9800,#f5c542);
-  height:100%;
-  transition:width .5s ease;
-}
-.cd-card .progress-text{
-  position:absolute;
-  top:0;left:0;right:0;bottom:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:12.5px;
-  font-weight:800;
-  color:#fff;
-  letter-spacing:.4px;
-  text-shadow:0 1px 3px rgba(0,0,0,.85), 0 0 6px rgba(0,0,0,.5);
-}
-.cd-card .salvar-btn{
-  background:#ff9800;
-  color:#1a1c30;
-  border:none;
-  border-radius:8px;
-  padding:11px;
-  font-weight:800;
-  cursor:pointer;
-  font-size:13.5px;
-  transition:.2s;
-  letter-spacing:.6px;
-  margin-top:2px;
-}
+.cd-card .cd-time{font-size:13px;color:#ff9800;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.3px;margin-top:2px}
+.cd-card .progress{background:rgba(255,152,0,.15);border:1px solid #ff9800;border-radius:8px;height:24px;position:relative;overflow:hidden}
+.cd-card .progress-fill{background:linear-gradient(90deg,#ff9800,#f5c542);height:100%;transition:width .5s ease}
+.cd-card .progress-text{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:800;color:#fff;letter-spacing:.4px;text-shadow:0 1px 3px rgba(0,0,0,.85),0 0 6px rgba(0,0,0,.5)}
+.cd-card .salvar-btn{background:#ff9800;color:#1a1c30;border:none;border-radius:8px;padding:11px;font-weight:800;cursor:pointer;font-size:13.5px;transition:.2s;letter-spacing:.6px;margin-top:2px}
 .cd-card .salvar-btn:hover{filter:brightness(1.15);transform:scale(1.02)}
 .cd-card .salvar-btn.disabled{background:#444;color:#999;cursor:not-allowed;opacity:.6;transform:none}
 .cd-card .salvar-btn.voted{background:#4CAF50;color:#fff;cursor:default}
 
-.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:100;align-items:center;justify-content:center;padding:20px}
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:1000;align-items:center;justify-content:center;padding:20px}
 .lightbox.active{display:flex}
 .lightbox img{max-width:90vw;max-height:80vh;border-radius:12px}
 .lightbox .close{position:absolute;top:20px;right:30px;color:#fff;font-size:36px;cursor:pointer;font-weight:300}
 .lightbox .lb-name{position:absolute;bottom:30px;color:#fff;font-size:18px;text-align:center;width:100%}
 
 footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding:20px;line-height:1.6;max-width:900px;margin-left:auto;margin-right:auto}
-footer .firma{color:var(--accent);font-weight:700}
 
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:800;align-items:center;justify-content:center;padding:20px}
 .modal.active{display:flex}
 .modal-content{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:400px;width:100%;text-align:center;animation:pop .25s}
 @keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
@@ -196,11 +159,12 @@ footer .firma{color:var(--accent);font-weight:700}
 .modal-btn-cd{background:#ff9800;color:#1a1c30}
 .modal-btn:hover{filter:brightness(1.1)}
 
-#toastContainer{position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:500;display:flex;flex-direction:column;gap:10px;align-items:center;pointer-events:none;width:calc(100% - 40px);max-width:420px}
+#toastContainer{position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:1100;display:flex;flex-direction:column;gap:10px;align-items:center;pointer-events:none;width:calc(100% - 40px);max-width:420px}
 .toast{background:var(--card);color:var(--text);border:1px solid var(--accent);border-left:4px solid var(--accent);border-radius:12px;padding:14px 20px;font-size:14px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.4);width:100%;text-align:center;animation:toastIn .35s ease-out,toastOut .35s ease-in 3.15s forwards;pointer-events:auto}
 .toast.error{border-color:#ff5c5c;border-left-color:#ff5c5c}
 .toast.success{border-color:#4CAF50;border-left-color:#4CAF50}
 .toast.rescue{border-color:#ff9800;border-left-color:#ff9800}
+.toast.dice{border-color:#a855f7;border-left-color:#a855f7}
 .toast-icon{margin-right:8px;font-size:16px}
 @keyframes toastIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes toastOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-20px)}}
@@ -211,14 +175,44 @@ footer .firma{color:var(--accent);font-weight:700}
 .winner-card::before{content:"★ GANADOR ★";position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--accent);color:#1a1c30;padding:4px 16px;border-radius:20px;font-size:12px;font-weight:800;letter-spacing:1px;white-space:nowrap}
 .winner-card.rescue-winner{border-color:#ff9800;box-shadow:0 0 60px rgba(255,152,0,.6)}
 .winner-card.rescue-winner::before{content:"🔥 SALVADO 🔥";background:#ff9800}
+.winner-card.rng-winner{border-color:#a855f7;box-shadow:0 0 60px rgba(168,85,247,.55)}
+.winner-card.rng-winner::before{content:"🎲 GANADOR POR DADOS 🎲";background:#a855f7;color:#fff}
 .winner-card .img-wrap{aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
 .winner-card img{width:100%;height:100%;object-fit:cover;object-position:top center;cursor:pointer;transition:.3s}
 .winner-card img:hover{transform:scale(1.03)}
 .winner-card .name{font-size:20px;font-weight:800;color:var(--accent)}
 .winner-card.rescue-winner .name{color:#ff9800}
-.winner-card .votos-badge{font-size:16px;padding:8px}
+.winner-card.rng-winner .name{color:#a855f7}
+.winner-card .votos-badge{font-size:14px;padding:8px}
 @keyframes winnerSpin{0%{transform:rotateY(0deg) scale(1)}40%{transform:rotateY(180deg) scale(1.05)}100%{transform:rotateY(360deg) scale(1)}}
 @keyframes winnerFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+.empate-aviso{max-width:680px;margin:16px auto 0;padding:16px 22px;background:linear-gradient(135deg,rgba(168,85,247,.15),rgba(255,152,0,.12));border:2px solid #a855f7;border-radius:14px;text-align:center;font-size:14px;color:var(--text);display:none;box-shadow:0 0 30px rgba(168,85,247,.25);animation:empPulse 2s ease-in-out infinite}
+.empate-aviso.visible{display:block}
+@keyframes empPulse{0%,100%{box-shadow:0 0 30px rgba(168,85,247,.25)}50%{box-shadow:0 0 45px rgba(168,85,247,.5)}}
+.empate-aviso strong{color:#a855f7}
+.empate-aviso .emp-countdown{display:inline-block;margin-top:10px;font-size:26px;font-weight:900;color:#a855f7;font-variant-numeric:tabular-nums;letter-spacing:2px;padding:6px 20px;background:rgba(0,0,0,.35);border-radius:12px;border:1px solid #a855f7}
+.empate-aviso .emp-note{font-size:12px;color:var(--sub);margin-top:8px;font-style:italic}
+
+#diceOverlay{position:fixed;inset:0;background:rgba(8,8,20,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;animation:fadeIn .3s}
+#diceOverlay.active{display:flex}
+.dice-modal{background:var(--card);border:3px solid #a855f7;border-radius:22px;padding:32px 24px 24px;max-width:640px;width:100%;text-align:center;box-shadow:0 0 80px rgba(168,85,247,.55),0 20px 60px rgba(0,0,0,.6);animation:pop .45s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden}
+.dice-modal::before{content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 0%,rgba(168,85,247,.15),transparent 55%);pointer-events:none;animation:diceGlow 3s ease-in-out infinite}
+@keyframes diceGlow{0%,100%{opacity:.5}50%{opacity:1}}
+.dice-modal > *{position:relative}
+.dice-modal h2{color:#a855f7;margin:0 0 8px;font-size:22px;letter-spacing:3px;font-weight:900;text-shadow:0 0 20px rgba(168,85,247,.6)}
+.dice-round-info{color:var(--sub);font-size:13px;margin-bottom:20px;text-transform:uppercase;letter-spacing:2px;font-weight:700}
+.dice-grid{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin:20px 0;min-height:150px;align-items:center}
+.dice-die{background:var(--bg);border:2px solid var(--border);border-radius:14px;padding:14px 12px;min-width:110px;text-align:center;transition:.4s cubic-bezier(.34,1.56,.64,1);position:relative}
+.dice-die.rolling{border-color:#a855f7;box-shadow:0 0 25px rgba(168,85,247,.5);animation:diceShake .12s infinite}
+@keyframes diceShake{0%,100%{transform:translate(0,0) rotate(0)}25%{transform:translate(-1px,1px) rotate(-1deg)}75%{transform:translate(1px,-1px) rotate(1deg)}}
+.dice-die.winner{border-color:#4CAF50;box-shadow:0 0 35px rgba(76,175,80,.7);background:rgba(76,175,80,.15);transform:scale(1.05)}
+.dice-die.eliminated{opacity:.28;filter:grayscale(1)}
+.dice-die .die-name{font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px;word-break:break-word;line-height:1.2}
+.dice-die .die-face{font-size:52px;font-weight:900;color:#a855f7;line-height:1;font-variant-numeric:tabular-nums;text-shadow:0 0 20px rgba(168,85,247,.5);transition:.2s}
+.dice-die.winner .die-face{color:#4CAF50;text-shadow:0 0 25px rgba(76,175,80,.8)}
+.dice-status{color:var(--text);font-size:15px;margin-top:18px;min-height:24px;font-weight:700;letter-spacing:.5px}
+.dice-status.winner-text{font-size:20px;color:#4CAF50;font-weight:900;letter-spacing:1px;animation:pop .35s}
 </style>
 </head>
 <body>
@@ -226,9 +220,18 @@ footer .firma{color:var(--accent);font-weight:700}
 <button class="theme-btn" onclick="toggleTheme()">&#9788; Tema</button>
 <h1>AXCEND - LATAM -</h1>
 <div class="sub">Vota por tu mascota favorita del clan</div>
+
+<div class="user-badge" id="userBadge" style="display:none">
+  <span class="ub-icon">👤</span>
+  <span id="userBadgeText">Votando como: <strong>—</strong></span>
+  <span class="ub-lock" id="userBadgeLock" style="display:none">🔒</span>
+  <button id="btnCambiarNombre" style="display:none">Cambiar</button>
+</div>
+
 <div class="mensaje" id="mensaje"></div>
 <div class="countdown" id="countdown">Cargando...</div>
 <div class="votantes" id="votantes">Cargando votantes...</div>
+<div class="empate-aviso" id="empateAviso"></div>
 </header>
 
 <div id="toastContainer"></div>
@@ -382,17 +385,17 @@ footer .firma{color:var(--accent);font-weight:700}
 
   <aside class="col-cd">
     <div class="cd-panel">
-      <h2>🔥 En Cuarentena 🔥</h2>
-      <p class="hint">Estos personajes no pueden votarse, pero puedes <strong>salvarlos</strong>. Si reúnen el <strong>50% del clan</strong>, ganan la votación.</p>
+      <h2>⏳ Sala de Espera ⏳</h2>
+      <p class="hint">Estos personajes están en <strong>cooldown</strong> y no pueden votarse por ahora. Pero puedes <strong>rescatarlos</strong>: si reúnen el <strong>50% del clan</strong>, vuelven y ganan la votación.</p>
       <div id="cdList" class="cd-list">
-        <div class="cd-empty">Nadie está en cuarentena.</div>
+        <div class="cd-empty">Nadie está en la Sala de Espera.</div>
       </div>
     </div>
   </aside>
 </div>
 
 <footer>
-  Este sitio fue hecho con dedicación por <span class="firma">Drionyx Bahamut</span>. &middot; Para los miembros del clan, a seguir disfrutando todos juntos de este juego bien RICO, BAROSO y SUCULENTO!
+  Hecho con dedicación para los miembros del clan. &middot; A seguir disfrutando todos juntos de este juego bien RICO, BAROSO y SUCULENTO!
 </footer>
 
 <div class="lightbox" id="lightbox" onclick="cerrarLightbox()">
@@ -413,16 +416,38 @@ footer .firma{color:var(--accent);font-weight:700}
 </div>
 </div>
 
+<div id="diceOverlay">
+  <div class="dice-modal">
+    <h2>🎲 DESEMPATE POR DADOS 🎲</h2>
+    <div class="dice-round-info" id="diceRoundInfo">Preparando...</div>
+    <div class="dice-grid" id="diceGrid"></div>
+    <div class="dice-status" id="diceStatus"></div>
+  </div>
+</div>
+
+<div id="loginOverlay" class="hidden">
+  <div class="login-modal">
+    <div class="lm-crest">🏆</div>
+    <h2>AXCEND - LATAM -</h2>
+    <p class="lm-tagline">Votación de mascotas del clan</p>
+    <p class="lm-desc">Antes de votar, ingresa tu <strong>nombre de jugador o perfil del clan</strong>.<br>Solo se permite <strong>un voto por integrante</strong>.</p>
+    <input type="text" id="inputUsername" placeholder="Tu nombre de jugador" maxlength="30" autocomplete="off" spellcheck="false">
+    <div class="lm-msg" id="loginMsg"></div>
+    <button id="btnEntrar" type="button">Entrar a votar</button>
+    <p class="lm-note">🔒 Tu nombre será visible para el administrador del clan.<br>Si no perteneces al clan, por favor no votes.</p>
+  </div>
+</div>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, runTransaction, get, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  import { getDatabase, ref, runTransaction, get, onValue, set, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBaKgNmCCTdFoE2YkU1B4a8AjnwwGFeBJ4",
     authDomain: "axcend-votemascot-fcced.firebaseapp.com",
     databaseURL: "https://axcend-votemascot-fcced-default-rtdb.firebaseio.com",
     projectId: "axcend-votemascot-fcced",
-    storageBucket: "axcend-votemascot-fcced.firebasestorage.app",
+    storageBucket: "axcend-votemascot-fcced.storage.app",
     messagingSenderId: "2042810164",
     appId: "1:2042810164:web:8880abb1729053ca8a1f61"
   };
@@ -433,6 +458,8 @@ footer .firma{color:var(--accent);font-weight:700}
   const VOTE_KEY = "axcend_vote";
   const VOTER_ID_KEY = "axcend_voter_id";
   const RESCUE_KEY = "axcend_rescate";
+  const USER_KEY = "axcend_username";
+  const USER_ORIG_KEY = "axcend_username_original";
 
   let finVotacion = 0;
   let mostrarResultados = false;
@@ -440,47 +467,179 @@ footer .firma{color:var(--accent);font-weight:700}
   let resultadosMostrados = false;
   let votosListenerActivo = false;
   let votosActuales = {};
-  let votoPendiente = "";
-
   let totalMiembros = 41;
   let cooldowns = {};
   let rescates = {};
   let ganadorRescate = "";
+  let ganadorFinal = "";
+  let ganadorMetodo = "";
+  let rngTriggerAt = 0;
+  let rngResultado = null;
+  let rngAnimacionEnCurso = false;
+  let rngAnimacionMostradaKey = "";
+  let rngYaIntentado = false;
+  let votoPendiente = "";
   let rescatePendiente = "";
   let accionModal = "votar";
+  let usernameActual = "";
+  let usernameOriginalActual = "";
 
   // ============================================================
-  // UTILIDADES
+  // PWA
   // ============================================================
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    });
+  }
 
+  // ============================================================
+  // LOGS
+  // ============================================================
+  async function agregarLog(tipo, subtipo, mensaje, detalles = {}) {
+    try {
+      await push(ref(db, 'logs'), { tipo, subtipo, fecha: Date.now(), mensaje, detalles });
+    } catch (e) { console.warn('log fail', e); }
+  }
+
+  // ============================================================
+  // CONFETTI
+  // ============================================================
+  function dispararConfeti() {
+    if (typeof confetti !== 'function') return;
+    const colors = ['#f5c542','#ff9800','#4CAF50','#a855f7','#ffffff','#e91e63'];
+    confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors, zIndex: 3000 });
+    const end = Date.now() + 2500;
+    (function frame() {
+      confetti({ particleCount: 4, angle: 60, spread: 55, origin: { x: 0 }, colors, zIndex: 3000 });
+      confetti({ particleCount: 4, angle: 120, spread: 55, origin: { x: 1 }, colors, zIndex: 3000 });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+  }
+
+  // ============================================================
+  // TOASTS
+  // ============================================================
   function mostrarToast(mensaje, tipo = "success") {
     const container = document.getElementById("toastContainer");
     const toast = document.createElement("div");
     toast.className = "toast " + tipo;
-    const icon = tipo === "error" ? "⚠️" : tipo === "rescue" ? "🔥" : "✅";
+    const icon = tipo === "error" ? "⚠️" : tipo === "rescue" ? "🔥" : tipo === "dice" ? "🎲" : "✅";
     toast.innerHTML = `<span class="toast-icon">${icon}</span>${mensaje}`;
     container.appendChild(toast);
     setTimeout(() => { toast.remove(); }, 3500);
   }
 
-  function getVoterId() {
-    let id = localStorage.getItem(VOTER_ID_KEY);
-    if (!id) {
-      id = "v" + Date.now() + "_" + Math.random().toString(36).slice(2, 10);
-      localStorage.setItem(VOTER_ID_KEY, id);
+  // ============================================================
+  // USERNAME / LOGIN
+  // ============================================================
+  function normalizarNombre(nombre) {
+    return nombre.toLowerCase().trim().normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "_").replace(/[^a-z0-9_\-]/g, "");
+  }
+  function getUsername() { return localStorage.getItem(USER_KEY) || ""; }
+  function getUsernameOriginal() { return localStorage.getItem(USER_ORIG_KEY) || ""; }
+  function setUsername(original, normalized) {
+    localStorage.setItem(USER_KEY, normalized);
+    localStorage.setItem(USER_ORIG_KEY, original);
+    usernameActual = normalized;
+    usernameOriginalActual = original;
+  }
+  async function verificarDisponible(normalized) {
+    const snap = await get(ref(db, 'votantes/' + normalized));
+    return !snap.exists();
+  }
+  function mostrarLoginModal() {
+    const overlay = document.getElementById("loginOverlay");
+    overlay.classList.remove("hidden");
+    const input = document.getElementById("inputUsername");
+    input.value = "";
+    document.getElementById("loginMsg").textContent = "";
+    document.getElementById("loginMsg").className = "lm-msg";
+    document.getElementById("btnEntrar").disabled = false;
+    document.getElementById("btnEntrar").textContent = "Entrar a votar";
+    setTimeout(() => input.focus(), 100);
+  }
+  function cerrarLoginModal() { document.getElementById("loginOverlay").classList.add("hidden"); }
+
+  async function procesarLogin() {
+    const input = document.getElementById("inputUsername");
+    const msg = document.getElementById("loginMsg");
+    const btn = document.getElementById("btnEntrar");
+    const original = input.value.trim();
+    if (original.length < 2) { msg.textContent = "El nombre debe tener al menos 2 caracteres."; msg.className = "lm-msg"; return; }
+    const normalized = normalizarNombre(original);
+    if (normalized.length < 2) { msg.textContent = "El nombre contiene caracteres no válidos."; msg.className = "lm-msg"; return; }
+    msg.textContent = "Verificando disponibilidad..."; msg.className = "lm-msg loading";
+    btn.disabled = true; btn.textContent = "Verificando...";
+    try {
+      const disponible = await verificarDisponible(normalized);
+      if (!disponible) {
+        msg.textContent = "❌ Ese nombre ya ha votado. Si crees que es un error, avisa al admin.";
+        msg.className = "lm-msg"; btn.disabled = false; btn.textContent = "Entrar a votar";
+        return;
+      }
+      setUsername(original, normalized);
+      cerrarLoginModal();
+      actualizarHeaderUsuario();
+      iniciarListenerUsuario();
+      mostrarToast("¡Bienvenido, " + original + "!", "success");
+      refrescarBotones(); renderCdPanel();
+      agregarLog('admin', 'login', `👤 Ingresó al sitio: ${original}`, { username: normalized, usernameOriginal: original });
+    } catch (e) {
+      msg.textContent = "Error: " + e.message; msg.className = "lm-msg";
+      btn.disabled = false; btn.textContent = "Entrar a votar";
     }
-    return id;
+  }
+  document.getElementById("btnEntrar").addEventListener("click", procesarLogin);
+  document.getElementById("inputUsername").addEventListener("keydown", (e) => { if (e.key === "Enter") procesarLogin(); });
+  document.getElementById("btnCambiarNombre").addEventListener("click", () => {
+    if (localStorage.getItem(VOTE_KEY) || localStorage.getItem(RESCUE_KEY)) {
+      mostrarToast("Ya votaste. Solo el admin puede liberar tu nombre.", "error"); return;
+    }
+    mostrarLoginModal();
+  });
+
+  function actualizarHeaderUsuario() {
+    const badge = document.getElementById("userBadge");
+    const txt = document.getElementById("userBadgeText");
+    const lock = document.getElementById("userBadgeLock");
+    const btn = document.getElementById("btnCambiarNombre");
+    if (!usernameActual) { badge.style.display = "none"; return; }
+    badge.style.display = "inline-flex";
+    txt.innerHTML = `Votando como: <strong>${usernameOriginalActual}</strong>`;
+    const yaVoto = !!localStorage.getItem(VOTE_KEY) || !!localStorage.getItem(RESCUE_KEY);
+    lock.style.display = yaVoto ? "inline" : "none";
+    btn.style.display = yaVoto ? "none" : "inline-block";
   }
 
+  function iniciarListenerUsuario() {
+    if (!usernameActual) return;
+    onValue(ref(db, 'votantes/' + usernameActual), (snap) => {
+      if (snap.exists()) setVote(snap.val().personaje); else localStorage.removeItem(VOTE_KEY);
+      actualizarHeaderUsuario(); refrescarBotones();
+    });
+    onValue(ref(db, 'rescatadores/' + usernameActual), (snap) => {
+      if (snap.exists()) setRescue(snap.val().personaje); else localStorage.removeItem(RESCUE_KEY);
+      actualizarHeaderUsuario(); refrescarBotones(); renderCdPanel();
+    });
+  }
+
+  // ============================================================
+  // UTILIDADES
+  // ============================================================
+  function getVoterId() {
+    let id = localStorage.getItem(VOTER_ID_KEY);
+    if (!id) { id = "v" + Date.now() + "_" + Math.random().toString(36).slice(2,10); localStorage.setItem(VOTER_ID_KEY, id); }
+    return id;
+  }
   const params = new URLSearchParams(location.search);
   if (params.get("reset") === "1") {
-    localStorage.removeItem(VOTE_KEY);
-    localStorage.removeItem(RESCUE_KEY);
+    localStorage.removeItem(VOTE_KEY); localStorage.removeItem(RESCUE_KEY);
     params.delete("reset");
     const nuevaUrl = location.pathname + (params.toString() ? "?" + params.toString() : "") + location.hash;
     history.replaceState({}, "", nuevaUrl);
   }
-
   function getVote() { return localStorage.getItem(VOTE_KEY) || ""; }
   function setVote(n) { localStorage.setItem(VOTE_KEY, n); }
   function getRescue() { return localStorage.getItem(RESCUE_KEY) || ""; }
@@ -493,36 +652,25 @@ footer .firma{color:var(--accent);font-weight:700}
     else if (!window.matchMedia('(prefers-color-scheme: dark)').matches) document.body.classList.add("light");
   }
   aplicarTemaInicial();
-
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
     if (localStorage.getItem("axcend_theme")) return;
     document.body.classList.toggle("light", !e.matches);
   });
-
   window.toggleTheme = function() {
     document.body.classList.toggle("light");
     localStorage.setItem("axcend_theme", document.body.classList.contains("light") ? "light" : "dark");
   };
-
   window.filtrar = function() {
     var q = document.getElementById("filtro").value.toLowerCase();
     var visibles = 0;
     document.querySelectorAll("#grid .card").forEach(function(c) {
-      if (c.dataset.ocultaPorCd === "1") {
-        c.style.display = "none";
-        return;
-      }
+      if (c.dataset.ocultaPorCd === "1") { c.style.display = "none"; return; }
       var ok = c.dataset.name.includes(q);
       c.style.display = ok ? "" : "none";
       if (ok) visibles++;
     });
     document.getElementById("contador").textContent = visibles + " personaje" + (visibles !== 1 ? "s" : "");
   };
-
-  // ============================================================
-  // LIGHTBOX
-  // ============================================================
-
   function bindLightbox(img) {
     img.addEventListener("click", function() {
       document.getElementById("lb-img").src = this.src;
@@ -530,41 +678,36 @@ footer .firma{color:var(--accent);font-weight:700}
       document.getElementById("lightbox").classList.add("active");
     });
   }
-
   document.querySelectorAll(".card img").forEach(bindLightbox);
-
   window.cerrarLightbox = function() { document.getElementById("lightbox").classList.remove("active"); };
   document.addEventListener("keydown", function(e) { if (e.key === "Escape") cerrarLightbox(); });
 
-  // ============================================================
-  // ESTADO VOTACIÓN
-  // ============================================================
-
   function votacionCerrada() { return finVotacion > 0 && Date.now() >= finVotacion; }
-  function votacionFinalizada() { return votacionCerrada() || ganadorRescate !== ""; }
+  function votacionFinalizada() { return votacionCerrada() || ganadorRescate !== "" || ganadorFinal !== ""; }
+  function estaEnCd(nombre) { const cd = cooldowns[nombre]; return !!(cd && cd.activo && cd.hasta > Date.now()); }
 
-  function estaEnCd(nombre) {
-    const cd = cooldowns[nombre];
-    return !!(cd && cd.activo && cd.hasta > Date.now());
+  function calcularRankingLocal() {
+    return Object.entries(votosActuales).filter(([n]) => !estaEnCd(n))
+      .map(([n, v]) => ({ nombre: n, votos: v || 0 }))
+      .filter(x => x.votos > 0).sort((a, b) => b.votos - a.votos);
   }
-
-  // ============================================================
-  // OCULTAR / MOSTRAR CARDS SEGÚN CD
-  // ============================================================
+  function obtenerEmpateLocal() {
+    const r = calcularRankingLocal();
+    if (r.length < 2) return null;
+    const max = r[0].votos;
+    const emp = r.filter(x => x.votos === max);
+    if (emp.length < 2) return null;
+    return { empatados: emp, maxVotos: max };
+  }
 
   function aplicarVisibilidadGrid() {
     const q = (document.getElementById("filtro").value || "").toLowerCase();
     let visibles = 0;
     document.querySelectorAll("#grid .card").forEach(card => {
-      const btn = card.querySelector(".vote-btn");
-      if (!btn) return;
+      const btn = card.querySelector(".vote-btn"); if (!btn) return;
       const nombre = btn.dataset.vote;
-      const enCd = estaEnCd(nombre);
-
-      if (enCd) {
-        card.style.display = "none";
-        card.dataset.ocultaPorCd = "1";
-      } else {
+      if (estaEnCd(nombre)) { card.style.display = "none"; card.dataset.ocultaPorCd = "1"; }
+      else {
         delete card.dataset.ocultaPorCd;
         const coincide = card.dataset.name.includes(q);
         card.style.display = coincide ? "" : "none";
@@ -574,78 +717,43 @@ footer .firma{color:var(--accent);font-weight:700}
     document.getElementById("contador").textContent = visibles + " personaje" + (visibles !== 1 ? "s" : "");
   }
 
-  // ============================================================
-  // REFRESCAR BOTONES DE VOTO NORMAL
-  // ============================================================
-
   function refrescarBotones() {
-    const v = getVote();
-    const r = getRescue();
-    const finalizada = votacionFinalizada();
-
+    const v = getVote(); const r = getRescue(); const finalizada = votacionFinalizada(); const logueado = !!usernameActual;
     document.querySelectorAll("#grid .vote-btn").forEach(function(btn) {
       const nombre = btn.dataset.vote;
-      btn.classList.remove("voted", "disabled");
-      btn.disabled = false;
-
-      if (finalizada) {
-        btn.style.display = "none";
-        return;
-      }
+      btn.classList.remove("voted", "disabled"); btn.disabled = false;
+      if (finalizada) { btn.style.display = "none"; return; }
       btn.style.display = "";
-
-      if (r !== "") {
-        btn.classList.add("disabled");
-        btn.textContent = "Ya usaste tu voto en rescate";
-        btn.disabled = true;
-      } else if (v === nombre) {
-        btn.classList.add("voted"); btn.textContent = "Tu voto"; btn.disabled = true;
-      } else if (v !== "") {
-        btn.classList.add("disabled"); btn.textContent = "Ya votaste por otro"; btn.disabled = true;
-      } else {
-        btn.textContent = "Votar";
-      }
+      if (!logueado) { btn.classList.add("disabled"); btn.textContent = "Ingresa tu nombre"; btn.disabled = true; }
+      else if (r !== "") { btn.classList.add("disabled"); btn.textContent = "Ya usaste tu voto en rescate"; btn.disabled = true; }
+      else if (v === nombre) { btn.classList.add("voted"); btn.textContent = "✓ Tu voto"; btn.disabled = true; }
+      else if (v !== "") { btn.classList.add("disabled"); btn.textContent = "Ya votaste por otro"; btn.disabled = true; }
+      else { btn.textContent = "Votar"; }
     });
   }
 
-  // ============================================================
-  // PANEL CD + BOTONES DE RESCATE
-  // ============================================================
-
   function renderCdPanel() {
     const cdList = document.getElementById("cdList");
-    const r = getRescue();
-    const finalizada = votacionFinalizada();
-    const umbral = Math.ceil(totalMiembros / 2);
-
-    const activos = Object.entries(cooldowns)
-      .filter(([_, cd]) => cd && cd.activo && cd.hasta > Date.now())
+    const r = getRescue(); const finalizada = votacionFinalizada();
+    const umbral = Math.ceil(totalMiembros / 2); const logueado = !!usernameActual;
+    const activos = Object.entries(cooldowns).filter(([_, cd]) => cd && cd.activo && cd.hasta > Date.now())
       .sort((a, b) => (rescates[b[0]] || 0) - (rescates[a[0]] || 0));
-
-    if (activos.length === 0) {
-      cdList.innerHTML = '<div class="cd-empty">Nadie está en cuarentena.</div>';
-      return;
-    }
-
+    if (activos.length === 0) { cdList.innerHTML = '<div class="cd-empty">Nadie está en la Sala de Espera.</div>'; return; }
     cdList.innerHTML = "";
-
     activos.forEach(([nombre, cd]) => {
       const cardOriginal = [...document.querySelectorAll("#grid .card")].find(c => {
-        const b = c.querySelector(".vote-btn");
-        return b && b.dataset.vote === nombre;
+        const b = c.querySelector(".vote-btn"); return b && b.dataset.vote === nombre;
       });
       if (!cardOriginal) return;
-
       const imgSrc = cardOriginal.querySelector("img").src;
       const imgAlt = cardOriginal.querySelector("img").alt;
       const votosRescate = rescates[nombre] || 0;
       const pct = Math.min(100, Math.round((votosRescate / umbral) * 100));
       const dias = Math.max(0, Math.ceil((cd.hasta - Date.now()) / 86400000));
-
       const div = document.createElement("div");
-      div.className = "cd-card";
+      div.className = "cd-card"; div.dataset.cardName = nombre;
       div.innerHTML = `
-        <div class="cd-badge">EN CD · ${dias}d</div>
+        <div class="cd-badge">EN COOLDOWN · ${dias}d</div>
         <div class="img-wrap"><img src="${imgSrc}" alt="${imgAlt}" loading="lazy"></div>
         <div class="name">${nombre}</div>
         <div class="cd-time">⏳ ${dias} día${dias !== 1 ? "s" : ""} restantes</div>
@@ -657,157 +765,141 @@ footer .firma{color:var(--accent);font-weight:700}
       `;
       cdList.appendChild(div);
     });
-
     cdList.querySelectorAll("img").forEach(bindLightbox);
     cdList.querySelectorAll(".salvar-btn").forEach(btn => {
       const nombre = btn.dataset.salvar;
       const imgSrc = btn.closest(".cd-card").querySelector("img").src;
-      if (finalizada) {
-        btn.classList.add("disabled");
-        btn.textContent = "Votación finalizada";
-        btn.disabled = true;
-      } else if (r === nombre) {
-        btn.classList.add("voted");
-        btn.textContent = "✓ Tu rescate";
-        btn.disabled = true;
-      } else if (r !== "") {
-        btn.classList.add("disabled");
-        btn.textContent = "Ya usaste tu rescate";
-        btn.disabled = true;
-      } else if (getVote() !== "") {
-        btn.classList.add("disabled");
-        btn.textContent = "Ya usaste tu voto";
-        btn.disabled = true;
-      } else {
-        btn.addEventListener("click", () => abrirModalRescate(nombre, imgSrc));
-      }
+      if (finalizada) { btn.classList.add("disabled"); btn.textContent = "Votación finalizada"; btn.disabled = true; }
+      else if (!logueado) { btn.classList.add("disabled"); btn.textContent = "Ingresa tu nombre"; btn.disabled = true; }
+      else if (r === nombre) { btn.classList.add("voted"); btn.textContent = "✓ Tu rescate"; btn.disabled = true; }
+      else if (r !== "") { btn.classList.add("disabled"); btn.textContent = "Ya usaste tu rescate"; btn.disabled = true; }
+      else if (getVote() !== "") { btn.classList.add("disabled"); btn.textContent = "Ya usaste tu voto"; btn.disabled = true; }
+      else { btn.addEventListener("click", () => abrirModalRescate(nombre, imgSrc)); }
     });
   }
 
   // ============================================================
   // MODAL
   // ============================================================
-
   function abrirModal(nombre, imgSrc) {
-    accionModal = "votar";
-    votoPendiente = nombre;
+    accionModal = "votar"; votoPendiente = nombre;
     document.getElementById("modalImg").src = imgSrc;
     document.getElementById("modalName").textContent = nombre;
-    document.getElementById("modalText").textContent = "¿Confirmas tu voto? Solo se puede votar una vez. Si votas aquí, ya no podrás rescatar a nadie.";
+    document.getElementById("modalText").textContent = `¿Confirmas tu voto por "${nombre}"? Solo se puede votar una vez. Si votas aquí, ya no podrás rescatar a nadie.`;
     const btn = document.getElementById("modalConfirmBtn");
-    btn.textContent = "Sí, votar";
-    btn.className = "modal-btn modal-btn-confirm";
+    btn.textContent = "Sí, votar"; btn.className = "modal-btn modal-btn-confirm";
     document.querySelector(".modal-content").classList.remove("cd-modal");
     document.getElementById("modalConfirm").classList.add("active");
   }
-
   function abrirModalRescate(nombre, imgSrc) {
-    accionModal = "salvar";
-    rescatePendiente = nombre;
+    accionModal = "salvar"; rescatePendiente = nombre;
     document.getElementById("modalImg").src = imgSrc;
     document.getElementById("modalName").textContent = nombre;
-    document.getElementById("modalText").textContent = "¿Usar tu voto de rescate aquí? Si ya votaste por alguien activo, perderás ese voto al rescatar.";
+    document.getElementById("modalText").textContent = `¿Usar tu voto de rescate en "${nombre}"? Si ya votaste por un activo, perderás ese voto al rescatar.`;
     const btn = document.getElementById("modalConfirmBtn");
-    btn.textContent = "🔥 Sí, rescatar";
-    btn.className = "modal-btn modal-btn-cd";
+    btn.textContent = "🔥 Sí, rescatar"; btn.className = "modal-btn modal-btn-cd";
     document.querySelector(".modal-content").classList.add("cd-modal");
     document.getElementById("modalConfirm").classList.add("active");
   }
-
   window.cerrarModal = function() {
     document.getElementById("modalConfirm").classList.remove("active");
-    votoPendiente = "";
-    rescatePendiente = "";
+    votoPendiente = ""; rescatePendiente = "";
+  };
+  window.confirmarVoto = function() {
+    if (accionModal === "salvar") { const n = rescatePendiente; cerrarModal(); if (n) ejecutarRescate(n); }
+    else { const n = votoPendiente; cerrarModal(); if (n) ejecutarVoto(n); }
   };
 
-  window.confirmarVoto = function() {
-    if (accionModal === "salvar") {
-      const nombre = rescatePendiente;
-      cerrarModal();
-      if (nombre) ejecutarRescate(nombre);
+  // ============================================================
+  // ANIMACIÓN AL VOTAR
+  // ============================================================
+  function animarVotoEnCard(nombre, esRescate) {
+    let card = null;
+    if (esRescate) {
+      card = [...document.querySelectorAll(".cd-card")].find(c => c.dataset.cardName === nombre);
     } else {
-      const nombre = votoPendiente;
-      cerrarModal();
-      if (nombre) ejecutarVoto(nombre);
+      card = [...document.querySelectorAll("#grid .card")].find(c => {
+        const b = c.querySelector(".vote-btn"); return b && b.dataset.vote === nombre;
+      });
     }
-  };
+    if (!card) return;
+    card.classList.add(esRescate ? "vote-pop-rescue" : "vote-pop");
+    setTimeout(() => card.classList.remove("vote-pop", "vote-pop-rescue"), 900);
+  }
 
   // ============================================================
   // VOTO NORMAL
   // ============================================================
-
-  function ejecutarVoto(nombre) {
-    if (getRescue() !== "") {
-      mostrarToast("Ya usaste tu voto en rescate. No puedes votar por activos.", "error");
-      return;
-    }
-    if (estaEnCd(nombre)) {
-      mostrarToast("Ese personaje está en CD. Solo puedes rescatarlo.", "error");
-      return;
-    }
-
-    const votoRef = ref(db, 'votos/' + nombre);
+  async function ejecutarVoto(nombre) {
+    if (!usernameActual) { mostrarLoginModal(); return; }
+    if (getRescue() !== "") { mostrarToast("Ya usaste tu voto en rescate.", "error"); return; }
+    if (estaEnCd(nombre)) { mostrarToast("Ese personaje está en la Sala de Espera.", "error"); return; }
     const voterId = getVoterId();
-    runTransaction(votoRef, (v) => (v || 0) + 1).then(() => {
-      set(ref(db, 'votantes/' + voterId), nombre);
+    try {
+      const txResult = await runTransaction(ref(db, 'votantes/' + usernameActual), (current) => {
+        if (current) return;
+        return { personaje: nombre, nombreOriginal: usernameOriginalActual, fecha: Date.now(), voterId };
+      });
+      if (!txResult.committed) { mostrarToast("Este nombre ya votó. Recarga la página.", "error"); return; }
+      await runTransaction(ref(db, 'votos/' + nombre), (v) => (v || 0) + 1);
       setVote(nombre);
-      refrescarBotones();
-      renderCdPanel();
-      setTimeout(() => mostrarToast("¡Voto registrado con éxito!", "success"), 300);
-    }).catch((error) => {
-      console.error("Error al votar: ", error);
-      mostrarToast("Hubo un error al registrar tu voto. Inténtalo de nuevo.", "error");
-    });
+      refrescarBotones(); renderCdPanel(); actualizarHeaderUsuario();
+      animarVotoEnCard(nombre, false);
+      agregarLog('voto', 'voto_normal', `🗳 ${usernameOriginalActual} votó por "${nombre}"`,
+        { personaje: nombre, username: usernameActual, usernameOriginal: usernameOriginalActual, voterId });
+      mostrarToast("¡Voto registrado con éxito!", "success");
+    } catch (error) {
+      console.error("Error al votar:", error);
+      mostrarToast("Hubo un error al registrar tu voto.", "error");
+    }
   }
 
   // ============================================================
   // RESCATE
   // ============================================================
-
-  function ejecutarRescate(nombre) {
-    if (getVote() !== "") {
-      mostrarToast("Ya votaste por un activo. No puedes rescatar.", "error");
-      return;
-    }
-    if (!estaEnCd(nombre)) {
-      mostrarToast("Ese personaje ya no está en CD.", "error");
-      return;
-    }
-    if (getRescue() !== "") {
-      mostrarToast("Ya usaste tu voto de rescate.", "error");
-      return;
-    }
-
-    const rescateRef = ref(db, 'rescates/' + nombre);
-    const voterId = getVoterId();
-    const umbral = Math.ceil(totalMiembros / 2);
-
-    runTransaction(rescateRef, (v) => (v || 0) + 1).then((result) => {
-      const nuevos = result.snapshot.val() || 0;
-      set(ref(db, 'rescatadores/' + voterId), nombre);
+  async function ejecutarRescate(nombre) {
+    if (!usernameActual) { mostrarLoginModal(); return; }
+    if (getVote() !== "") { mostrarToast("Ya votaste por un activo. No puedes rescatar.", "error"); return; }
+    if (!estaEnCd(nombre)) { mostrarToast("Ese personaje ya no está en cooldown.", "error"); return; }
+    if (getRescue() !== "") { mostrarToast("Ya usaste tu voto de rescate.", "error"); return; }
+    const voterId = getVoterId(); const umbral = Math.ceil(totalMiembros / 2);
+    try {
+      const txResult = await runTransaction(ref(db, 'rescatadores/' + usernameActual), (current) => {
+        if (current) return;
+        return { personaje: nombre, nombreOriginal: usernameOriginalActual, fecha: Date.now(), voterId };
+      });
+      if (!txResult.committed) { mostrarToast("Este nombre ya usó su rescate.", "error"); return; }
+      const resTx = await runTransaction(ref(db, 'rescates/' + nombre), (v) => (v || 0) + 1);
+      const nuevos = resTx.snapshot.val() || 0;
       setRescue(nombre);
-      refrescarBotones();
-      renderCdPanel();
+      refrescarBotones(); renderCdPanel(); actualizarHeaderUsuario();
+      animarVotoEnCard(nombre, true);
+      agregarLog('rescate', 'voto_rescate',
+        `🔥 ${usernameOriginalActual} rescató a "${nombre}" (${nuevos}/${umbral})`,
+        { personaje: nombre, votosRescate: nuevos, umbral, username: usernameActual, usernameOriginal: usernameOriginalActual, voterId });
       setTimeout(() => mostrarToast("¡Rescate registrado! Ahora espera a que el clan apoye.", "rescue"), 300);
-
       if (nuevos >= umbral) {
         set(ref(db, 'config/ganador_rescate'), nombre);
         set(ref(db, 'config/fin_votacion'), Date.now() - 1);
-        setTimeout(() => mostrarToast(`🔥 ¡${nombre} ha sido SALVADO y es el GANADOR!`, "rescue"), 1500);
+        agregarLog('rescate', 'rescate_exitoso',
+          `🔥 "${nombre}" alcanzó ${nuevos}/${umbral} rescates y es el GANADOR`,
+          { personaje: nombre, votosRescate: nuevos, umbral });
+        setTimeout(() => { mostrarToast(`🔥 ¡${nombre} ha sido SALVADO y es el GANADOR!`, "rescue"); dispararConfeti(); }, 1500);
       }
-    }).catch((error) => {
-      console.error("Error al rescatar: ", error);
-      mostrarToast("Hubo un error al registrar tu rescate. Inténtalo de nuevo.", "error");
-    });
+    } catch (error) {
+      console.error("Error al rescatar:", error);
+      mostrarToast("Hubo un error al registrar tu rescate.", "error");
+    }
   }
 
   document.querySelectorAll("#grid .vote-btn").forEach(function(btn) {
     btn.addEventListener("click", function() {
+      if (!usernameActual) { mostrarLoginModal(); return; }
       if (votacionFinalizada()) { mostrarToast("La votación ya está cerrada.", "error"); return; }
       if (getRescue() !== "") { mostrarToast("Ya usaste tu voto en rescate.", "error"); return; }
       if (getVote() !== "") return;
       const nombre = btn.dataset.vote;
-      if (estaEnCd(nombre)) { mostrarToast("Ese personaje está en CD.", "error"); return; }
+      if (estaEnCd(nombre)) { mostrarToast("Ese personaje está en cooldown.", "error"); return; }
       const img = btn.parentElement.querySelector("img").src;
       abrirModal(nombre, img);
     });
@@ -816,44 +908,37 @@ footer .firma{color:var(--accent);font-weight:700}
   // ============================================================
   // COUNTDOWN
   // ============================================================
-
   function formatearTiempo(ms) {
-    const d = Math.floor(ms / 86400000);
-    const h = Math.floor((ms % 86400000) / 3600000);
-    const m = Math.floor((ms % 3600000) / 60000);
-    const s = Math.floor((ms % 60000) / 1000);
+    const d = Math.floor(ms / 86400000); const h = Math.floor((ms % 86400000) / 3600000);
+    const m = Math.floor((ms % 3600000) / 60000); const s = Math.floor((ms % 60000) / 1000);
     return `${String(d).padStart(2,'0')}d ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;
   }
-
   function actualizarCountdown() {
     const el = document.getElementById('countdown');
-
     if (ganadorRescate) {
       el.textContent = `🔥 ${ganadorRescate} ha sido SALVADO y es el ganador`;
-      el.classList.add('cerrada');
-      document.title = "🔥 Ganador por rescate";
-      return;
+      el.classList.add('cerrada'); el.classList.remove('empate');
+      document.title = "🔥 Ganador por rescate"; return;
     }
-
+    if (ganadorFinal) {
+      el.textContent = ganadorMetodo === 'rng' ? `🎲 Ganador por dados: ${ganadorFinal}` : `🏆 Ganador: ${ganadorFinal}`;
+      el.classList.add('cerrada'); el.classList.remove('empate');
+      document.title = "🏆 Ganador: " + ganadorFinal; return;
+    }
     if (!finVotacion) {
-      el.textContent = 'Sin fecha límite';
-      el.classList.remove('cerrada');
-      document.title = "AXCEND - LATAM -";
-      return;
+      el.textContent = 'Sin fecha límite'; el.classList.remove('cerrada', 'empate');
+      document.title = "AXCEND - LATAM -"; return;
     }
     const restante = finVotacion - Date.now();
     if (restante <= 0) {
-      el.textContent = '⛔ Votación cerrada — Resultados finales';
-      el.classList.add('cerrada');
+      el.textContent = '⛔ Votación cerrada';
+      el.classList.add('cerrada'); el.classList.remove('empate');
       document.title = "⛔ Votación cerrada";
-      if (!resultadosMostrados) {
-        resultadosMostrados = true;
-        mostrarVotosEnCartas();
-      }
+      if (!resultadosMostrados) { resultadosMostrados = true; mostrarVotosEnCartas(); }
     } else {
       const txt = formatearTiempo(restante);
       el.textContent = '⏳ Cierra en: ' + txt;
-      el.classList.remove('cerrada');
+      el.classList.remove('cerrada', 'empate');
       document.title = `⏳ ${txt} restante para tu voto!`;
     }
   }
@@ -861,7 +946,6 @@ footer .firma{color:var(--accent);font-weight:700}
   // ============================================================
   // CONFIG
   // ============================================================
-
   function cargarConfig() {
     onValue(ref(db, 'config'), (snapshot) => {
       if (snapshot.exists()) {
@@ -870,55 +954,58 @@ footer .firma{color:var(--accent);font-weight:700}
         mostrarResultados = cfg.mostrar_resultados || false;
         totalMiembros = cfg.total_miembros || 41;
         ganadorRescate = cfg.ganador_rescate || "";
+        ganadorFinal = cfg.ganador_final || "";
+        ganadorMetodo = cfg.ganador_metodo || "";
+        rngTriggerAt = cfg.rng_trigger_at || 0;
         const nuevoToken = cfg.reset_token || "";
-
         const msgEl = document.getElementById('mensaje');
         if (cfg.mensaje && cfg.mensaje.trim() !== "") {
-          msgEl.textContent = cfg.mensaje;
-          msgEl.classList.add('visible');
-        } else {
-          msgEl.classList.remove('visible');
-        }
-
+          msgEl.textContent = cfg.mensaje; msgEl.classList.add('visible');
+        } else msgEl.classList.remove('visible');
         document.getElementById('votantes').dataset.total = totalMiembros;
         actualizarContadorVotantes();
-
         if (resetToken !== "" && nuevoToken !== resetToken) {
-          localStorage.removeItem(VOTE_KEY);
-          localStorage.removeItem(RESCUE_KEY);
+          localStorage.removeItem(VOTE_KEY); localStorage.removeItem(RESCUE_KEY);
           resultadosMostrados = false;
           mostrarToast("La votación ha sido reiniciada. Puedes votar de nuevo.", "success");
         }
         resetToken = nuevoToken;
-
         const cerrada = votacionCerrada();
-        if ((mostrarResultados || cerrada || ganadorRescate) && !resultadosMostrados) {
-          resultadosMostrados = true;
-          mostrarVotosEnCartas();
+        if ((mostrarResultados || cerrada || ganadorRescate || ganadorFinal) && !resultadosMostrados) {
+          resultadosMostrados = true; mostrarVotosEnCartas();
         }
       }
-      actualizarCountdown();
-      refrescarBotones();
-      aplicarVisibilidadGrid();
-      renderCdPanel();
+      actualizarCountdown(); refrescarBotones(); aplicarVisibilidadGrid(); renderCdPanel();
+      actualizarAvisoEmpate(); verificarAutoRng();
     });
 
     onValue(ref(db, 'cooldowns'), (snap) => {
       cooldowns = snap.val() || {};
-      aplicarVisibilidadGrid();
-      renderCdPanel();
+      aplicarVisibilidadGrid(); renderCdPanel(); actualizarAvisoEmpate(); verificarAutoRng();
     });
-
     onValue(ref(db, 'rescates'), (snap) => {
-      rescates = snap.val() || {};
-      renderCdPanel();
+      rescates = snap.val() || {}; renderCdPanel();
+    });
+    onValue(ref(db, 'votos'), (snap) => {
+      votosActuales = snap.val() || {};
+      actualizarAvisoEmpate(); verificarAutoRng();
+    });
+    onValue(ref(db, 'config/rng_resultado'), (snap) => {
+      if (snap.exists()) {
+        rngResultado = snap.val();
+        ocultarBannerEmpate();
+        const key = (rngResultado.fecha || 0) + "_" + rngResultado.ganador;
+        if (key !== rngAnimacionMostradaKey && (Date.now() - (rngResultado.fecha || 0)) < 40000) {
+          rngAnimacionMostradaKey = key;
+          animarDados(rngResultado);
+        }
+      }
     });
 
     setInterval(() => {
-      aplicarVisibilidadGrid();
-      renderCdPanel();
-      actualizarCountdown();
-    }, 60000);
+      aplicarVisibilidadGrid(); renderCdPanel(); actualizarCountdown();
+      actualizarAvisoEmpate(); verificarAutoRng();
+    }, 2000);
   }
 
   function actualizarContadorVotantes() {
@@ -931,86 +1018,293 @@ footer .firma{color:var(--accent);font-weight:700}
   }
 
   // ============================================================
+  // BANNER EMPATE / AUTO RNG
+  // ============================================================
+  function actualizarAvisoEmpate() {
+    const el = document.getElementById('empateAviso');
+    if (ganadorRescate || ganadorFinal || !votacionCerrada() || rngResultado) {
+      ocultarBannerEmpate(); return;
+    }
+    const emp = obtenerEmpateLocal();
+    if (!emp) { ocultarBannerEmpate(); return; }
+    if (rngTriggerAt > 0) {
+      const restante = Math.max(0, rngTriggerAt - Date.now());
+      const seg = Math.ceil(restante / 1000);
+      const mm = String(Math.floor(seg / 60)).padStart(2, '0');
+      const ss = String(seg % 60).padStart(2, '0');
+      const nombres = emp.empatados.map(x => `<strong>${x.nombre}</strong>`).join(' · ');
+      el.innerHTML = `
+        ⚖️ <strong>¡EMPATE DETECTADO!</strong><br>
+        <span style="font-size:13px">${nombres} están igualados con <strong>${emp.maxVotos}</strong> votos cada uno.</span><br>
+        <span style="font-size:13px;display:block;margin-top:8px">🎲 El ganador se decidirá por <strong>lanzamiento de dados</strong>.<br>¡No te lo pierdas!</span>
+        <div class="emp-countdown" id="empCountdown">${mm}:${ss}</div>
+        <div class="emp-note">Desempate automático en vivo para todo el clan</div>
+      `;
+      el.classList.add('visible');
+    } else {
+      const nombres = emp.empatados.map(x => `<strong>${x.nombre}</strong>`).join(' · ');
+      el.innerHTML = `
+        ⚖️ <strong>¡EMPATE DETECTADO!</strong><br>
+        <span style="font-size:13px">${nombres} con <strong>${emp.maxVotos}</strong> votos cada uno.</span><br>
+        <span style="font-size:13px;display:block;margin-top:8px">🎲 Programando desempate por dados...</span>
+      `;
+      el.classList.add('visible');
+    }
+  }
+  function ocultarBannerEmpate() {
+    document.getElementById('empateAviso').classList.remove('visible');
+  }
+
+  async function verificarAutoRng() {
+    if (!votacionCerrada()) return;
+    if (ganadorRescate || ganadorFinal) return;
+    if (rngResultado) return;
+    const emp = obtenerEmpateLocal();
+    if (!emp) return;
+    if (rngTriggerAt > 0) return;
+
+    try {
+      const tx = await runTransaction(ref(db, 'config/rng_trigger_at'), (current) => {
+        if (current && current > 0) return;
+        return Date.now() + 60000;
+      });
+      if (tx.committed) {
+        agregarLog('rng', 'programado',
+          `⏱ Desempate programado automáticamente (+60s) — Empate: ${emp.empatados.map(e => e.nombre).join(', ')}`,
+          { empatados: emp.empatados.map(e => e.nombre), maxVotos: emp.maxVotos, triggerAt: tx.snapshot.val() });
+        mostrarToast("⚖️ Empate detectado. Desempate por dados en 60 segundos.", "dice");
+      }
+    } catch (e) { /* otro cliente se encargó */ }
+  }
+
+  async function ejecutarRollRng() {
+    const emp = obtenerEmpateLocal();
+    if (!emp) { rngYaIntentado = false; return; }
+
+    const rondas = [];
+    let candidatos = emp.empatados.map(e => e.nombre);
+    let rondaNum = 0;
+    let ganador = null;
+
+    while (candidatos.length > 1 && rondaNum < 10) {
+      rondaNum++;
+      const tiradas = {};
+      candidatos.forEach(c => tiradas[c] = 1 + Math.floor(Math.random() * 6));
+      rondas.push({ ronda: rondaNum, candidatos: [...candidatos], tiradas });
+      const maxRoll = Math.max(...Object.values(tiradas));
+      const nuevosCandidatos = candidatos.filter(c => tiradas[c] === maxRoll);
+      if (nuevosCandidatos.length === candidatos.length) break;
+      candidatos = nuevosCandidatos;
+    }
+    ganador = candidatos[0] || emp.empatados[0].nombre;
+
+    const resultado = {
+      rondas, ganador,
+      empate: emp.empatados.map(e => e.nombre),
+      votosMax: emp.maxVotos,
+      fecha: Date.now(),
+      totalRondas: rondaNum
+    };
+
+    try {
+      const tx = await runTransaction(ref(db, 'config/rng_resultado'), (current) => {
+        if (current) return;
+        return resultado;
+      });
+      if (tx.committed) {
+        await set(ref(db, 'config/ganador_final'), ganador);
+        await set(ref(db, 'config/ganador_metodo'), 'rng');
+        await agregarLog('rng', 'resuelto',
+          `🎲 Desempate por dados: ganador "${ganador}" tras ${rondaNum} ronda(s)`,
+          { rondas, ganador, empatados: emp.empatados.map(e => e.nombre), votosMax: emp.maxVotos });
+        if (!votacionCerrada()) await set(ref(db, 'config/fin_votacion'), Date.now() - 1);
+      } else {
+        rngYaIntentado = false;
+      }
+    } catch (e) {
+      console.error("Error al ejecutar RNG:", e);
+      rngYaIntentado = false;
+    }
+  }
+
+  setInterval(() => {
+    if (rngResultado) return;
+    if (ganadorRescate || ganadorFinal) return;
+    if (!votacionCerrada()) return;
+    if (!rngTriggerAt || rngTriggerAt === 0) return;
+    if (Date.now() < rngTriggerAt) return;
+    if (rngYaIntentado) return;
+    const emp = obtenerEmpateLocal();
+    if (!emp) return;
+    rngYaIntentado = true;
+    ejecutarRollRng();
+  }, 1000);
+
+  // ============================================================
+  // ANIMACIÓN DE DADOS
+  // ============================================================
+  async function animarDados(resultado) {
+    if (rngAnimacionEnCurso) return;
+    rngAnimacionEnCurso = true;
+
+    const overlay = document.getElementById('diceOverlay');
+    const grid = document.getElementById('diceGrid');
+    const roundInfo = document.getElementById('diceRoundInfo');
+    const status = document.getElementById('diceStatus');
+
+    overlay.classList.add('active');
+    status.className = "dice-status";
+
+    const totalRondas = resultado.rondas.length;
+
+    for (let i = 0; i < totalRondas; i++) {
+      const ronda = resultado.rondas[i];
+      roundInfo.textContent = `Ronda ${ronda.ronda} / ${totalRondas}`;
+      status.textContent = `Tirando dados...`;
+      status.className = "dice-status";
+      grid.innerHTML = '';
+
+      const diceElements = {};
+      ronda.candidatos.forEach(c => {
+        const die = document.createElement('div');
+        die.className = 'dice-die rolling';
+        die.innerHTML = `<div class="die-name">${c}</div><div class="die-face">?</div>`;
+        grid.appendChild(die);
+        diceElements[c] = die;
+      });
+
+      const rollDuration = 1800;
+      const startTime = Date.now();
+      await new Promise(resolve => {
+        const interval = setInterval(() => {
+          if (Date.now() - startTime >= rollDuration) { clearInterval(interval); resolve(); return; }
+          Object.values(diceElements).forEach(die => {
+            die.querySelector('.die-face').textContent = 1 + Math.floor(Math.random() * 6);
+          });
+        }, 70);
+      });
+
+      ronda.candidatos.forEach(c => {
+        diceElements[c].classList.remove('rolling');
+        diceElements[c].querySelector('.die-face').textContent = ronda.tiradas[c];
+      });
+
+      const maxRoll = Math.max(...Object.values(ronda.tiradas));
+      const winnersThisRound = ronda.candidatos.filter(c => ronda.tiradas[c] === maxRoll);
+      const losers = ronda.candidatos.filter(c => ronda.tiradas[c] !== maxRoll);
+
+      losers.forEach(c => diceElements[c].classList.add('eliminated'));
+      winnersThisRound.forEach(c => diceElements[c].classList.add('winner'));
+
+      if (winnersThisRound.length === 1) {
+        status.textContent = `🏆 ¡${winnersThisRound[0]} gana la ronda!`;
+      } else {
+        status.textContent = `Empate en tirada: ${winnersThisRound.join(', ')}. Nueva ronda...`;
+      }
+
+      await new Promise(r => setTimeout(r, winnersThisRound.length === 1 ? 1700 : 1200));
+    }
+
+    roundInfo.textContent = `🎲 RESULTADO FINAL 🎲`;
+    status.className = "dice-status winner-text";
+    status.innerHTML = `🏆 ¡Ganador: ${resultado.ganador}! 🏆`;
+    dispararConfeti();
+
+    await new Promise(r => setTimeout(r, 3500));
+    overlay.classList.remove('active');
+    rngAnimacionEnCurso = false;
+  }
+
+  // ============================================================
   // RESULTADOS Y GANADOR
   // ============================================================
-
   function mostrarVotosEnCartas() {
     if (votosListenerActivo) return;
     votosListenerActivo = true;
     onValue(ref(db, 'votos'), (snapshot) => {
       votosActuales = snapshot.val() || {};
       document.querySelectorAll('#grid .card').forEach(card => {
-        const btn = card.querySelector('.vote-btn');
-        if (!btn) return;
+        const btn = card.querySelector('.vote-btn'); if (!btn) return;
         const nombre = btn.dataset.vote;
         const cantidad = votosActuales[nombre] || 0;
         let badge = card.querySelector('.votos-badge');
-        if (!badge) {
-          badge = document.createElement('div');
-          badge.className = 'votos-badge';
-          card.insertBefore(badge, btn);
-        }
+        if (!badge) { badge = document.createElement('div'); badge.className = 'votos-badge'; card.insertBefore(badge, btn); }
         badge.textContent = '🗳 ' + cantidad + ' voto' + (cantidad !== 1 ? 's' : '');
       });
-      aplicarRanking();
+      aplicarRanking(); actualizarAvisoEmpate();
     });
     onValue(ref(db, 'votantes'), () => actualizarContadorVotantes());
+  }
+
+  function construirWinnerCard(card, variante, badgeTexto) {
+    const clone = card.cloneNode(true);
+    clone.className = "winner-card" + (variante ? " " + variante : "");
+    if (badgeTexto) {
+      const badge = document.createElement("div");
+      badge.className = "votos-badge"; badge.textContent = badgeTexto; clone.appendChild(badge);
+    }
+    clone.querySelector("img").addEventListener("click", function() {
+      document.getElementById("lb-img").src = this.src;
+      document.getElementById("lb-name").textContent = this.alt;
+      document.getElementById("lightbox").classList.add("active");
+    });
+    return clone;
+  }
+  function encontrarCardPorNombre(cards, nombre) {
+    return cards.find(c => { const b = c.querySelector('.vote-btn'); return b && b.dataset.vote === nombre; });
   }
 
   function aplicarRanking() {
     const grid = document.getElementById("grid");
     const winnerContainer = document.getElementById("winnerContainer");
     const cards = Array.from(grid.querySelectorAll(".card"));
-
     cards.forEach(c => c.classList.remove("winner"));
     winnerContainer.innerHTML = "";
     winnerContainer.classList.remove("visible");
 
     if (ganadorRescate) {
-      const ganadorCard = cards.find(c => {
-        const b = c.querySelector('.vote-btn');
-        return b && b.dataset.vote === ganadorRescate;
-      });
-      if (ganadorCard) {
-        const clone = ganadorCard.cloneNode(true);
-        clone.className = "winner-card rescue-winner";
+      const card = encontrarCardPorNombre(cards, ganadorRescate);
+      if (card) {
         const umbral = Math.ceil(totalMiembros / 2);
-        const rescatesGanador = rescates[ganadorRescate] || 0;
-        const badge = document.createElement("div");
-        badge.className = "votos-badge";
-        badge.textContent = `🔥 ${rescatesGanador} / ${umbral} rescates`;
-        clone.appendChild(badge);
-
-        winnerContainer.appendChild(clone);
-        winnerContainer.classList.add("visible");
-        clone.querySelector("img").addEventListener("click", function() {
-          document.getElementById("lb-img").src = this.src;
-          document.getElementById("lb-name").textContent = this.alt;
-          document.getElementById("lightbox").classList.add("active");
-        });
+        const r = rescates[ganadorRescate] || 0;
+        const clone = construirWinnerCard(card, "rescue-winner", `🔥 ${r} / ${umbral} rescates`);
+        winnerContainer.appendChild(clone); winnerContainer.classList.add("visible");
+        if (!sessionStorage.getItem('confetti_rescate')) {
+          sessionStorage.setItem('confetti_rescate', '1');
+          setTimeout(dispararConfeti, 500);
+        }
       }
       return;
     }
-
+    if (ganadorFinal) {
+      const card = encontrarCardPorNombre(cards, ganadorFinal);
+      if (card) {
+        const votos = votosActuales[ganadorFinal] || 0;
+        const variante = ganadorMetodo === 'rng' ? "rng-winner" : "";
+        const badge = ganadorMetodo === 'rng'
+          ? `🎲 ${votos} voto${votos !== 1 ? 's' : ''} (resuelto por dados)`
+          : `🗳 ${votos} voto${votos !== 1 ? 's' : ''}`;
+        const clone = construirWinnerCard(card, variante, badge);
+        winnerContainer.appendChild(clone); winnerContainer.classList.add("visible");
+      }
+      return;
+    }
     const cerrada = votacionCerrada();
     if (cerrada && cards.length > 0) {
-      cards.sort((a, b) => {
-        const vA = votosActuales[a.querySelector('.vote-btn').dataset.vote] || 0;
-        const vB = votosActuales[b.querySelector('.vote-btn').dataset.vote] || 0;
-        return vB - vA;
-      });
-      const topCard = cards[0];
-      const topVotos = votosActuales[topCard.querySelector('.vote-btn').dataset.vote] || 0;
-      if (topVotos > 0) {
-        const winnerClone = topCard.cloneNode(true);
-        winnerClone.className = "winner-card";
-        winnerContainer.appendChild(winnerClone);
-        winnerContainer.classList.add("visible");
-        winnerClone.querySelector("img").addEventListener("click", function() {
-          document.getElementById("lb-img").src = this.src;
-          document.getElementById("lb-name").textContent = this.alt;
-          document.getElementById("lightbox").classList.add("active");
-        });
+      const emp = obtenerEmpateLocal();
+      if (emp) return;
+      const ranking = calcularRankingLocal();
+      if (ranking.length > 0) {
+        const top = ranking[0];
+        const card = encontrarCardPorNombre(cards, top.nombre);
+        if (card) {
+          const clone = construirWinnerCard(card, "", `🗳 ${top.votos} voto${top.votos !== 1 ? 's' : ''}`);
+          winnerContainer.appendChild(clone); winnerContainer.classList.add("visible");
+          if (!sessionStorage.getItem('confetti_ganador')) {
+            sessionStorage.setItem('confetti_ganador', '1');
+            setTimeout(dispararConfeti, 500);
+          }
+        }
       }
       cards.forEach(c => grid.appendChild(c));
     }
@@ -1019,7 +1313,6 @@ footer .firma{color:var(--accent);font-weight:700}
   // ============================================================
   // ATAJO ADMIN
   // ============================================================
-
   const ADMIN_CODE = "2552321";
   let adminKeyBuffer = "";
   document.addEventListener("keydown", function(e) {
@@ -1027,15 +1320,16 @@ footer .firma{color:var(--accent);font-weight:700}
     if (e.key.length !== 1) return;
     adminKeyBuffer += e.key.toLowerCase();
     if (adminKeyBuffer.length > 20) adminKeyBuffer = adminKeyBuffer.slice(-20);
-    if (adminKeyBuffer.endsWith(ADMIN_CODE)) {
-      adminKeyBuffer = "";
-      window.open("admin.html", "_blank");
-    }
+    if (adminKeyBuffer.endsWith(ADMIN_CODE)) { adminKeyBuffer = ""; window.open("admin.html", "_blank"); }
   });
 
   // ============================================================
   // INIT
   // ============================================================
+  usernameActual = getUsername();
+  usernameOriginalActual = getUsernameOriginal();
+  if (!usernameActual) mostrarLoginModal();
+  else { iniciarListenerUsuario(); actualizarHeaderUsuario(); }
 
   cargarConfig();
   refrescarBotones();
