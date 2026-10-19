@@ -11,6 +11,7 @@
 <link rel="icon" href="./favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="./favicon.png">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="manifest" href="./manifest.json">
 
 <style>
 :root{--bg:#0f1020;--card:#1a1c30;--text:#eee;--accent:#f5c542;--sub:#9aa0b5;--border:#2a2d45}
@@ -27,7 +28,7 @@ body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:v
 #login button{padding:14px;border-radius:10px;border:none;background:var(--accent);color:#1a1c30;font-weight:700;font-size:15px;cursor:pointer;transition:.2s}
 #login button:hover{filter:brightness(1.1)}
 #loginMsg{color:#ff5c5c;font-size:13px;min-height:18px}
-#admin{display:none;width:100%;max-width:700px}
+#admin{display:none;width:100%;max-width:760px}
 #admin.visible{display:block}
 .panel{background:var(--card);border:2px solid var(--accent);border-radius:16px;padding:24px;max-height:92vh;overflow-y:auto}
 .panel h2{margin:0 0 8px;color:var(--accent);text-align:center;font-size:22px}
@@ -43,12 +44,15 @@ body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:v
 .btn-danger:hover{background:#3a1a1a}
 .btn-warn{border-color:#ff9800;color:#ff9800}
 .btn-warn:hover{background:#3a2410}
+.btn-purple{border-color:#a855f7;color:#a855f7}
+.btn-purple:hover{background:#2a1a3a}
 label{display:block;font-size:13px;color:var(--sub);margin:10px 0 6px}
 input[type="text"],input[type="number"],input[type="datetime-local"]{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;margin-bottom:8px;outline:none;color-scheme:dark;font-family:inherit}
 body.light input{color-scheme:light}
 input:focus{border-color:var(--accent)}
 .status-ok{color:#4CAF50}
 .status-no{color:#ff5c5c}
+.status-purple{color:#a855f7}
 .cd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:8px}
 .cd-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;transition:.2s;user-select:none}
 .cd-item:hover{border-color:var(--accent)}
@@ -57,6 +61,57 @@ input:focus{border-color:var(--accent)}
 .cd-item .nombre{flex:1;word-break:break-word}
 .cd-item .tag{font-size:10px;color:#ff9800;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
 .rescate-info{font-size:12px;color:var(--sub);margin-top:8px;padding:8px;background:var(--bg);border-radius:6px;border-left:3px solid #ff9800}
+
+/* --- SECCIÓN VOTANTES / RESCATADORES --- */
+.personas-list{max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg);padding:6px}
+.persona-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:var(--card);border-left:3px solid var(--accent);border-radius:6px;padding:9px 11px;margin-bottom:6px;font-size:13px}
+.persona-item.rescate-item{border-left-color:#ff9800}
+.persona-item:last-child{margin-bottom:0}
+.persona-item .p-info{display:flex;flex-direction:column;gap:3px;min-width:0}
+.persona-item .p-name{font-weight:700;color:var(--text);word-break:break-word;font-size:13px}
+.persona-item .p-name .p-meta{font-weight:400;color:var(--sub);font-size:11px;margin-left:6px}
+.persona-item .p-vote{font-size:12px;color:var(--sub)}
+.persona-item .p-vote b{color:var(--accent)}
+.persona-item.rescate-item .p-vote b{color:#ff9800}
+.persona-item .p-fecha{font-size:10px;color:var(--sub);font-variant-numeric:tabular-nums;opacity:.75}
+.persona-item .p-del{background:transparent;border:1px solid #ff5c5c;color:#ff5c5c;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:11px;font-family:inherit;font-weight:700;transition:.2s;white-space:nowrap}
+.persona-item .p-del:hover{background:#3a1a1a}
+.personas-empty{font-size:12px;color:var(--sub);text-align:center;padding:20px 10px;font-style:italic}
+.personas-counter{font-size:12px;color:var(--sub);text-align:center;margin-top:6px;font-weight:600}
+.personas-counter b{color:var(--accent)}
+
+/* --- SECCIÓN EMPATE --- */
+#sectionEmpate{border:2px solid #a855f7;border-radius:12px;padding:16px;background:rgba(168,85,247,.06);margin-bottom:20px;box-shadow:0 0 20px rgba(168,85,247,.15)}
+#sectionEmpate h3{color:#a855f7;margin-top:0}
+#sectionEmpate p{color:var(--text)}
+.empate-lista{margin:8px 0;padding:10px;background:var(--bg);border-radius:8px;font-size:13px}
+.empate-lista .emp-nombre{color:#a855f7;font-weight:800}
+.empate-lista .emp-votos{color:var(--sub);font-size:11px;margin-left:6px}
+.empate-estado{font-size:12px;color:var(--sub);margin:8px 0;padding:8px;background:rgba(0,0,0,.2);border-radius:6px;text-align:center;font-weight:600}
+
+/* --- LOGS --- */
+.logs-filters{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
+.btn-mini{padding:5px 10px;font-size:11px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;transition:.2s;font-family:inherit;font-weight:600}
+.btn-mini:hover{border-color:var(--accent)}
+.btn-mini.active{background:var(--accent);color:#1a1c30;border-color:var(--accent)}
+.logs-list{max-height:340px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg);padding:6px}
+.log-empty{font-size:12px;color:var(--sub);text-align:center;padding:20px 10px;font-style:italic}
+.log-item{background:var(--card);border-left:3px solid var(--border);border-radius:6px;padding:8px 10px;margin-bottom:6px;font-size:12px;position:relative}
+.log-item:last-child{margin-bottom:0}
+.log-item.log-rng{border-left-color:#a855f7}
+.log-item.log-voto{border-left-color:#4CAF50}
+.log-item.log-cd{border-left-color:#ff9800}
+.log-item.log-admin{border-left-color:var(--accent)}
+.log-item.log-rescate{border-left-color:#e91e63}
+.log-header{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:4px;padding-right:20px}
+.log-tipo{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--sub)}
+.log-fecha{font-size:10px;color:var(--sub);font-variant-numeric:tabular-nums}
+.log-mensaje{color:var(--text);line-height:1.4}
+.log-item details{margin-top:6px;font-size:11px}
+.log-item details summary{cursor:pointer;color:var(--sub);user-select:none;font-weight:600}
+.log-item details pre{background:var(--bg);padding:6px;border-radius:4px;overflow-x:auto;font-size:10px;margin:4px 0 0;max-height:220px;overflow-y:auto;white-space:pre-wrap;word-break:break-word;color:var(--text)}
+.log-del{position:absolute;top:6px;right:6px;background:transparent;border:none;color:#ff5c5c;cursor:pointer;font-size:14px;padding:0 4px;opacity:.5;line-height:1}
+.log-del:hover{opacity:1}
 </style>
 </head>
 <body>
@@ -81,6 +136,30 @@ input:focus{border-color:var(--accent)}
       <p>Votación cerrada: <span id="aCerrada">-</span></p>
       <p>Fecha límite: <span id="aFechaActual">-</span></p>
       <p>Ganador por rescate: <span id="aGanadorRescate">-</span></p>
+      <p>Ganador final: <span id="aGanadorFinal">-</span></p>
+      <p>Desempate programado: <span id="aRngTrigger">—</span></p>
+    </div>
+
+    <div class="section">
+      <h3>👥 Votantes</h3>
+      <p style="font-size:12px;color:var(--sub);margin:0 0 8px">
+        Integrantes que emitieron su voto normal. Si ves un nombre duplicado, sospechoso o ajeno al clan, elimínalo con 🗑 — se liberará su nombre y se restará 1 voto al personaje.
+      </p>
+      <div class="personas-list" id="votantesList">
+        <div class="personas-empty">Cargando votantes...</div>
+      </div>
+      <div class="personas-counter" id="votantesCounter">—</div>
+    </div>
+
+    <div class="section">
+      <h3>🔥 Rescatadores</h3>
+      <p style="font-size:12px;color:var(--sub);margin:0 0 8px">
+        Integrantes que usaron su voto de rescate en algún personaje de la Sala de Espera. Igual que arriba, puedes eliminar votos sospechosos.
+      </p>
+      <div class="personas-list" id="rescatadoresList">
+        <div class="personas-empty">Cargando rescatadores...</div>
+      </div>
+      <div class="personas-counter" id="rescatadoresCounter">—</div>
     </div>
 
     <div class="section">
@@ -88,6 +167,14 @@ input:focus{border-color:var(--accent)}
       <button class="btn" id="btnCerrarAhora">⛔ Cerrar votación ahora</button>
       <button class="btn" id="btnReabrir">🔓 Reabrir votación (sin límite)</button>
       <button class="btn btn-danger" id="btnResetTotal">💥 Reset TOTAL (votos a 0 + libera a todos)</button>
+    </div>
+
+    <div id="sectionEmpate" style="display:none">
+      <h3>⚖️ Empate detectado</h3>
+      <p style="font-size:13px;margin:0 0 8px">Hay varios personajes con la misma cantidad de votos. Se requiere resolución por dados (RNG).</p>
+      <div class="empate-lista" id="empateLista"></div>
+      <div class="empate-estado" id="empateEstado">—</div>
+      <button class="btn btn-purple" id="btnResolverRng" style="margin-top:4px">🎲 Forzar desempate AHORA (saltar espera)</button>
     </div>
 
     <div class="section">
@@ -110,23 +197,43 @@ input:focus{border-color:var(--accent)}
     </div>
 
     <div class="section">
-      <h3>⏳ Cooldown (CD) de personajes</h3>
+      <h3>⏳ Cooldown de personajes (Sala de Espera)</h3>
       <p style="font-size:12px;color:var(--sub);margin:0 0 8px">
-        Marca los personajes que entrarán en CD. No podrán votarse, pero sí "salvarse" si ≥ 50% del clan los rescata.
+        Marca los personajes que entrarán en cooldown. No podrán votarse, pero sí "salvarse" si ≥ 50% del clan los rescata.
       </p>
 
-      <label for="inputCdDias">Duración del CD (días):</label>
+      <label for="inputCdDias">Duración del cooldown (días):</label>
       <input type="number" id="inputCdDias" min="1" max="365" placeholder="60">
 
-      <div class="cd-grid" id="cdGrid">
-        <!-- Generado por JS -->
-      </div>
+      <div class="cd-grid" id="cdGrid"></div>
 
       <button class="btn btn-warn" id="btnAplicarCd" style="margin-top:12px">⏳ Aplicar CD a marcados</button>
       <button class="btn" id="btnQuitarCd">♻️ Quitar CD a marcados</button>
       <button class="btn btn-danger" id="btnResetRescates">🗑 Resetear votos de rescate</button>
 
       <div class="rescate-info" id="rescateInfo">-</div>
+    </div>
+
+    <div class="section">
+      <h3>📜 Logs / Auditoría</h3>
+      <p style="font-size:12px;color:var(--sub);margin:0 0 8px">
+        Registro de los últimos sucesos. Útil para auditar votos, CDs, RNG y acciones de admin.
+      </p>
+
+      <div class="logs-filters">
+        <button class="btn-mini active" data-filtro="all">Todos</button>
+        <button class="btn-mini" data-filtro="rng">🎲 RNG</button>
+        <button class="btn-mini" data-filtro="voto">🗳 Votos</button>
+        <button class="btn-mini" data-filtro="rescate">🔥 Rescates</button>
+        <button class="btn-mini" data-filtro="cd">⏳ CD</button>
+        <button class="btn-mini" data-filtro="admin">🔧 Admin</button>
+      </div>
+
+      <div class="logs-list" id="logsList">
+        <div class="log-empty">Cargando logs...</div>
+      </div>
+
+      <button class="btn btn-danger" id="btnLimpiarLogs" style="margin-top:8px">🗑 Limpiar todos los logs</button>
     </div>
 
     <div class="section">
@@ -138,14 +245,14 @@ input:focus{border-color:var(--accent)}
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, get, set, remove, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  import { getDatabase, ref, get, set, remove, onValue, push, runTransaction, query, orderByKey, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBaKgNmCCTdFoE2YkU1B4a8AjnwwGFeBJ4",
     authDomain: "axcend-votemascot-fcced.firebaseapp.com",
     databaseURL: "https://axcend-votemascot-fcced-default-rtdb.firebaseio.com",
     projectId: "axcend-votemascot-fcced",
-    storageBucket: "axcend-votemascot-fcced.firebasestorage.app",
+    storageBucket: "axcend-votemascot-fcced.storage.app",
     messagingSenderId: "2042810164",
     appId: "1:2042810164:web:8880abb1729053ca8a1f61"
   };
@@ -166,7 +273,29 @@ input:focus{border-color:var(--accent)}
   let totalMiembros = 41;
   let cooldownsActuales = {};
   let rescatesActuales = {};
+  let votosActuales = {};
+  let votantesActuales = {};
+  let rescatadoresActuales = {};
+  let ganadorRescateActual = "";
+  let ganadorFinalActual = "";
+  let ganadorMetodoActual = "";
+  let rngTriggerAt = 0;
+  let logsCache = [];
+  let filtroLogs = "all";
+  let rngYaIntentadoAdmin = false;
 
+  // ============================================================
+  // PWA
+  // ============================================================
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    });
+  }
+
+  // ============================================================
+  // TEMA
+  // ============================================================
   function aplicarTema() {
     const saved = localStorage.getItem("axcend_admin_theme");
     if (saved === "light") document.body.classList.add("light");
@@ -179,11 +308,139 @@ input:focus{border-color:var(--accent)}
   };
   aplicarTema();
 
+  // ============================================================
+  // LOGS
+  // ============================================================
+  async function agregarLog(tipo, subtipo, mensaje, detalles = {}) {
+    try {
+      await push(ref(db, 'logs'), { tipo, subtipo, fecha: Date.now(), mensaje, detalles });
+    } catch (e) { console.warn('No se pudo guardar log:', e); }
+  }
+
+  function formatearFechaLog(ts) {
+    const d = new Date(ts);
+    const dd = String(d.getDate()).padStart(2,'0');
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    const hh = String(d.getHours()).padStart(2,'0');
+    const mi = String(d.getMinutes()).padStart(2,'0');
+    const ss = String(d.getSeconds()).padStart(2,'0');
+    return `${dd}/${mm} ${hh}:${mi}:${ss}`;
+  }
+
+  function formatearFechaHora(ts) {
+    const d = new Date(ts);
+    const dd = String(d.getDate()).padStart(2,'0');
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    const yy = String(d.getFullYear()).slice(-2);
+    const hh = String(d.getHours()).padStart(2,'0');
+    const mi = String(d.getMinutes()).padStart(2,'0');
+    return `${dd}/${mm}/${yy} ${hh}:${mi}`;
+  }
+
+  function iconoLog(tipo) {
+    return { rng:'🎲', voto:'🗳', rescate:'🔥', cd:'⏳', admin:'🔧' }[tipo] || '📌';
+  }
+
+  function cargarLogs() {
+    onValue(query(ref(db, 'logs'), orderByKey(), limitToLast(100)), (snap) => {
+      const obj = snap.val() || {};
+      logsCache = Object.entries(obj)
+        .map(([key, val]) => ({ key, ...val }))
+        .sort((a, b) => (b.fecha || 0) - (a.fecha || 0));
+      renderLogs();
+    });
+  }
+
+  function renderLogs() {
+    const cont = document.getElementById('logsList');
+    let arr = logsCache;
+    if (filtroLogs !== 'all') arr = arr.filter(l => l.tipo === filtroLogs);
+    if (arr.length === 0) {
+      cont.innerHTML = '<div class="log-empty">Sin logs' + (filtroLogs !== 'all' ? ' para este filtro' : '') + '.</div>';
+      return;
+    }
+    cont.innerHTML = arr.map(l => {
+      const detallesJson = JSON.stringify(l.detalles || {}, null, 2);
+      const tieneDetalles = l.detalles && Object.keys(l.detalles).length > 0;
+      return `
+        <div class="log-item log-${l.tipo || 'admin'}">
+          <button class="log-del" data-key="${l.key}" title="Eliminar log">✕</button>
+          <div class="log-header">
+            <span class="log-tipo">${iconoLog(l.tipo)} ${l.tipo || 'admin'}${l.subtipo ? ' · ' + l.subtipo : ''}</span>
+            <span class="log-fecha">${formatearFechaLog(l.fecha || 0)}</span>
+          </div>
+          <div class="log-mensaje">${l.mensaje || ''}</div>
+          ${tieneDetalles ? `<details><summary>Ver detalles</summary><pre>${detallesJson}</pre></details>` : ''}
+        </div>`;
+    }).join('');
+    cont.querySelectorAll('.log-del').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('¿Eliminar este log?')) return;
+        await remove(ref(db, 'logs/' + btn.dataset.key));
+      });
+    });
+  }
+
+  document.querySelectorAll('.btn-mini[data-filtro]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.btn-mini[data-filtro]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      filtroLogs = btn.dataset.filtro;
+      renderLogs();
+    });
+  });
+
+  document.getElementById('btnLimpiarLogs').addEventListener('click', async () => {
+    if (!isAdmin) return;
+    if (!confirm('⚠️ ¿Borrar TODOS los logs?')) return;
+    if (!confirm('¿Estás seguro?')) return;
+    await remove(ref(db, 'logs'));
+    await agregarLog('admin', 'logs_limpiados', '🧹 Se limpiaron todos los logs', {});
+  });
+
+  // ============================================================
+  // UTILIDADES
+  // ============================================================
   async function sha256(text) {
     const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
     return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
   }
 
+  function tsToLocalInput(ts) {
+    const d = new Date(ts);
+    const off = d.getTimezoneOffset() * 60000;
+    return new Date(d.getTime() - off).toISOString().slice(0, 16);
+  }
+  function formatearFechaBonita(ts) {
+    return new Date(ts).toLocaleString("es-ES", {
+      day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit"
+    });
+  }
+
+  function estaEnCdAdmin(nombre) {
+    const cd = cooldownsActuales[nombre];
+    return !!(cd && cd.activo && cd.hasta > Date.now());
+  }
+
+  function votacionCerrada() { return finVotacion > 0 && Date.now() >= finVotacion; }
+
+  function calcularRanking() {
+    return Object.entries(votosActuales).filter(([n]) => !estaEnCdAdmin(n))
+      .map(([n, v]) => ({ nombre: n, votos: v || 0 }))
+      .filter(x => x.votos > 0).sort((a, b) => b.votos - a.votos);
+  }
+  function obtenerEmpate() {
+    const r = calcularRanking();
+    if (r.length < 2) return null;
+    const max = r[0].votos;
+    const emp = r.filter(x => x.votos === max);
+    if (emp.length < 2) return null;
+    return { empatados: emp, maxVotos: max };
+  }
+
+  // ============================================================
+  // LOGIN
+  // ============================================================
   const loginDiv = document.getElementById("login");
   const adminDiv = document.getElementById("admin");
   const loginMsg = document.getElementById("loginMsg");
@@ -196,16 +453,11 @@ input:focus{border-color:var(--accent)}
     loginMsg.textContent = "";
     const valor = keywordInput.value.trim();
     if (!valor) return;
-
     try {
       const snap = await get(ref(db, "config/admin_key_hash"));
-      if (!snap.exists()) {
-        loginMsg.textContent = "⚠️ No hay hash configurado en Firebase.";
-        return;
-      }
+      if (!snap.exists()) { loginMsg.textContent = "⚠️ No hay hash configurado."; return; }
       const hashEsperado = String(snap.val()).trim().toLowerCase();
       const hashIngresado = await sha256(valor);
-
       if (hashIngresado === hashEsperado) {
         isAdmin = true;
         loginDiv.classList.add("hidden");
@@ -220,12 +472,20 @@ input:focus{border-color:var(--accent)}
     }
   }
 
+  // ============================================================
+  // PANEL
+  // ============================================================
   function iniciarPanel() {
     onValue(ref(db, "config"), (snap) => {
       if (!snap.exists()) return;
       const c = snap.val();
       finVotacion = c.fin_votacion || 0;
       totalMiembros = c.total_miembros || 41;
+      ganadorRescateActual = c.ganador_rescate || "";
+      ganadorFinalActual = c.ganador_final || "";
+      ganadorMetodoActual = c.ganador_metodo || "";
+      rngTriggerAt = c.rng_trigger_at || 0;
+
       document.getElementById("aMiembros").textContent = totalMiembros;
 
       const cerrada = finVotacion > 0 && Date.now() >= finVotacion;
@@ -236,7 +496,26 @@ input:focus{border-color:var(--accent)}
       document.getElementById("inputMiembros").value = totalMiembros;
       document.getElementById("inputMensaje").value = c.mensaje || "";
 
-      document.getElementById("aGanadorRescate").textContent = c.ganador_rescate || "—";
+      document.getElementById("aGanadorRescate").textContent = ganadorRescateActual || "—";
+      document.getElementById("aGanadorFinal").textContent = ganadorFinalActual
+        ? ganadorFinalActual + (ganadorMetodoActual === 'rng' ? ' 🎲 (RNG)' : '')
+        : "—";
+
+      // RNG trigger
+      const elTrigger = document.getElementById("aRngTrigger");
+      if (rngTriggerAt > 0) {
+        const seg = Math.max(0, Math.ceil((rngTriggerAt - Date.now()) / 1000));
+        if (seg > 0) {
+          elTrigger.textContent = `🎲 en ${seg}s`;
+          elTrigger.className = "status-purple";
+        } else {
+          elTrigger.textContent = "⏳ En curso...";
+          elTrigger.className = "status-purple";
+        }
+      } else {
+        elTrigger.textContent = "—";
+        elTrigger.className = "";
+      }
 
       const inpF = document.getElementById("inputFecha");
       const txtF = document.getElementById("aFechaActual");
@@ -247,17 +526,28 @@ input:focus{border-color:var(--accent)}
         inpF.value = "";
         txtF.textContent = "Sin fecha límite";
       }
+
+      chequearEmpate();
+      actualizarEmpateEstado();
     });
 
     onValue(ref(db, "votantes"), (snap) => {
-      const count = snap.exists() ? Object.keys(snap.val()).length : 0;
+      votantesActuales = snap.val() || {};
+      const count = Object.keys(votantesActuales).length;
       document.getElementById("aVotantes").textContent = count;
+      renderVotantesList();
+    });
+
+    onValue(ref(db, "rescatadores"), (snap) => {
+      rescatadoresActuales = snap.val() || {};
+      renderRescatadoresList();
     });
 
     onValue(ref(db, "cooldowns"), (snap) => {
       cooldownsActuales = snap.val() || {};
       renderCdGrid();
       actualizarRescateInfo();
+      chequearEmpate();
     });
 
     onValue(ref(db, "rescates"), (snap) => {
@@ -265,8 +555,163 @@ input:focus{border-color:var(--accent)}
       renderCdGrid();
       actualizarRescateInfo();
     });
+
+    onValue(ref(db, "votos"), (snap) => {
+      votosActuales = snap.val() || {};
+      chequearEmpate();
+    });
+
+    cargarLogs();
   }
 
+  // ============================================================
+  // RENDER VOTANTES / RESCATADORES
+  // ============================================================
+  function extraerDatosPersona(valor, username) {
+    // Soporta formato nuevo { personaje, nombreOriginal, fecha, voterId } y formato viejo (string = personaje)
+    if (typeof valor === 'string') {
+      return { personaje: valor, nombreOriginal: username, fecha: 0 };
+    }
+    return {
+      personaje: valor.personaje || '',
+      nombreOriginal: valor.nombreOriginal || username,
+      fecha: valor.fecha || 0
+    };
+  }
+
+  function renderVotantesList() {
+    const cont = document.getElementById('votantesList');
+    const counter = document.getElementById('votantesCounter');
+    const entries = Object.entries(votantesActuales);
+
+    if (entries.length === 0) {
+      cont.innerHTML = '<div class="personas-empty">Nadie ha votado aún.</div>';
+      counter.textContent = `0 de ${totalMiembros} han votado`;
+      return;
+    }
+
+    entries.sort((a, b) => {
+      const fa = extraerDatosPersona(a[1], a[0]).fecha || 0;
+      const fb = extraerDatosPersona(b[1], b[0]).fecha || 0;
+      return fb - fa;
+    });
+
+    cont.innerHTML = entries.map(([username, valor]) => {
+      const d = extraerDatosPersona(valor, username);
+      const fecha = d.fecha ? formatearFechaHora(d.fecha) : '—';
+      return `
+        <div class="persona-item">
+          <div class="p-info">
+            <div class="p-name">${d.nombreOriginal}<span class="p-meta">(${username})</span></div>
+            <div class="p-vote">Votó por: <b>${d.personaje || '—'}</b></div>
+            <div class="p-fecha">${fecha}</div>
+          </div>
+          <button class="p-del" data-del-votante="${username}">🗑 Eliminar</button>
+        </div>
+      `;
+    }).join('');
+
+    cont.querySelectorAll('.p-del').forEach(btn => {
+      btn.addEventListener('click', () => eliminarVotante(btn.dataset.delVotante));
+    });
+
+    counter.innerHTML = `<b>${entries.length}</b> de ${totalMiembros} han votado`;
+  }
+
+  function renderRescatadoresList() {
+    const cont = document.getElementById('rescatadoresList');
+    const counter = document.getElementById('rescatadoresCounter');
+    const entries = Object.entries(rescatadoresActuales);
+
+    if (entries.length === 0) {
+      cont.innerHTML = '<div class="personas-empty">Nadie ha usado su rescate aún.</div>';
+      counter.textContent = `0 rescates en total`;
+      return;
+    }
+
+    entries.sort((a, b) => {
+      const fa = extraerDatosPersona(a[1], a[0]).fecha || 0;
+      const fb = extraerDatosPersona(b[1], b[0]).fecha || 0;
+      return fb - fa;
+    });
+
+    cont.innerHTML = entries.map(([username, valor]) => {
+      const d = extraerDatosPersona(valor, username);
+      const fecha = d.fecha ? formatearFechaHora(d.fecha) : '—';
+      return `
+        <div class="persona-item rescate-item">
+          <div class="p-info">
+            <div class="p-name">${d.nombreOriginal}<span class="p-meta">(${username})</span></div>
+            <div class="p-vote">Rescató a: <b>${d.personaje || '—'}</b></div>
+            <div class="p-fecha">${fecha}</div>
+          </div>
+          <button class="p-del" data-del-rescatador="${username}">🗑 Eliminar</button>
+        </div>
+      `;
+    }).join('');
+
+    cont.querySelectorAll('.p-del').forEach(btn => {
+      btn.addEventListener('click', () => eliminarRescatador(btn.dataset.delRescatador));
+    });
+
+    counter.innerHTML = `<b>${entries.length}</b> rescate${entries.length !== 1 ? 's' : ''} en total`;
+  }
+
+  async function eliminarVotante(username) {
+    if (!isAdmin) return;
+    const v = votantesActuales[username];
+    if (!v) return;
+    const d = extraerDatosPersona(v, username);
+    const personaje = d.personaje;
+
+    if (!confirm(`¿Eliminar el voto de "${d.nombreOriginal}"?\n\nPersonaje votado: ${personaje || '—'}\n\nEsto liberará su nombre y restará 1 voto a ese personaje.`)) return;
+
+    try {
+      await remove(ref(db, 'votantes/' + username));
+      if (personaje) {
+        await runTransaction(ref(db, 'votos/' + personaje), (current) => {
+          if (!current || current <= 0) return 0;
+          return current - 1;
+        });
+      }
+      await agregarLog('voto', 'voto_eliminado',
+        `🗑 Admin eliminó el voto de "${d.nombreOriginal}" (${username}) que votó por "${personaje}"`,
+        { username, nombreOriginal: d.nombreOriginal, personaje });
+      alert('✅ Voto eliminado.');
+    } catch (e) {
+      alert('❌ ' + e.message);
+    }
+  }
+
+  async function eliminarRescatador(username) {
+    if (!isAdmin) return;
+    const r = rescatadoresActuales[username];
+    if (!r) return;
+    const d = extraerDatosPersona(r, username);
+    const personaje = d.personaje;
+
+    if (!confirm(`¿Eliminar el rescate de "${d.nombreOriginal}"?\n\nPersonaje rescatado: ${personaje || '—'}\n\nEsto liberará su nombre y restará 1 rescate a ese personaje.`)) return;
+
+    try {
+      await remove(ref(db, 'rescatadores/' + username));
+      if (personaje) {
+        await runTransaction(ref(db, 'rescates/' + personaje), (current) => {
+          if (!current || current <= 0) return 0;
+          return current - 1;
+        });
+      }
+      await agregarLog('rescate', 'rescate_eliminado',
+        `🗑 Admin eliminó el rescate de "${d.nombreOriginal}" (${username}) que rescató a "${personaje}"`,
+        { username, nombreOriginal: d.nombreOriginal, personaje });
+      alert('✅ Rescate eliminado.');
+    } catch (e) {
+      alert('❌ ' + e.message);
+    }
+  }
+
+  // ============================================================
+  // CD GRID
+  // ============================================================
   function renderCdGrid() {
     const grid = document.getElementById("cdGrid");
     const umbral = Math.ceil(totalMiembros / 2);
@@ -275,7 +720,6 @@ input:focus{border-color:var(--accent)}
       const cd = cooldownsActuales[nombre];
       const activo = cd && cd.activo && cd.hasta > Date.now();
       const rescates = rescatesActuales[nombre] || 0;
-
       const item = document.createElement("label");
       item.className = "cd-item" + (activo ? " en-cd" : "");
       item.innerHTML = `
@@ -292,7 +736,7 @@ input:focus{border-color:var(--accent)}
     const activos = Object.entries(cooldownsActuales)
       .filter(([_, cd]) => cd && cd.activo && cd.hasta > Date.now());
     if (activos.length === 0) {
-      document.getElementById("rescateInfo").textContent = "No hay personajes en CD actualmente.";
+      document.getElementById("rescateInfo").textContent = "No hay personajes en la Sala de Espera.";
       return;
     }
     const lineas = activos.map(([nombre]) => {
@@ -303,104 +747,246 @@ input:focus{border-color:var(--accent)}
       `<strong>Rescates en curso (umbral: ${umbral}):</strong><br>${lineas}`;
   }
 
-  function tsToLocalInput(ts) {
-    const d = new Date(ts);
-    const off = d.getTimezoneOffset() * 60000;
-    return new Date(d.getTime() - off).toISOString().slice(0, 16);
-  }
-  function formatearFechaBonita(ts) {
-    return new Date(ts).toLocaleString("es-ES", {
-      day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit"
-    });
+  // ============================================================
+  // EMPATE
+  // ============================================================
+  function chequearEmpate() {
+    const sec = document.getElementById("sectionEmpate");
+    const cerrada = votacionCerrada();
+    const yaResuelto = !!ganadorFinalActual || !!ganadorRescateActual;
+
+    if (!cerrada || yaResuelto) {
+      sec.style.display = "none";
+      return;
+    }
+
+    const emp = obtenerEmpate();
+    if (!emp) {
+      sec.style.display = "none";
+      return;
+    }
+
+    const lista = emp.empatados
+      .map(x => `<div><span class="emp-nombre">${x.nombre}</span><span class="emp-votos">${x.votos} votos</span></div>`)
+      .join("");
+    document.getElementById("empateLista").innerHTML =
+      `<strong>Empate a ${emp.maxVotos} votos:</strong>${lista}`;
+    sec.style.display = "block";
+    actualizarEmpateEstado();
   }
 
-  function accionAplicarCd() {
+  function actualizarEmpateEstado() {
+    const el = document.getElementById('empateEstado');
+    if (!el) return;
+    if (rngTriggerAt > 0) {
+      const restante = rngTriggerAt - Date.now();
+      if (restante > 0) {
+        const seg = Math.ceil(restante / 1000);
+        el.textContent = `⏱ Desempate automático en ${seg}s. El index lo está mostrando en vivo. Si no quieres esperar, fuerza ahora.`;
+        el.className = "empate-estado";
+      } else {
+        el.textContent = `🎲 Desempate automático en curso... esperando resultado.`;
+        el.className = "empate-estado";
+      }
+    } else {
+      el.textContent = `⏱ Aún sin programar (se activará automáticamente en el index en unos segundos).`;
+      el.className = "empate-estado";
+    }
+  }
+
+  // ============================================================
+  // RNG - FORZAR AHORA
+  // ============================================================
+  async function ejecutarRngSilencioso(manual = false) {
+    const votosSnap = await get(ref(db, 'votos'));
+    votosActuales = votosSnap.val() || {};
+    const cdSnap = await get(ref(db, 'cooldowns'));
+    cooldownsActuales = cdSnap.val() || {};
+
+    const emp = obtenerEmpate();
+    if (!emp) return null;
+
+    const rondas = [];
+    let candidatos = emp.empatados.map(x => x.nombre);
+    let rondaNum = 0;
+    let ganador = null;
+    while (candidatos.length > 1 && rondaNum < 10) {
+      rondaNum++;
+      const tiradas = {};
+      candidatos.forEach(c => tiradas[c] = 1 + Math.floor(Math.random() * 6));
+      rondas.push({ ronda: rondaNum, candidatos: [...candidatos], tiradas });
+      const maxRoll = Math.max(...Object.values(tiradas));
+      const nuevos = candidatos.filter(c => tiradas[c] === maxRoll);
+      if (nuevos.length === candidatos.length) break;
+      candidatos = nuevos;
+    }
+    ganador = candidatos[0] || emp.empatados[0].nombre;
+
+    const resultado = {
+      rondas, ganador,
+      empate: emp.empatados.map(x => x.nombre),
+      votosMax: emp.maxVotos,
+      fecha: Date.now(),
+      totalRondas: rondaNum
+    };
+
+    const tx = await runTransaction(ref(db, 'config/rng_resultado'), (current) => {
+      if (current) return;
+      return resultado;
+    });
+    if (!tx.committed) return null;
+
+    await set(ref(db, 'config/ganador_final'), ganador);
+    await set(ref(db, 'config/ganador_metodo'), 'rng');
+    await set(ref(db, 'config/rng_trigger_at'), 0);
+
+    await agregarLog('rng', manual ? 'resuelto_manual' : 'resuelto_auto',
+      `🎲 Desempate ${manual ? 'FORZADO por admin' : 'automático'}: ganador "${ganador}" tras ${rondaNum} ronda(s)`,
+      { rondas, ganador, empatados: emp.empatados.map(x => x.nombre), votosMax: emp.maxVotos });
+
+    return resultado;
+  }
+
+  async function forzarRngAhora() {
+    if (!isAdmin) return;
+    const emp = obtenerEmpate();
+    if (!emp) { alert("No hay empate ahora mismo."); return; }
+
+    const nombres = emp.empatados.map(x => x.nombre);
+    const ok = confirm(
+      `🎲 FORZAR DESEMPATE POR DADOS\n\n` +
+      `Empate a ${emp.maxVotos} votos entre ${nombres.length} personajes:\n\n` +
+      nombres.map(n => `• ${n}`).join('\n') +
+      `\n\nSe lanzarán dados de 6 caras. El mayor gana. Si empatan en la tirada, solo los empatados vuelven a tirar.\n\n¿Continuar?`
+    );
+    if (!ok) return;
+
+    const resultado = await ejecutarRngSilencioso(true);
+    if (!resultado) {
+      alert("⚠️ Otro admin ya lanzó los dados o no hay empate.");
+      return;
+    }
+
+    const resumen = resultado.rondas.map(r => {
+      return `Ronda ${r.ronda}:\n` + r.candidatos.map(c => `   ${c}: 🎲 ${r.tiradas[c]}`).join('\n');
+    }).join('\n\n');
+    alert(`🎲 RESULTADO 🎲\n\n${resumen}\n\n🏆 GANADOR: ${resultado.ganador}\n\n(El index está mostrando la animación en vivo)`);
+  }
+
+  document.getElementById('btnResolverRng').addEventListener('click', forzarRngAhora);
+
+  // Auto-ejecutar si el admin es el único cliente abierto
+  setInterval(async () => {
+    if (!isAdmin) return;
+    if (!votacionCerrada()) return;
+    if (ganadorRescateActual || ganadorFinalActual) return;
+    if (!rngTriggerAt || rngTriggerAt === 0) return;
+    if (Date.now() < rngTriggerAt) return;
+    if (rngYaIntentadoAdmin) return;
+    const emp = obtenerEmpate();
+    if (!emp) return;
+    rngYaIntentadoAdmin = true;
+    try { await ejecutarRngSilencioso(false); } catch (e) { rngYaIntentadoAdmin = false; }
+  }, 3000);
+
+  // ============================================================
+  // ACCIONES
+  // ============================================================
+  async function accionAplicarCd() {
     if (!isAdmin) return;
     const marcados = [...document.querySelectorAll("#cdGrid input:checked")].map(i => i.value);
     if (marcados.length === 0) { alert("Marca al menos un personaje."); return; }
-
     const dias = parseInt(document.getElementById("inputCdDias").value) || 60;
     if (dias < 1) { alert("Días inválidos."); return; }
-
     if (!confirm(`Aplicar CD de ${dias} días a:\n\n${marcados.join("\n")}\n\n¿Continuar?`)) return;
 
     const ahora = Date.now();
     const hasta = ahora + dias * 24 * 60 * 60 * 1000;
-    const updates = {};
-    marcados.forEach(nombre => {
-      updates[`cooldowns/${nombre}`] = {
-        activo: true,
-        desde: ahora,
-        hasta: hasta,
-        motivo: "CD manual"
-      };
-    });
-
-    Promise.all(Object.entries(updates).map(([path, val]) => set(ref(db, path), val)))
-      .then(() => alert(`✅ CD aplicado a ${marcados.length} personaje(s) durante ${dias} días.`))
-      .catch(err => alert("❌ " + err.message));
+    try {
+      await Promise.all(marcados.map(nombre =>
+        set(ref(db, `cooldowns/${nombre}`), { activo: true, desde: ahora, hasta, motivo: "CD manual" })
+      ));
+      await agregarLog('cd', 'aplicar', `⏳ CD de ${dias} días aplicado a: ${marcados.join(', ')}`,
+        { dias, personajes: marcados, hasta });
+      alert(`✅ CD aplicado a ${marcados.length} personaje(s) durante ${dias} días.`);
+    } catch (err) { alert("❌ " + err.message); }
   }
 
-  function accionQuitarCd() {
+  async function accionQuitarCd() {
     if (!isAdmin) return;
     const marcados = [...document.querySelectorAll("#cdGrid input:checked")].map(i => i.value);
     if (marcados.length === 0) { alert("Marca al menos un personaje."); return; }
     if (!confirm(`¿Quitar CD a:\n\n${marcados.join("\n")}?`)) return;
-
-    Promise.all(marcados.map(nombre => remove(ref(db, `cooldowns/${nombre}`))))
-      .then(() => alert("✅ CD quitado."))
-      .catch(err => alert("❌ " + err.message));
+    try {
+      await Promise.all(marcados.map(nombre => remove(ref(db, `cooldowns/${nombre}`))));
+      await agregarLog('cd', 'quitar', `♻️ CD quitado a: ${marcados.join(', ')}`, { personajes: marcados });
+      alert("✅ CD quitado.");
+    } catch (err) { alert("❌ " + err.message); }
   }
 
-  function accionResetRescates() {
+  async function accionResetRescates() {
     if (!isAdmin) return;
     if (!confirm("⚠️ Esto borrará TODOS los votos de rescate y permitirá a los rescatadores votar de nuevo.\n\n¿Continuar?")) return;
     if (!confirm("¿Estás seguro?")) return;
-
-    Promise.all([
-      remove(ref(db, "rescates")),
-      remove(ref(db, "rescatadores"))
-    ]).then(() => alert("✅ Rescates reseteados."))
-      .catch(err => alert("❌ " + err.message));
+    try {
+      await Promise.all([remove(ref(db, "rescates")), remove(ref(db, "rescatadores"))]);
+      await agregarLog('rescate', 'reset', '🗑 Todos los votos de rescate fueron reseteados', {});
+      alert("✅ Rescates reseteados.");
+    } catch (err) { alert("❌ " + err.message); }
   }
 
-  function accionResetTotal() {
+  async function accionResetTotal() {
     if (!isAdmin) return;
-    if (!confirm("⚠️ RESET TOTAL\n\nEsto pondrá TODOS los votos a 0, borrará CDs, rescates, rescatadores y liberará a todos.\n\n¿Continuar?")) return;
+    if (!confirm("⚠️ RESET TOTAL\n\nEsto pondrá TODOS los votos a 0, borrará CDs, rescates, rescatadores, votantes, ganadores y liberará a todos.\n\n¿Continuar?")) return;
     if (!confirm("¿Estás TOTALMENTE seguro? Esta acción no se puede deshacer.")) return;
-    get(ref(db, "votos")).then((snap) => {
-      const votosActualesSnap = snap.val() || {};
+    try {
+      const snap = await get(ref(db, "votos"));
+      const votosSnap = snap.val() || {};
       const votosVacios = {};
-      Object.keys(votosActualesSnap).forEach(k => votosVacios[k] = 0);
-      Promise.all([
+      Object.keys(votosSnap).forEach(k => votosVacios[k] = 0);
+
+      await Promise.all([
         set(ref(db, "votos"), votosVacios),
         remove(ref(db, "votantes")),
         remove(ref(db, "cooldowns")),
         remove(ref(db, "rescates")),
         remove(ref(db, "rescatadores")),
+        remove(ref(db, "config/rng_resultado")),
+        set(ref(db, "config/rng_trigger_at"), 0),
         set(ref(db, "config/reset_token"), "v" + Date.now()),
-        set(ref(db, "config/ganador_rescate"), "")
-      ]).then(() => alert("✅ Reset total completado."))
-        .catch(err => alert("❌ " + err.message));
-    });
+        set(ref(db, "config/ganador_rescate"), ""),
+        set(ref(db, "config/ganador_final"), ""),
+        set(ref(db, "config/ganador_metodo"), "")
+      ]);
+      await agregarLog('admin', 'reset_total', '💥 RESET TOTAL ejecutado (votos, CDs, rescates, votantes, ganadores)', {});
+      alert("✅ Reset total completado.");
+    } catch (err) { alert("❌ " + err.message); }
   }
 
-  function accionCerrarAhora() {
+  async function accionCerrarAhora() {
     if (!isAdmin) return;
     if (!confirm("¿Cerrar la votación AHORA?")) return;
-    set(ref(db, "config/fin_votacion"), Date.now() - 1).then(() => alert("✅ Votación cerrada."));
+    await set(ref(db, "config/fin_votacion"), Date.now() - 1);
+    await agregarLog('admin', 'cerrar_votacion', '⛔ Votación cerrada manualmente por el admin', { fin_votacion: Date.now() - 1 });
+    alert("✅ Votación cerrada.");
   }
 
-  function accionReabrir() {
+  async function accionReabrir() {
     if (!isAdmin) return;
-    if (!confirm("¿Reabrir la votación sin límite?")) return;
-    Promise.all([
+    if (!confirm("¿Reabrir la votación sin límite? Esto también borrará ganadores y desempates pendientes.")) return;
+    await Promise.all([
       set(ref(db, "config/fin_votacion"), 0),
-      set(ref(db, "config/ganador_rescate"), "")
-    ]).then(() => alert("✅ Votación reabierta."));
+      set(ref(db, "config/ganador_rescate"), ""),
+      set(ref(db, "config/ganador_final"), ""),
+      set(ref(db, "config/ganador_metodo"), ""),
+      remove(ref(db, "config/rng_resultado")),
+      set(ref(db, "config/rng_trigger_at"), 0)
+    ]);
+    await agregarLog('admin', 'reabrir_votacion', '🔓 Votación reabierta sin límite', {});
+    alert("✅ Votación reabierta.");
   }
 
-  function accionGuardarFecha() {
+  async function accionGuardarFecha() {
     if (!isAdmin) return;
     const val = document.getElementById("inputFecha").value;
     if (!val) { alert("Selecciona fecha y hora."); return; }
@@ -409,26 +995,34 @@ input:focus{border-color:var(--accent)}
     if (ts <= Date.now()) {
       if (!confirm("⚠️ La fecha ya pasó. La votación se cerrará de inmediato. ¿Continuar?")) return;
     }
-    set(ref(db, "config/fin_votacion"), ts).then(() => alert("✅ Fecha guardada:\n" + formatearFechaBonita(ts)));
+    await set(ref(db, "config/fin_votacion"), ts);
+    await agregarLog('admin', 'fecha_limite', `💾 Fecha límite guardada: ${formatearFechaBonita(ts)}`, { fin_votacion: ts });
+    alert("✅ Fecha guardada:\n" + formatearFechaBonita(ts));
   }
 
-  function accionQuitarFecha() {
+  async function accionQuitarFecha() {
     if (!isAdmin) return;
     if (!confirm("¿Quitar fecha límite?")) return;
-    set(ref(db, "config/fin_votacion"), 0).then(() => alert("✅ Fecha eliminada."));
+    await set(ref(db, "config/fin_votacion"), 0);
+    await agregarLog('admin', 'fecha_limite', '🗑 Fecha límite eliminada', {});
+    alert("✅ Fecha eliminada.");
   }
 
-  function accionGuardarMiembros() {
+  async function accionGuardarMiembros() {
     if (!isAdmin) return;
     const val = parseInt(document.getElementById("inputMiembros").value);
     if (!val || val < 1) { alert("Número inválido."); return; }
-    set(ref(db, "config/total_miembros"), val).then(() => alert("✅ Miembros actualizados a " + val));
+    await set(ref(db, "config/total_miembros"), val);
+    await agregarLog('admin', 'miembros', `👥 Total de miembros cambiado a ${val}`, { total_miembros: val });
+    alert("✅ Miembros actualizados a " + val);
   }
 
-  function accionGuardarMensaje() {
+  async function accionGuardarMensaje() {
     if (!isAdmin) return;
     const val = document.getElementById("inputMensaje").value.trim();
-    set(ref(db, "config/mensaje"), val).then(() => alert(val ? "✅ Mensaje guardado." : "✅ Mensaje borrado."));
+    await set(ref(db, "config/mensaje"), val);
+    await agregarLog('admin', 'mensaje', val ? `✏️ Mensaje actualizado: "${val}"` : '🗑 Mensaje borrado', {});
+    alert(val ? "✅ Mensaje guardado." : "✅ Mensaje borrado.");
   }
 
   function accionCerrarSesion() {
@@ -455,6 +1049,9 @@ input:focus{border-color:var(--accent)}
     const v = parseInt(e.target.value) || 60;
     if (isAdmin) set(ref(db, "config/cd_dias"), v);
   });
+
+  // Tick para actualizar el countdown de la sección empate
+  setInterval(actualizarEmpateEstado, 1000);
 </script>
 </body>
 </html>
