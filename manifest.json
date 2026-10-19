@@ -1,0 +1,50 @@
+{
+  "name": "AXCEND - LATAM - Votaciones",
+  "short_name": "AXCEND Vota",
+  "description": "Votación de mascotas del clan AXCEND - LATAM -. Un voto por persona, con cooldowns y minijuego de rescate.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f1020",
+  "theme_color": "#f5c542",
+  "lang": "es",
+  "dir": "ltr",
+  "categories": ["entertainment", "social"],
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Votar ahora",
+      "short_name": "Votar",
+      "description": "Ir directo a la votación",
+      "url": "./index.html",
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Panel de Admin",
+      "short_name": "Admin",
+      "description": "Abrir el panel de administración",
+      "url": "./admin.html",
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
