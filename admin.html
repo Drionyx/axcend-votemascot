@@ -18,7 +18,35 @@
 body.light{--bg:#f2f3f7;--card:#ffffff;--text:#1a1c30;--accent:#d4a017;--sub:#555;--border:#e0e0e8}
 *{box-sizing:border-box}
 body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;transition:.3s}
-.theme-toggle{position:fixed;top:16px;right:16px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:20px;padding:8px 14px;cursor:pointer;font-size:14px;z-index:10}
+
+/* --- BOTÓN TEMA CIRCULAR --- */
+.theme-toggle{
+  position:fixed;
+  top:14px;
+  right:14px;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:var(--card);
+  color:var(--text);
+  border:1px solid var(--border);
+  cursor:pointer;
+  font-size:20px;
+  z-index:50;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 2px 10px rgba(0,0,0,.35);
+  transition:.2s;
+  padding:0;
+  line-height:1;
+}
+.theme-toggle:hover{transform:scale(1.08);filter:brightness(1.15);border-color:var(--accent)}
+.theme-toggle:active{transform:scale(.95)}
+@media(max-width:600px){
+  .theme-toggle{width:36px;height:36px;font-size:17px;top:8px;right:8px}
+}
+
 #login{display:flex;flex-direction:column;gap:16px;max-width:400px;width:100%;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center}
 #login.hidden{display:none}
 #login h1{margin:0;color:var(--accent);font-size:22px}
@@ -62,7 +90,7 @@ input:focus{border-color:var(--accent)}
 .cd-item .tag{font-size:10px;color:#ff9800;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
 .rescate-info{font-size:12px;color:var(--sub);margin-top:8px;padding:8px;background:var(--bg);border-radius:6px;border-left:3px solid #ff9800}
 
-/* --- SECCIÓN VOTANTES / RESCATADORES --- */
+/* --- VOTANTES / RESCATADORES --- */
 .personas-list{max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg);padding:6px}
 .persona-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:var(--card);border-left:3px solid var(--accent);border-radius:6px;padding:9px 11px;margin-bottom:6px;font-size:13px}
 .persona-item.rescate-item{border-left-color:#ff9800}
@@ -80,7 +108,7 @@ input:focus{border-color:var(--accent)}
 .personas-counter{font-size:12px;color:var(--sub);text-align:center;margin-top:6px;font-weight:600}
 .personas-counter b{color:var(--accent)}
 
-/* --- SECCIÓN EMPATE --- */
+/* --- EMPATE --- */
 #sectionEmpate{border:2px solid #a855f7;border-radius:12px;padding:16px;background:rgba(168,85,247,.06);margin-bottom:20px;box-shadow:0 0 20px rgba(168,85,247,.15)}
 #sectionEmpate h3{color:#a855f7;margin-top:0}
 #sectionEmpate p{color:var(--text)}
@@ -115,7 +143,7 @@ input:focus{border-color:var(--accent)}
 </style>
 </head>
 <body>
-<button class="theme-toggle" onclick="toggleTheme()">&#9788; Tema</button>
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema" title="Cambiar tema">&#9788;</button>
 
 <div id="login">
   <h1>🔧 AXCEND Admin</h1>
@@ -166,7 +194,8 @@ input:focus{border-color:var(--accent)}
       <h3>Acciones</h3>
       <button class="btn" id="btnCerrarAhora">⛔ Cerrar votación ahora</button>
       <button class="btn" id="btnReabrir">🔓 Reabrir votación (sin límite)</button>
-      <button class="btn btn-danger" id="btnResetTotal">💥 Reset TOTAL (votos a 0 + libera a todos)</button>
+      <button class="btn btn-warn" id="btnReiniciarVotos">🔄 Reiniciar Votos (votos y votantes a 0, mantiene CDs y rescates)</button>
+      <button class="btn btn-danger" id="btnResetTotal">💥 Reset TOTAL (borra absolutamente todo)</button>
     </div>
 
     <div id="sectionEmpate" style="display:none">
@@ -501,7 +530,6 @@ input:focus{border-color:var(--accent)}
         ? ganadorFinalActual + (ganadorMetodoActual === 'rng' ? ' 🎲 (RNG)' : '')
         : "—";
 
-      // RNG trigger
       const elTrigger = document.getElementById("aRngTrigger");
       if (rngTriggerAt > 0) {
         const seg = Math.max(0, Math.ceil((rngTriggerAt - Date.now()) / 1000));
@@ -568,7 +596,6 @@ input:focus{border-color:var(--accent)}
   // RENDER VOTANTES / RESCATADORES
   // ============================================================
   function extraerDatosPersona(valor, username) {
-    // Soporta formato nuevo { personaje, nombreOriginal, fecha, voterId } y formato viejo (string = personaje)
     if (typeof valor === 'string') {
       return { personaje: valor, nombreOriginal: username, fecha: 0 };
     }
@@ -795,7 +822,7 @@ input:focus{border-color:var(--accent)}
   }
 
   // ============================================================
-  // RNG - FORZAR AHORA
+  // RNG
   // ============================================================
   async function ejecutarRngSilencioso(manual = false) {
     const votosSnap = await get(ref(db, 'votos'));
@@ -875,7 +902,6 @@ input:focus{border-color:var(--accent)}
 
   document.getElementById('btnResolverRng').addEventListener('click', forzarRngAhora);
 
-  // Auto-ejecutar si el admin es el único cliente abierto
   setInterval(async () => {
     if (!isAdmin) return;
     if (!votacionCerrada()) return;
@@ -933,6 +959,57 @@ input:focus{border-color:var(--accent)}
       await agregarLog('rescate', 'reset', '🗑 Todos los votos de rescate fueron reseteados', {});
       alert("✅ Rescates reseteados.");
     } catch (err) { alert("❌ " + err.message); }
+  }
+
+  // ============================================================
+  // 🔄 REINICIAR VOTOS (solo votos y votantes)
+  // Conserva: cooldowns, rescates, rescatadores, config
+  // Abre la votación sin fecha
+  // ============================================================
+  async function accionReiniciarVotos() {
+    if (!isAdmin) return;
+    if (!confirm(
+      "🔄 REINICIAR VOTOS\n\n" +
+      "Esto hará:\n" +
+      "• Votos normales a 0\n" +
+      "• Borrar los votantes registrados (podrán votar de nuevo)\n" +
+      "• Borrar ganadores y resultados pendientes\n" +
+      "• Abrir la votación sin fecha\n\n" +
+      "SE CONSERVAN:\n" +
+      "• Cooldowns (Sala de Espera)\n" +
+      "• Rescates acumulados\n" +
+      "• Rescatadores (quien ya usó su rescate sigue bloqueado)\n" +
+      "• Configuración (miembros, mensaje, días de CD)\n\n" +
+      "¿Continuar?"
+    )) return;
+    if (!confirm("¿Estás TOTALMENTE seguro? Esta acción no se puede deshacer.")) return;
+
+    try {
+      const snap = await get(ref(db, "votos"));
+      const votosSnap = snap.val() || {};
+      const votosVacios = {};
+      Object.keys(votosSnap).forEach(k => votosVacios[k] = 0);
+
+      await Promise.all([
+        set(ref(db, "votos"), votosVacios),
+        remove(ref(db, "votantes")),
+        remove(ref(db, "config/rng_resultado")),
+        set(ref(db, "config/rng_trigger_at"), 0),
+        set(ref(db, "config/reset_token"), "v" + Date.now()),
+        set(ref(db, "config/ganador_rescate"), ""),
+        set(ref(db, "config/ganador_final"), ""),
+        set(ref(db, "config/ganador_metodo"), ""),
+        set(ref(db, "config/fin_votacion"), 0)
+      ]);
+
+      await agregarLog('admin', 'reiniciar_votos',
+        '🔄 Reiniciar Votos ejecutado (votos y votantes a 0, CDs y rescates conservados, votación abierta)',
+        {});
+
+      alert("✅ Votos reiniciados. La votación está abierta y lista para un nuevo ciclo.\n\nSe conservaron: cooldowns, rescates acumulados y rescatadores.");
+    } catch (err) {
+      alert("❌ " + err.message);
+    }
   }
 
   async function accionResetTotal() {
@@ -1036,6 +1113,7 @@ input:focus{border-color:var(--accent)}
   document.getElementById("btnResetTotal").addEventListener("click", accionResetTotal);
   document.getElementById("btnCerrarAhora").addEventListener("click", accionCerrarAhora);
   document.getElementById("btnReabrir").addEventListener("click", accionReabrir);
+  document.getElementById("btnReiniciarVotos").addEventListener("click", accionReiniciarVotos);
   document.getElementById("btnGuardarFecha").addEventListener("click", accionGuardarFecha);
   document.getElementById("btnQuitarFecha").addEventListener("click", accionQuitarFecha);
   document.getElementById("btnGuardarMiembros").addEventListener("click", accionGuardarMiembros);
@@ -1050,7 +1128,6 @@ input:focus{border-color:var(--accent)}
     if (isAdmin) set(ref(db, "config/cd_dias"), v);
   });
 
-  // Tick para actualizar el countdown de la sección empate
   setInterval(actualizarEmpateEstado, 1000);
 </script>
 </body>
