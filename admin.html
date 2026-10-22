@@ -19,33 +19,15 @@ body.light{--bg:#f2f3f7;--card:#ffffff;--text:#1a1c30;--accent:#d4a017;--sub:#55
 *{box-sizing:border-box}
 body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;transition:.3s}
 
-/* --- BOTÓN TEMA CIRCULAR --- */
 .theme-toggle{
-  position:fixed;
-  top:14px;
-  right:14px;
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  background:var(--card);
-  color:var(--text);
-  border:1px solid var(--border);
-  cursor:pointer;
-  font-size:20px;
-  z-index:50;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 2px 10px rgba(0,0,0,.35);
-  transition:.2s;
-  padding:0;
-  line-height:1;
+  position:fixed;top:14px;right:14px;width:42px;height:42px;border-radius:50%;
+  background:var(--card);color:var(--text);border:1px solid var(--border);cursor:pointer;
+  font-size:20px;z-index:50;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 10px rgba(0,0,0,.35);transition:.2s;padding:0;line-height:1;
 }
 .theme-toggle:hover{transform:scale(1.08);filter:brightness(1.15);border-color:var(--accent)}
 .theme-toggle:active{transform:scale(.95)}
-@media(max-width:600px){
-  .theme-toggle{width:36px;height:36px;font-size:17px;top:8px;right:8px}
-}
+@media(max-width:600px){.theme-toggle{width:36px;height:36px;font-size:17px;top:8px;right:8px}}
 
 #login{display:flex;flex-direction:column;gap:16px;max-width:400px;width:100%;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center}
 #login.hidden{display:none}
@@ -90,8 +72,8 @@ input:focus{border-color:var(--accent)}
 .cd-item .tag{font-size:10px;color:#ff9800;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
 .rescate-info{font-size:12px;color:var(--sub);margin-top:8px;padding:8px;background:var(--bg);border-radius:6px;border-left:3px solid #ff9800}
 
-/* --- VOTANTES / RESCATADORES --- */
-.personas-list{max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg);padding:6px}
+/* --- VOTANTES --- */
+.personas-list{max-height:340px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg);padding:6px}
 .persona-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:var(--card);border-left:3px solid var(--accent);border-radius:6px;padding:9px 11px;margin-bottom:6px;font-size:13px}
 .persona-item.rescate-item{border-left-color:#ff9800}
 .persona-item:last-child{margin-bottom:0}
@@ -99,13 +81,11 @@ input:focus{border-color:var(--accent)}
 .persona-item .p-name{font-weight:700;color:var(--text);word-break:break-word;font-size:13px}
 .persona-item .p-name .p-meta{font-weight:400;color:var(--sub);font-size:11px;margin-left:6px}
 
-/* --- NUEVO: voto enmascarado con blur --- */
+/* Voto enmascarado con blur */
 .p-vote{
   font-size:12px;
   color:var(--sub);
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
+  display:inline-block;
   padding:2px 6px;
   margin-left:-6px;
   border-radius:6px;
@@ -113,42 +93,38 @@ input:focus{border-color:var(--accent)}
   transition:background .2s;
   user-select:none;
   max-width:100%;
+  line-height:1.4;
+  word-break:break-word;
 }
 .p-vote:hover{background:rgba(245,197,66,.08)}
 .persona-item.rescate-item .p-vote:hover{background:rgba(255,152,0,.08)}
 .p-vote .p-vote-blurred{
-  display:inline-block;
+  display:inline;
   color:var(--accent);
   font-weight:700;
   filter:blur(6px);
   user-select:none;
   transition:filter .3s ease;
-  max-width:220px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
   vertical-align:middle;
+  word-break:break-word;
 }
 .persona-item.rescate-item .p-vote .p-vote-blurred{color:#ff9800}
 .p-vote.revealed .p-vote-blurred{
   filter:none;
   user-select:text;
 }
-.p-vote .p-vote-eye{
-  font-size:11px;
-  opacity:.55;
-  transition:opacity .2s;
-  flex-shrink:0;
-}
-.p-vote:hover .p-vote-eye{opacity:1}
-.p-vote.revealed .p-vote-eye{opacity:.3}
 
 .persona-item .p-fecha{font-size:10px;color:var(--sub);font-variant-numeric:tabular-nums;opacity:.75}
-.persona-item .p-del{background:transparent;border:1px solid #ff5c5c;color:#ff5c5c;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:11px;font-family:inherit;font-weight:700;transition:.2s;white-space:nowrap;align-self:center}
+.persona-item .p-del{
+  background:transparent;border:1px solid #ff5c5c;color:#ff5c5c;border-radius:6px;
+  padding:6px 10px;cursor:pointer;font-size:12px;font-family:inherit;font-weight:700;
+  transition:.2s;white-space:nowrap;align-self:center;line-height:1;
+}
 .persona-item .p-del:hover{background:#3a1a1a}
 .personas-empty{font-size:12px;color:var(--sub);text-align:center;padding:20px 10px;font-style:italic}
 .personas-counter{font-size:12px;color:var(--sub);text-align:center;margin-top:6px;font-weight:600}
 .personas-counter b{color:var(--accent)}
+.personas-counter b.resc{color:#ff9800}
 
 /* --- EMPATE --- */
 #sectionEmpate{border:2px solid #a855f7;border-radius:12px;padding:16px;background:rgba(168,85,247,.06);margin-bottom:20px;box-shadow:0 0 20px rgba(168,85,247,.15)}
@@ -213,23 +189,12 @@ input:focus{border-color:var(--accent)}
     <div class="section">
       <h3>👥 Votantes</h3>
       <p style="font-size:12px;color:var(--sub);margin:0 0 8px">
-        Integrantes que emitieron su voto normal. El personaje votado está <strong>oculto</strong> por defecto — <strong>haz clic para revelarlo</strong> (así puedes compartir capturas sin destripar el voto). Si ves un nombre duplicado o sospechoso, elimínalo con 🗑.
+        Integrantes que participaron. El personaje está <strong>oculto</strong> por defecto — <strong>haz clic para revelarlo</strong>. Los rescates se marcan con <span style="color:#ff9800;font-weight:700">borde naranja</span>.
       </p>
-      <div class="personas-list" id="votantesList">
-        <div class="personas-empty">Cargando votantes...</div>
+      <div class="personas-list" id="personasList">
+        <div class="personas-empty">Cargando...</div>
       </div>
-      <div class="personas-counter" id="votantesCounter">—</div>
-    </div>
-
-    <div class="section">
-      <h3>🔥 Rescatadores</h3>
-      <p style="font-size:12px;color:var(--sub);margin:0 0 8px">
-        Integrantes que usaron su voto de rescate. El personaje rescatado está <strong>oculto</strong> por defecto — <strong>haz clic para revelarlo</strong>.
-      </p>
-      <div class="personas-list" id="rescatadoresList">
-        <div class="personas-empty">Cargando rescatadores...</div>
-      </div>
-      <div class="personas-counter" id="rescatadoresCounter">—</div>
+      <div class="personas-counter" id="personasCounter">—</div>
     </div>
 
     <div class="section">
@@ -355,22 +320,15 @@ input:focus{border-color:var(--accent)}
   let filtroLogs = "all";
   let rngYaIntentadoAdmin = false;
 
-  // Sets para mantener revelados entre renders
   const votosRevelados = new Set();
   const rescatesRevelados = new Set();
 
-  // ============================================================
-  // PWA
-  // ============================================================
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js').catch(() => {});
     });
   }
 
-  // ============================================================
-  // TEMA
-  // ============================================================
   function aplicarTema() {
     const saved = localStorage.getItem("axcend_admin_theme");
     if (saved === "light") document.body.classList.add("light");
@@ -609,12 +567,12 @@ input:focus{border-color:var(--accent)}
       votantesActuales = snap.val() || {};
       const count = Object.keys(votantesActuales).length;
       document.getElementById("aVotantes").textContent = count;
-      renderVotantesList();
+      renderPersonasList();
     });
 
     onValue(ref(db, "rescatadores"), (snap) => {
       rescatadoresActuales = snap.val() || {};
-      renderRescatadoresList();
+      renderPersonasList();
     });
 
     onValue(ref(db, "cooldowns"), (snap) => {
@@ -639,7 +597,7 @@ input:focus{border-color:var(--accent)}
   }
 
   // ============================================================
-  // RENDER VOTANTES / RESCATADORES (con blur en el personaje)
+  // RENDER COMBINADO DE VOTANTES + RESCATADORES
   // ============================================================
   function extraerDatosPersona(valor, username) {
     if (typeof valor === 'string') {
@@ -652,113 +610,73 @@ input:focus{border-color:var(--accent)}
     };
   }
 
-  function bindReveal(container, selector, set) {
-    container.querySelectorAll(selector).forEach(el => {
+  function renderPersonasList() {
+    const cont = document.getElementById('personasList');
+    const counter = document.getElementById('personasCounter');
+
+    const todos = [];
+    Object.entries(votantesActuales).forEach(([username, valor]) => {
+      const d = extraerDatosPersona(valor, username);
+      todos.push({ username, tipo: 'voto', personaje: d.personaje, nombreOriginal: d.nombreOriginal, fecha: d.fecha });
+    });
+    Object.entries(rescatadoresActuales).forEach(([username, valor]) => {
+      const d = extraerDatosPersona(valor, username);
+      todos.push({ username, tipo: 'rescate', personaje: d.personaje, nombreOriginal: d.nombreOriginal, fecha: d.fecha });
+    });
+
+    const nVotantes = Object.keys(votantesActuales).length;
+    const nRescatadores = Object.keys(rescatadoresActuales).length;
+
+    if (todos.length === 0) {
+      cont.innerHTML = '<div class="personas-empty">Nadie ha votado ni rescatado aún.</div>';
+      counter.innerHTML = `<b>0</b> de ${totalMiembros} han votado · <b class="resc">0</b> rescates`;
+      return;
+    }
+
+    todos.sort((a, b) => (b.fecha || 0) - (a.fecha || 0));
+
+    cont.innerHTML = todos.map(p => {
+      const set = p.tipo === 'rescate' ? rescatesRevelados : votosRevelados;
+      const revelado = set.has(p.username) ? ' revealed' : '';
+      const claseExtra = p.tipo === 'rescate' ? ' rescate-item' : '';
+      const accion = p.tipo === 'rescate' ? '🔥 Rescató a:' : '🗳 Votó por:';
+      const fecha = p.fecha ? formatearFechaHora(p.fecha) : '—';
+      return `
+        <div class="persona-item${claseExtra}">
+          <div class="p-info">
+            <div class="p-name">${p.nombreOriginal}<span class="p-meta">(${p.username})</span></div>
+            <div class="p-vote${revelado}" data-reveal-user="${p.username}" data-reveal-tipo="${p.tipo}" title="Clic para ${revelado ? 'ocultar' : 'revelar'}">
+              ${accion} <span class="p-vote-blurred">${p.personaje || '—'}</span>
+            </div>
+            <div class="p-fecha">${fecha}</div>
+          </div>
+          <button class="p-del" data-del-user="${p.username}" data-del-tipo="${p.tipo}" title="Eliminar ${p.tipo === 'rescate' ? 'rescate' : 'voto'}">Eliminar</button>
+        </div>
+      `;
+    }).join('');
+
+    cont.querySelectorAll('.p-vote[data-reveal-user]').forEach(el => {
       el.addEventListener('click', (ev) => {
-        // Evitar que el clic del botón borrar dispare el reveal
         if (ev.target.closest('.p-del')) return;
         const username = el.dataset.revealUser;
-        const estabaRevelado = el.classList.toggle('revealed');
-        if (estabaRevelado) set.add(username);
+        const tipo = el.dataset.revealTipo;
+        const set = tipo === 'rescate' ? rescatesRevelados : votosRevelados;
+        if (el.classList.toggle('revealed')) set.add(username);
         else set.delete(username);
       });
     });
-  }
-
-  function renderVotantesList() {
-    const cont = document.getElementById('votantesList');
-    const counter = document.getElementById('votantesCounter');
-    const entries = Object.entries(votantesActuales);
-
-    if (entries.length === 0) {
-      cont.innerHTML = '<div class="personas-empty">Nadie ha votado aún.</div>';
-      counter.textContent = `0 de ${totalMiembros} han votado`;
-      return;
-    }
-
-    entries.sort((a, b) => {
-      const fa = extraerDatosPersona(a[1], a[0]).fecha || 0;
-      const fb = extraerDatosPersona(b[1], b[0]).fecha || 0;
-      return fb - fa;
-    });
-
-    cont.innerHTML = entries.map(([username, valor]) => {
-      const d = extraerDatosPersona(valor, username);
-      const fecha = d.fecha ? formatearFechaHora(d.fecha) : '—';
-      const revelado = votosRevelados.has(username) ? ' revealed' : '';
-      return `
-        <div class="persona-item">
-          <div class="p-info">
-            <div class="p-name">${d.nombreOriginal}<span class="p-meta">(${username})</span></div>
-            <div class="p-vote${revelado}" data-reveal-user="${username}" title="Clic para ${revelado ? 'ocultar' : 'revelar'}">
-              Votó por: <span class="p-vote-blurred">${d.personaje || '—'}</span>
-              <span class="p-vote-eye">👁</span>
-            </div>
-            <div class="p-fecha">${fecha}</div>
-          </div>
-          <button class="p-del" data-del-votante="${username}">🗑 Eliminar</button>
-        </div>
-      `;
-    }).join('');
-
-    bindReveal(cont, '.p-vote[data-reveal-user]', votosRevelados);
 
     cont.querySelectorAll('.p-del').forEach(btn => {
       btn.addEventListener('click', (ev) => {
         ev.stopPropagation();
-        eliminarVotante(btn.dataset.delVotante);
+        const username = btn.dataset.delUser;
+        const tipo = btn.dataset.delTipo;
+        if (tipo === 'rescate') eliminarRescatador(username);
+        else eliminarVotante(username);
       });
     });
 
-    counter.innerHTML = `<b>${entries.length}</b> de ${totalMiembros} han votado`;
-  }
-
-  function renderRescatadoresList() {
-    const cont = document.getElementById('rescatadoresList');
-    const counter = document.getElementById('rescatadoresCounter');
-    const entries = Object.entries(rescatadoresActuales);
-
-    if (entries.length === 0) {
-      cont.innerHTML = '<div class="personas-empty">Nadie ha usado su rescate aún.</div>';
-      counter.textContent = `0 rescates en total`;
-      return;
-    }
-
-    entries.sort((a, b) => {
-      const fa = extraerDatosPersona(a[1], a[0]).fecha || 0;
-      const fb = extraerDatosPersona(b[1], b[0]).fecha || 0;
-      return fb - fa;
-    });
-
-    cont.innerHTML = entries.map(([username, valor]) => {
-      const d = extraerDatosPersona(valor, username);
-      const fecha = d.fecha ? formatearFechaHora(d.fecha) : '—';
-      const revelado = rescatesRevelados.has(username) ? ' revealed' : '';
-      return `
-        <div class="persona-item rescate-item">
-          <div class="p-info">
-            <div class="p-name">${d.nombreOriginal}<span class="p-meta">(${username})</span></div>
-            <div class="p-vote${revelado}" data-reveal-user="${username}" title="Clic para ${revelado ? 'ocultar' : 'revelar'}">
-              Rescató a: <span class="p-vote-blurred">${d.personaje || '—'}</span>
-              <span class="p-vote-eye">👁</span>
-            </div>
-            <div class="p-fecha">${fecha}</div>
-          </div>
-          <button class="p-del" data-del-rescatador="${username}">🗑 Eliminar</button>
-        </div>
-      `;
-    }).join('');
-
-    bindReveal(cont, '.p-vote[data-reveal-user]', rescatesRevelados);
-
-    cont.querySelectorAll('.p-del').forEach(btn => {
-      btn.addEventListener('click', (ev) => {
-        ev.stopPropagation();
-        eliminarRescatador(btn.dataset.delRescatador);
-      });
-    });
-
-    counter.innerHTML = `<b>${entries.length}</b> rescate${entries.length !== 1 ? 's' : ''} en total`;
+    counter.innerHTML = `<b>${nVotantes}</b> de ${totalMiembros} han votado · <b class="resc">${nRescatadores}</b> rescate${nRescatadores !== 1 ? 's' : ''}`;
   }
 
   async function eliminarVotante(username) {
