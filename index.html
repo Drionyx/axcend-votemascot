@@ -53,7 +53,6 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .votantes{margin-top:8px;font-size:13px;color:var(--sub);font-weight:600}
 .votantes strong{color:var(--accent)}
 
-/* --- BOTÓN TEMA CIRCULAR --- */
 .theme-btn{
   position:fixed;
   top:14px;
@@ -82,7 +81,6 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
   header{padding-top:36px}
 }
 
-/* --- USER BADGE --- */
 .user-badge{margin:12px auto 0;display:inline-flex;align-items:center;gap:10px;padding:7px 14px;background:var(--card);border:1px solid var(--accent);border-radius:20px;font-size:13px;color:var(--text);max-width:100%}
 .user-badge .ub-icon{font-size:14px}
 .user-badge strong{color:var(--accent)}
@@ -91,7 +89,6 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .user-badge button:hover{border-color:var(--accent);color:var(--accent);background:rgba(245,197,66,.08)}
 .user-badge button:active{transform:scale(.95)}
 
-/* --- LOGIN OVERLAY --- */
 #loginOverlay{position:fixed;inset:0;background:rgba(15,16,32,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:900;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .3s ease}
 #loginOverlay.hidden{display:none}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -542,27 +539,22 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
   let unsubscribeVotanteActual = null;
   let unsubscribeRescatadorActual = null;
 
-  // ============================================================
-  // PWA
-  // ============================================================
+  // Auto-CD config
+  let autoCdActivo = false;
+  let cdDiasConfig = 60;
+
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js').catch(() => {});
     });
   }
 
-  // ============================================================
-  // LOGS
-  // ============================================================
   async function agregarLog(tipo, subtipo, mensaje, detalles = {}) {
     try {
       await push(ref(db, 'logs'), { tipo, subtipo, fecha: Date.now(), mensaje, detalles });
     } catch (e) { console.warn('log fail', e); }
   }
 
-  // ============================================================
-  // CONFETTI
-  // ============================================================
   function dispararConfeti() {
     if (typeof confetti !== 'function') return;
     const colors = ['#f5c542','#ff9800','#4CAF50','#a855f7','#ffffff','#e91e63'];
@@ -575,9 +567,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     })();
   }
 
-  // ============================================================
-  // TOASTS
-  // ============================================================
   function mostrarToast(mensaje, tipo = "success") {
     const container = document.getElementById("toastContainer");
     const toast = document.createElement("div");
@@ -588,9 +577,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     setTimeout(() => { toast.remove(); }, 3500);
   }
 
-  // ============================================================
-  // USERNAME / LOGIN
-  // ============================================================
   function normalizarNombre(nombre) {
     return nombre.toLowerCase().trim().normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "_").replace(/[^a-z0-9_\-]/g, "");
@@ -662,9 +648,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     }
   });
 
-  // ============================================================
-  // BOTÓN "CAMBIAR USUARIO"
-  // ============================================================
   document.getElementById("btnCambiarNombre").addEventListener("click", () => {
     const nombre = usernameOriginalActual || "usuario actual";
     if (!confirm(
@@ -675,26 +658,20 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     )) return;
 
     detenerListenersUsuario();
-
     localStorage.removeItem(USER_KEY);
     localStorage.removeItem(USER_ORIG_KEY);
     localStorage.removeItem(VOTE_KEY);
     localStorage.removeItem(RESCUE_KEY);
-
     usernameActual = "";
     usernameOriginalActual = "";
     votoPendiente = "";
     rescatePendiente = "";
-
     sessionStorage.removeItem('confetti_rescate');
     sessionStorage.removeItem('confetti_ganador');
-
     actualizarHeaderUsuario();
     refrescarBotones();
     renderCdPanel();
-
     mostrarToast("Sesión cerrada. Ingresa el nuevo usuario.", "success");
-
     setTimeout(() => {
       document.getElementById("inputUsername").value = "";
       mostrarLoginModal();
@@ -711,7 +688,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     txt.innerHTML = `Votando como: <strong>${usernameOriginalActual}</strong>`;
     const yaVoto = !!localStorage.getItem(VOTE_KEY) || !!localStorage.getItem(RESCUE_KEY);
     lock.style.display = yaVoto ? "inline" : "none";
-    btn.style.display = "inline-block"; // SIEMPRE visible
+    btn.style.display = "inline-block";
   }
 
   function detenerListenersUsuario() {
@@ -721,7 +698,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
 
   function iniciarListenerUsuario() {
     if (!usernameActual) return;
-
     detenerListenersUsuario();
     const userAlIniciar = usernameActual;
 
@@ -750,9 +726,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     });
   }
 
-  // ============================================================
-  // UTILIDADES
-  // ============================================================
   function getVoterId() {
     let id = localStorage.getItem(VOTER_ID_KEY);
     if (!id) { id = "v" + Date.now() + "_" + Math.random().toString(36).slice(2,10); localStorage.setItem(VOTER_ID_KEY, id); }
@@ -920,9 +893,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     });
   }
 
-  // ============================================================
-  // MODAL
-  // ============================================================
   function abrirModal(nombre, imgSrc) {
     accionModal = "votar"; votoPendiente = nombre;
     document.getElementById("modalImg").src = imgSrc;
@@ -952,9 +922,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     else { const n = votoPendiente; cerrarModal(); if (n) ejecutarVoto(n); }
   };
 
-  // ============================================================
-  // ANIMACIÓN AL VOTAR
-  // ============================================================
   function animarVotoEnCard(nombre, esRescate) {
     let card = null;
     if (esRescate) {
@@ -969,9 +936,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     setTimeout(() => card.classList.remove("vote-pop", "vote-pop-rescue"), 900);
   }
 
-  // ============================================================
-  // VOTO NORMAL
-  // ============================================================
   async function ejecutarVoto(nombre) {
     if (!usernameActual) { mostrarLoginModal(); return; }
     if (getRescue() !== "") { mostrarToast("Ya usaste tu voto en rescate.", "error"); return; }
@@ -996,9 +960,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     }
   }
 
-  // ============================================================
-  // RESCATE
-  // ============================================================
   async function ejecutarRescate(nombre) {
     if (!usernameActual) { mostrarLoginModal(); return; }
     if (getVote() !== "") { mostrarToast("Ya votaste por un activo. No puedes rescatar.", "error"); return; }
@@ -1026,6 +987,22 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
         agregarLog('rescate', 'rescate_exitoso',
           `🔥 "${nombre}" alcanzó ${nuevos}/${umbral} rescates y es el GANADOR`,
           { personaje: nombre, votosRescate: nuevos, umbral });
+
+        // Auto-CD: resetear el CD del ganador por rescate
+        if (autoCdActivo) {
+          const ahora = Date.now();
+          const hasta = ahora + cdDiasConfig * 24 * 60 * 60 * 1000;
+          set(ref(db, `cooldowns/${nombre}`), {
+            activo: true,
+            desde: ahora,
+            hasta,
+            motivo: "Auto-CD al ganar por rescate"
+          });
+          agregarLog('cd', 'auto_aplicado',
+            `⏳ Auto-CD de ${cdDiasConfig} días aplicado a "${nombre}" (ganador por rescate)`,
+            { personaje: nombre, dias: cdDiasConfig, hasta });
+        }
+
         setTimeout(() => { mostrarToast(`🔥 ¡${nombre} ha sido SALVADO y es el GANADOR!`, "rescue"); dispararConfeti(); }, 1500);
       }
     } catch (error) {
@@ -1047,9 +1024,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     });
   });
 
-  // ============================================================
-  // COUNTDOWN
-  // ============================================================
   function formatearTiempo(ms) {
     const d = Math.floor(ms / 86400000); const h = Math.floor((ms % 86400000) / 3600000);
     const m = Math.floor((ms % 3600000) / 60000); const s = Math.floor((ms % 60000) / 1000);
@@ -1085,9 +1059,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     }
   }
 
-  // ============================================================
-  // CONFIG
-  // ============================================================
   function cargarConfig() {
     onValue(ref(db, 'config'), (snapshot) => {
       if (snapshot.exists()) {
@@ -1099,6 +1070,9 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
         ganadorFinal = cfg.ganador_final || "";
         ganadorMetodo = cfg.ganador_metodo || "";
         rngTriggerAt = cfg.rng_trigger_at || 0;
+        autoCdActivo = cfg.auto_cd_activo === true;
+        cdDiasConfig = cfg.cd_dias || 60;
+
         const nuevoToken = cfg.reset_token || "";
         const msgEl = document.getElementById('mensaje');
         if (cfg.mensaje && cfg.mensaje.trim() !== "") {
@@ -1119,6 +1093,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       }
       actualizarCountdown(); refrescarBotones(); aplicarVisibilidadGrid(); renderCdPanel();
       actualizarAvisoEmpate(); verificarAutoRng();
+      aplicarRanking();
     });
 
     onValue(ref(db, 'cooldowns'), (snap) => {
@@ -1159,9 +1134,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     });
   }
 
-  // ============================================================
-  // BANNER EMPATE / AUTO RNG
-  // ============================================================
   function actualizarAvisoEmpate() {
     const el = document.getElementById('empateAviso');
     if (ganadorRescate || ganadorFinal || !votacionCerrada() || rngResultado) {
@@ -1260,6 +1232,21 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
           `🎲 Desempate por dados: ganador "${ganador}" tras ${rondaNum} ronda(s)`,
           { rondas, ganador, empatados: emp.empatados.map(e => e.nombre), votosMax: emp.maxVotos });
         if (!votacionCerrada()) await set(ref(db, 'config/fin_votacion'), Date.now() - 1);
+
+        // Auto-CD del ganador por RNG (si aplica)
+        if (autoCdActivo) {
+          const ahora = Date.now();
+          const hasta = ahora + cdDiasConfig * 24 * 60 * 60 * 1000;
+          await set(ref(db, `cooldowns/${ganador}`), {
+            activo: true,
+            desde: ahora,
+            hasta,
+            motivo: "Auto-CD al ganar por RNG"
+          });
+          await agregarLog('cd', 'auto_aplicado',
+            `⏳ Auto-CD de ${cdDiasConfig} días aplicado a "${ganador}" (ganador por RNG)`,
+            { personaje: ganador, dias: cdDiasConfig, hasta });
+        }
       } else {
         rngYaIntentado = false;
       }
@@ -1282,9 +1269,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     ejecutarRollRng();
   }, 1000);
 
-  // ============================================================
-  // ANIMACIÓN DE DADOS
-  // ============================================================
   async function animarDados(resultado) {
     if (rngAnimacionEnCurso) return;
     rngAnimacionEnCurso = true;
@@ -1357,9 +1341,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     rngAnimacionEnCurso = false;
   }
 
-  // ============================================================
-  // RESULTADOS Y GANADOR
-  // ============================================================
   function mostrarVotosEnCartas() {
     if (votosListenerActivo) return;
     votosListenerActivo = true;
@@ -1381,6 +1362,9 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
   function construirWinnerCard(card, variante, badgeTexto) {
     const clone = card.cloneNode(true);
     clone.className = "winner-card" + (variante ? " " + variante : "");
+    // FIX: forzar visible aunque la tarjeta original esté oculta por CD
+    clone.style.removeProperty('display');
+    delete clone.dataset.ocultaPorCd;
     if (badgeTexto) {
       const badge = document.createElement("div");
       badge.className = "votos-badge"; badge.textContent = badgeTexto; clone.appendChild(badge);
@@ -1452,9 +1436,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     }
   }
 
-  // ============================================================
-  // ATAJO ADMIN
-  // ============================================================
   const ADMIN_CODE = "2552321";
   let adminKeyBuffer = "";
   document.addEventListener("keydown", function(e) {
@@ -1465,9 +1446,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     if (adminKeyBuffer.endsWith(ADMIN_CODE)) { adminKeyBuffer = ""; window.open("admin.html", "_blank"); }
   });
 
-  // ============================================================
-  // INIT
-  // ============================================================
   usernameActual = getUsername();
   usernameOriginalActual = getUsernameOriginal();
   if (!usernameActual) mostrarLoginModal();
