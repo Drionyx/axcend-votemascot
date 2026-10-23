@@ -19,12 +19,7 @@ body.light{--bg:#f2f3f7;--card:#ffffff;--text:#1a1c30;--accent:#d4a017;--sub:#55
 *{box-sizing:border-box}
 body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;transition:.3s}
 
-.theme-toggle{
-  position:fixed;top:14px;right:14px;width:42px;height:42px;border-radius:50%;
-  background:var(--card);color:var(--text);border:1px solid var(--border);cursor:pointer;
-  font-size:20px;z-index:50;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 2px 10px rgba(0,0,0,.35);transition:.2s;padding:0;line-height:1;
-}
+.theme-toggle{position:fixed;top:14px;right:14px;width:42px;height:42px;border-radius:50%;background:var(--card);color:var(--text);border:1px solid var(--border);cursor:pointer;font-size:20px;z-index:50;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.35);transition:.2s;padding:0;line-height:1}
 .theme-toggle:hover{transform:scale(1.08);filter:brightness(1.15);border-color:var(--accent)}
 .theme-toggle:active{transform:scale(.95)}
 @media(max-width:600px){.theme-toggle{width:36px;height:36px;font-size:17px;top:8px;right:8px}}
@@ -46,6 +41,7 @@ body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:v
 .section{margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
 .section:last-child{border-bottom:none;padding-bottom:0;margin-bottom:0}
 .section h3{font-size:13px;color:var(--sub);text-transform:uppercase;letter-spacing:1px;margin:0 0 12px}
+.section h4{font-size:12px;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;margin:14px 0 8px}
 .section p{margin:6px 0;font-size:14px}
 .section p span{color:var(--accent);font-weight:700}
 .btn{display:block;width:100%;padding:12px;border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:10px;font-weight:600;cursor:pointer;font-size:14px;margin-bottom:8px;transition:.2s;text-align:left;font-family:inherit}
@@ -63,13 +59,30 @@ input:focus{border-color:var(--accent)}
 .status-ok{color:#4CAF50}
 .status-no{color:#ff5c5c}
 .status-purple{color:#a855f7}
-.cd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:8px}
+
+/* Toggle row */
+.toggle-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;margin:8px 0 12px;transition:.2s;user-select:none}
+.toggle-row:hover{border-color:var(--accent)}
+.toggle-row input[type="checkbox"]{accent-color:#ff9800;width:16px;height:16px;cursor:pointer;flex-shrink:0;margin:0}
+.toggle-row span{color:var(--text);font-weight:600}
+
+.cd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
 .cd-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;transition:.2s;user-select:none}
 .cd-item:hover{border-color:var(--accent)}
 .cd-item input[type="checkbox"]{accent-color:#ff9800;width:16px;height:16px;cursor:pointer;flex-shrink:0}
-.cd-item.en-cd{border-color:#ff9800;background:rgba(255,152,0,.08)}
 .cd-item .nombre{flex:1;word-break:break-word}
-.cd-item .tag{font-size:10px;color:#ff9800;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+
+/* En CD actual */
+.cd-activos-list{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg);padding:6px}
+.cd-activo-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:var(--card);border-left:3px solid #ff9800;border-radius:6px;padding:9px 11px;font-size:13px}
+.cd-activo-item .cda-info{display:flex;flex-direction:column;gap:3px;min-width:0}
+.cd-activo-item .cda-name{font-weight:700;color:var(--text);font-size:13px;word-break:break-word}
+.cd-activo-item .cda-meta{font-size:11px;color:#ff9800;font-variant-numeric:tabular-nums;font-weight:600}
+.cd-activo-item .cda-progress{font-size:11px;color:var(--sub)}
+.cd-activo-item .cda-progress b{color:#ff9800}
+.cd-activo-item .cda-liberar{background:transparent;border:1px solid #4CAF50;color:#4CAF50;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px;font-family:inherit;font-weight:700;transition:.2s;white-space:nowrap;align-self:center;line-height:1}
+.cd-activo-item .cda-liberar:hover{background:rgba(76,175,80,.15)}
+
 .rescate-info{font-size:12px;color:var(--sub);margin-top:8px;padding:8px;background:var(--bg);border-radius:6px;border-left:3px solid #ff9800}
 
 /* --- VOTANTES --- */
@@ -81,52 +94,21 @@ input:focus{border-color:var(--accent)}
 .persona-item .p-name{font-weight:700;color:var(--text);word-break:break-word;font-size:13px}
 .persona-item .p-name .p-meta{font-weight:400;color:var(--sub);font-size:11px;margin-left:6px}
 
-/* Voto enmascarado con blur */
-.p-vote{
-  font-size:12px;
-  color:var(--sub);
-  display:inline-block;
-  padding:2px 6px;
-  margin-left:-6px;
-  border-radius:6px;
-  cursor:pointer;
-  transition:background .2s;
-  user-select:none;
-  max-width:100%;
-  line-height:1.4;
-  word-break:break-word;
-}
+.p-vote{font-size:12px;color:var(--sub);display:inline-block;padding:2px 6px;margin-left:-6px;border-radius:6px;cursor:pointer;transition:background .2s;user-select:none;max-width:100%;line-height:1.4;word-break:break-word}
 .p-vote:hover{background:rgba(245,197,66,.08)}
 .persona-item.rescate-item .p-vote:hover{background:rgba(255,152,0,.08)}
-.p-vote .p-vote-blurred{
-  display:inline;
-  color:var(--accent);
-  font-weight:700;
-  filter:blur(6px);
-  user-select:none;
-  transition:filter .3s ease;
-  vertical-align:middle;
-  word-break:break-word;
-}
+.p-vote .p-vote-blurred{display:inline;color:var(--accent);font-weight:700;filter:blur(6px);user-select:none;transition:filter .3s ease;vertical-align:middle;word-break:break-word}
 .persona-item.rescate-item .p-vote .p-vote-blurred{color:#ff9800}
-.p-vote.revealed .p-vote-blurred{
-  filter:none;
-  user-select:text;
-}
+.p-vote.revealed .p-vote-blurred{filter:none;user-select:text}
 
 .persona-item .p-fecha{font-size:10px;color:var(--sub);font-variant-numeric:tabular-nums;opacity:.75}
-.persona-item .p-del{
-  background:transparent;border:1px solid #ff5c5c;color:#ff5c5c;border-radius:6px;
-  padding:6px 10px;cursor:pointer;font-size:12px;font-family:inherit;font-weight:700;
-  transition:.2s;white-space:nowrap;align-self:center;line-height:1;
-}
+.persona-item .p-del{background:transparent;border:1px solid #ff5c5c;color:#ff5c5c;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px;font-family:inherit;font-weight:700;transition:.2s;white-space:nowrap;align-self:center;line-height:1}
 .persona-item .p-del:hover{background:#3a1a1a}
 .personas-empty{font-size:12px;color:var(--sub);text-align:center;padding:20px 10px;font-style:italic}
 .personas-counter{font-size:12px;color:var(--sub);text-align:center;margin-top:6px;font-weight:600}
 .personas-counter b{color:var(--accent)}
 .personas-counter b.resc{color:#ff9800}
 
-/* --- EMPATE --- */
 #sectionEmpate{border:2px solid #a855f7;border-radius:12px;padding:16px;background:rgba(168,85,247,.06);margin-bottom:20px;box-shadow:0 0 20px rgba(168,85,247,.15)}
 #sectionEmpate h3{color:#a855f7;margin-top:0}
 #sectionEmpate p{color:var(--text)}
@@ -135,7 +117,6 @@ input:focus{border-color:var(--accent)}
 .empate-lista .emp-votos{color:var(--sub);font-size:11px;margin-left:6px}
 .empate-estado{font-size:12px;color:var(--sub);margin:8px 0;padding:8px;background:rgba(0,0,0,.2);border-radius:6px;text-align:center;font-weight:600}
 
-/* --- LOGS --- */
 .logs-filters{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
 .btn-mini{padding:5px 10px;font-size:11px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;transition:.2s;font-family:inherit;font-weight:600}
 .btn-mini:hover{border-color:var(--accent)}
@@ -233,19 +214,29 @@ input:focus{border-color:var(--accent)}
     </div>
 
     <div class="section">
-      <h3>⏳ Cooldown de personajes (Sala de Espera)</h3>
+      <h3>⏳ Cooldown de personajes</h3>
       <p style="font-size:12px;color:var(--sub);margin:0 0 8px">
-        Marca los personajes que entrarán en cooldown. No podrán votarse, pero sí "salvarse" si ≥ 50% del clan los rescata.
+        Marca los personajes disponibles para enviarlos a la Sala de Espera. Los que ya están en CD aparecen abajo con su contador — pulsa <strong>Liberar</strong> para sacarlos manualmente.
       </p>
 
-      <label for="inputCdDias">Duración del cooldown (días):</label>
+      <label for="inputCdDias">Duración del CD (días):</label>
       <input type="number" id="inputCdDias" min="1" max="365" placeholder="60">
 
-      <div class="cd-grid" id="cdGrid"></div>
+      <label class="toggle-row" for="inputAutoCd">
+        <input type="checkbox" id="inputAutoCd">
+        <span>Aplicar CD automático al ganador al cerrar votación</span>
+      </label>
 
+      <h4>✅ Disponibles</h4>
+      <div class="cd-grid" id="cdDisponibles"></div>
       <button class="btn btn-warn" id="btnAplicarCd" style="margin-top:12px">⏳ Aplicar CD a marcados</button>
-      <button class="btn" id="btnQuitarCd">♻️ Quitar CD a marcados</button>
-      <button class="btn btn-danger" id="btnResetRescates">🗑 Resetear votos de rescate</button>
+
+      <h4>🔒 En CD actual</h4>
+      <div class="cd-activos-list" id="cdActivos">
+        <div class="personas-empty">Cargando...</div>
+      </div>
+
+      <button class="btn btn-danger" id="btnResetRescates" style="margin-top:12px">🗑 Resetear votos de rescate</button>
 
       <div class="rescate-info" id="rescateInfo">-</div>
     </div>
@@ -472,6 +463,29 @@ input:focus{border-color:var(--accent)}
   }
 
   // ============================================================
+  // AUTO-CD
+  // ============================================================
+  async function aplicarCdAutomatico(nombre) {
+    const autoSnap = await get(ref(db, "config/auto_cd_activo"));
+    if (!autoSnap.exists() || autoSnap.val() !== true) return null;
+
+    const diasSnap = await get(ref(db, "config/cd_dias"));
+    const dias = diasSnap.val() || 60;
+
+    const ahora = Date.now();
+    const hasta = ahora + dias * 24 * 60 * 60 * 1000;
+
+    await set(ref(db, `cooldowns/${nombre}`), {
+      activo: true,
+      desde: ahora,
+      hasta,
+      motivo: "Auto-CD al ganar"
+    });
+
+    return { dias, hasta };
+  }
+
+  // ============================================================
   // LOGIN
   // ============================================================
   const loginDiv = document.getElementById("login");
@@ -528,6 +542,8 @@ input:focus{border-color:var(--accent)}
 
       document.getElementById("inputMiembros").value = totalMiembros;
       document.getElementById("inputMensaje").value = c.mensaje || "";
+      document.getElementById("inputCdDias").value = c.cd_dias || 60;
+      document.getElementById("inputAutoCd").checked = c.auto_cd_activo === true;
 
       document.getElementById("aGanadorRescate").textContent = ganadorRescateActual || "—";
       document.getElementById("aGanadorFinal").textContent = ganadorFinalActual
@@ -577,15 +593,13 @@ input:focus{border-color:var(--accent)}
 
     onValue(ref(db, "cooldowns"), (snap) => {
       cooldownsActuales = snap.val() || {};
-      renderCdGrid();
-      actualizarRescateInfo();
+      renderCdSection();
       chequearEmpate();
     });
 
     onValue(ref(db, "rescates"), (snap) => {
       rescatesActuales = snap.val() || {};
-      renderCdGrid();
-      actualizarRescateInfo();
+      renderCdSection();
     });
 
     onValue(ref(db, "votos"), (snap) => {
@@ -597,7 +611,7 @@ input:focus{border-color:var(--accent)}
   }
 
   // ============================================================
-  // RENDER COMBINADO DE VOTANTES + RESCATADORES
+  // VOTANTES
   // ============================================================
   function extraerDatosPersona(valor, username) {
     if (typeof valor === 'string') {
@@ -734,25 +748,71 @@ input:focus{border-color:var(--accent)}
   }
 
   // ============================================================
-  // CD GRID
+  // CD SECTION (disponibles + activos)
   // ============================================================
-  function renderCdGrid() {
-    const grid = document.getElementById("cdGrid");
-    const umbral = Math.ceil(totalMiembros / 2);
-    grid.innerHTML = "";
+  function renderCdSection() {
+    const disponibles = [];
+    const enCd = [];
+
     PERSONAJES.forEach(nombre => {
       const cd = cooldownsActuales[nombre];
       const activo = cd && cd.activo && cd.hasta > Date.now();
-      const rescates = rescatesActuales[nombre] || 0;
-      const item = document.createElement("label");
-      item.className = "cd-item" + (activo ? " en-cd" : "");
-      item.innerHTML = `
-        <input type="checkbox" value="${nombre}" ${activo ? "checked" : ""}>
-        <span class="nombre">${nombre}</span>
-        ${activo ? `<span class="tag">${rescates}/${umbral}</span>` : ""}
-      `;
-      grid.appendChild(item);
+      if (activo) enCd.push({ nombre, cd });
+      else disponibles.push(nombre);
     });
+
+    // Disponibles
+    const gridDisp = document.getElementById("cdDisponibles");
+    if (disponibles.length === 0) {
+      gridDisp.innerHTML = '<div class="personas-empty" style="grid-column:1/-1;padding:12px">Todos los personajes están en CD.</div>';
+    } else {
+      gridDisp.innerHTML = disponibles.map(nombre => `
+        <label class="cd-item">
+          <input type="checkbox" value="${nombre}">
+          <span class="nombre">${nombre}</span>
+        </label>
+      `).join('');
+    }
+
+    // En CD
+    const listaActivos = document.getElementById("cdActivos");
+    const umbral = Math.ceil(totalMiembros / 2);
+    if (enCd.length === 0) {
+      listaActivos.innerHTML = '<div class="personas-empty">Nadie está en CD actualmente.</div>';
+    } else {
+      enCd.sort((a, b) => a.cd.hasta - b.cd.hasta);
+      listaActivos.innerHTML = enCd.map(({ nombre, cd }) => {
+        const dias = Math.max(0, Math.ceil((cd.hasta - Date.now()) / 86400000));
+        const rescates = rescatesActuales[nombre] || 0;
+        return `
+          <div class="cd-activo-item">
+            <div class="cda-info">
+              <div class="cda-name">${nombre}</div>
+              <div class="cda-meta">⏳ ${dias} día${dias !== 1 ? 's' : ''} restantes</div>
+              <div class="cda-progress">🔥 <b>${rescates}/${umbral}</b> rescates</div>
+            </div>
+            <button class="cda-liberar" data-liberar="${nombre}">Liberar</button>
+          </div>
+        `;
+      }).join('');
+
+      listaActivos.querySelectorAll('.cda-liberar').forEach(btn => {
+        btn.addEventListener('click', () => liberarCd(btn.dataset.liberar));
+      });
+    }
+
+    actualizarRescateInfo();
+  }
+
+  async function liberarCd(nombre) {
+    if (!isAdmin) return;
+    if (!confirm(`¿Liberar a "${nombre}" del CD?\n\nEsto quitará su cooldown y volverá a estar disponible para votar.`)) return;
+    try {
+      await remove(ref(db, `cooldowns/${nombre}`));
+      await agregarLog('cd', 'liberado_manual', `🔓 Admin liberó a "${nombre}" del CD`, { personaje: nombre });
+    } catch (err) {
+      alert("❌ " + err.message);
+    }
   }
 
   function actualizarRescateInfo() {
@@ -868,6 +928,15 @@ input:focus{border-color:var(--accent)}
       `🎲 Desempate ${manual ? 'FORZADO por admin' : 'automático'}: ganador "${ganador}" tras ${rondaNum} ronda(s)`,
       { rondas, ganador, empatados: emp.empatados.map(x => x.nombre), votosMax: emp.maxVotos });
 
+    // Auto-CD para el ganador por RNG
+    const cdInfo = await aplicarCdAutomatico(ganador);
+    if (cdInfo) {
+      await agregarLog('cd', 'auto_aplicado',
+        `⏳ Auto-CD de ${cdInfo.dias} días aplicado a "${ganador}" (ganador por RNG)`,
+        { personaje: ganador, dias: cdInfo.dias, hasta: cdInfo.hasta });
+      resultado.autoCdAplicado = cdInfo;
+    }
+
     return resultado;
   }
 
@@ -894,7 +963,11 @@ input:focus{border-color:var(--accent)}
     const resumen = resultado.rondas.map(r => {
       return `Ronda ${r.ronda}:\n` + r.candidatos.map(c => `   ${c}: 🎲 ${r.tiradas[c]}`).join('\n');
     }).join('\n\n');
-    alert(`🎲 RESULTADO 🎲\n\n${resumen}\n\n🏆 GANADOR: ${resultado.ganador}\n\n(El index está mostrando la animación en vivo)`);
+    let msg = `🎲 RESULTADO 🎲\n\n${resumen}\n\n🏆 GANADOR: ${resultado.ganador}\n\n(El index está mostrando la animación en vivo)`;
+    if (resultado.autoCdAplicado) {
+      msg += `\n\n⏳ Auto-CD de ${resultado.autoCdAplicado.dias} días aplicado al ganador.`;
+    }
+    alert(msg);
   }
 
   document.getElementById('btnResolverRng').addEventListener('click', forzarRngAhora);
@@ -917,8 +990,8 @@ input:focus{border-color:var(--accent)}
   // ============================================================
   async function accionAplicarCd() {
     if (!isAdmin) return;
-    const marcados = [...document.querySelectorAll("#cdGrid input:checked")].map(i => i.value);
-    if (marcados.length === 0) { alert("Marca al menos un personaje."); return; }
+    const marcados = [...document.querySelectorAll("#cdDisponibles input:checked")].map(i => i.value);
+    if (marcados.length === 0) { alert("Marca al menos un personaje disponible."); return; }
     const dias = parseInt(document.getElementById("inputCdDias").value) || 60;
     if (dias < 1) { alert("Días inválidos."); return; }
     if (!confirm(`Aplicar CD de ${dias} días a:\n\n${marcados.join("\n")}\n\n¿Continuar?`)) return;
@@ -932,18 +1005,6 @@ input:focus{border-color:var(--accent)}
       await agregarLog('cd', 'aplicar', `⏳ CD de ${dias} días aplicado a: ${marcados.join(', ')}`,
         { dias, personajes: marcados, hasta });
       alert(`✅ CD aplicado a ${marcados.length} personaje(s) durante ${dias} días.`);
-    } catch (err) { alert("❌ " + err.message); }
-  }
-
-  async function accionQuitarCd() {
-    if (!isAdmin) return;
-    const marcados = [...document.querySelectorAll("#cdGrid input:checked")].map(i => i.value);
-    if (marcados.length === 0) { alert("Marca al menos un personaje."); return; }
-    if (!confirm(`¿Quitar CD a:\n\n${marcados.join("\n")}?`)) return;
-    try {
-      await Promise.all(marcados.map(nombre => remove(ref(db, `cooldowns/${nombre}`))));
-      await agregarLog('cd', 'quitar', `♻️ CD quitado a: ${marcados.join(', ')}`, { personajes: marcados });
-      alert("✅ CD quitado.");
     } catch (err) { alert("❌ " + err.message); }
   }
 
@@ -972,7 +1033,7 @@ input:focus{border-color:var(--accent)}
       "• Cooldowns (Sala de Espera)\n" +
       "• Rescates acumulados\n" +
       "• Rescatadores (quien ya usó su rescate sigue bloqueado)\n" +
-      "• Configuración (miembros, mensaje, días de CD)\n\n" +
+      "• Configuración (miembros, mensaje, días de CD, auto-CD)\n\n" +
       "¿Continuar?"
     )) return;
     if (!confirm("¿Estás TOTALMENTE seguro? Esta acción no se puede deshacer.")) return;
@@ -1042,14 +1103,59 @@ input:focus{border-color:var(--accent)}
   async function accionCerrarAhora() {
     if (!isAdmin) return;
     if (!confirm("¿Cerrar la votación AHORA?")) return;
+
+    // Recalcular estado fresco
+    const votosSnap = await get(ref(db, 'votos'));
+    const cdSnap = await get(ref(db, 'cooldowns'));
+    const cfgSnap = await get(ref(db, 'config'));
+    votosActuales = votosSnap.val() || {};
+    cooldownsActuales = cdSnap.val() || {};
+    const cfg = cfgSnap.val() || {};
+
+    // Si ya hay ganador (rescate o final), solo cerrar
+    if (cfg.ganador_rescate || cfg.ganador_final) {
+      await set(ref(db, "config/fin_votacion"), Date.now() - 1);
+      await agregarLog('admin', 'cerrar_votacion',
+        '⛔ Votación cerrada manualmente (ya tenía ganador)',
+        { fin_votacion: Date.now() - 1 });
+      alert("✅ Votación cerrada.\n\nYa había un ganador determinado previamente.");
+      return;
+    }
+
+    const ranking = calcularRanking();
+    const hayGanadorClaro = ranking.length > 0 && (
+      ranking.length === 1 || ranking[0].votos > ranking[1].votos
+    );
+
     await set(ref(db, "config/fin_votacion"), Date.now() - 1);
-    await agregarLog('admin', 'cerrar_votacion', '⛔ Votación cerrada manualmente por el admin', { fin_votacion: Date.now() - 1 });
-    alert("✅ Votación cerrada.");
+    await agregarLog('admin', 'cerrar_votacion',
+      '⛔ Votación cerrada manualmente por el admin',
+      { fin_votacion: Date.now() - 1 });
+
+    if (hayGanadorClaro) {
+      const ganador = ranking[0].nombre;
+      await set(ref(db, 'config/ganador_final'), ganador);
+      await set(ref(db, 'config/ganador_metodo'), 'votos');
+
+      const cdInfo = await aplicarCdAutomatico(ganador);
+      if (cdInfo) {
+        await agregarLog('cd', 'auto_aplicado',
+          `⏳ Auto-CD de ${cdInfo.dias} días aplicado a "${ganador}" (ganador por votos)`,
+          { personaje: ganador, dias: cdInfo.dias, hasta: cdInfo.hasta });
+        alert(`✅ Votación cerrada.\n\n🏆 Ganador: ${ganador}\n\n⏳ Auto-CD de ${cdInfo.dias} días aplicado automáticamente.`);
+      } else {
+        alert(`✅ Votación cerrada.\n\n🏆 Ganador: ${ganador}\n\n(Auto-CD desactivado en la configuración)`);
+      }
+    } else if (ranking.length > 1 && ranking[0].votos === ranking[1].votos) {
+      alert("✅ Votación cerrada.\n\n⚖️ Hay un empate. El ganador se decidirá por lanzamiento de dados.\n\nCuando se resuelva, se aplicará el CD automático si está activado.");
+    } else {
+      alert("✅ Votación cerrada.\n\nSin votos registrados.");
+    }
   }
 
   async function accionReabrir() {
     if (!isAdmin) return;
-    if (!confirm("¿Reabrir la votación sin límite? Esto también borrará ganadores y desempates pendientes.")) return;
+    if (!confirm("¿Reabrir la votación sin límite? Esto también borrará ganadores y desempates pendientes.\n\n(Los CDs aplicados al ganador anterior NO se liberan automáticamente — puedes hacerlo manualmente desde la lista 'En CD actual'.)")) return;
     await Promise.all([
       set(ref(db, "config/fin_votacion"), 0),
       set(ref(db, "config/ganador_rescate"), ""),
@@ -1109,6 +1215,9 @@ input:focus{border-color:var(--accent)}
     loginMsg.textContent = "";
   }
 
+  // ============================================================
+  // LISTENERS
+  // ============================================================
   document.getElementById("btnResetTotal").addEventListener("click", accionResetTotal);
   document.getElementById("btnCerrarAhora").addEventListener("click", accionCerrarAhora);
   document.getElementById("btnReabrir").addEventListener("click", accionReabrir);
@@ -1119,7 +1228,6 @@ input:focus{border-color:var(--accent)}
   document.getElementById("btnGuardarMensaje").addEventListener("click", accionGuardarMensaje);
   document.getElementById("btnCerrarSesion").addEventListener("click", accionCerrarSesion);
   document.getElementById("btnAplicarCd").addEventListener("click", accionAplicarCd);
-  document.getElementById("btnQuitarCd").addEventListener("click", accionQuitarCd);
   document.getElementById("btnResetRescates").addEventListener("click", accionResetRescates);
 
   document.getElementById("inputCdDias").addEventListener("change", (e) => {
@@ -1127,7 +1235,16 @@ input:focus{border-color:var(--accent)}
     if (isAdmin) set(ref(db, "config/cd_dias"), v);
   });
 
+  document.getElementById("inputAutoCd").addEventListener("change", async (e) => {
+    if (!isAdmin) return;
+    await set(ref(db, "config/auto_cd_activo"), e.target.checked);
+    await agregarLog('admin', 'auto_cd_toggle',
+      e.target.checked ? '☑ Auto-CD activado' : '☐ Auto-CD desactivado',
+      { activo: e.target.checked });
+  });
+
   setInterval(actualizarEmpateEstado, 1000);
+  setInterval(() => { if (isAdmin) renderCdSection(); }, 60000);
 </script>
 </body>
 </html>
