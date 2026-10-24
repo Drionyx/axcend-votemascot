@@ -35,24 +35,13 @@
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <link rel="manifest" href="./manifest.json">
 
-<link rel="preload" as="image" href="Activos/Akaoni_Atsushi.webp">
-<link rel="preload" as="image" href="Activos/Baade.webp">
-<link rel="preload" as="image" href="Activos/Capt._Locke.webp">
-<link rel="preload" as="image" href="Activos/Choi_Yuhee.webp">
-<link rel="preload" as="image" href="Activos/Choi_Yuhyun.webp">
-<link rel="preload" as="image" href="Activos/Code_B.webp">
-
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
 <style>
 :root{--bg:#0f1020;--card:#1a1c30;--text:#eee;--accent:#f5c542;--sub:#9aa0b5;--border:#2a2d45}
 body.light{--bg:#f2f3f7;--card:#ffffff;--text:#1a1c30;--accent:#d4a017;--sub:#555;--border:#e0e0e8}
 *{box-sizing:border-box}
-html,body{margin:0;padding:0}
-body{font-family:Segoe UI,Arial,sans-serif;background:transparent;color:var(--text);padding:16px;transition:.3s;position:relative;min-height:100vh}
-
-#bgParticles{position:fixed;inset:0;z-index:-1;background:var(--bg);transition:background .3s;pointer-events:none}
-
+body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text);padding:16px;transition:.3s}
 header{text-align:center;margin-bottom:20px;position:relative}
 h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:2px;font-weight:800}
 .sub{color:var(--sub);font-size:clamp(13px,3vw,16px);margin-top:8px;letter-spacing:.5px}
@@ -64,10 +53,33 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .votantes{margin-top:8px;font-size:13px;color:var(--sub);font-weight:600}
 .votantes strong{color:var(--accent)}
 
-.theme-btn{position:fixed;top:14px;right:14px;width:42px;height:42px;border-radius:50%;background:var(--card);color:var(--text);border:1px solid var(--border);cursor:pointer;font-size:20px;z-index:50;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.35);transition:.2s;padding:0;line-height:1}
+.theme-btn{
+  position:fixed;
+  top:14px;
+  right:14px;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:var(--card);
+  color:var(--text);
+  border:1px solid var(--border);
+  cursor:pointer;
+  font-size:20px;
+  z-index:50;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 2px 10px rgba(0,0,0,.35);
+  transition:.2s;
+  padding:0;
+  line-height:1;
+}
 .theme-btn:hover{transform:scale(1.08);filter:brightness(1.15);border-color:var(--accent)}
 .theme-btn:active{transform:scale(.95)}
-@media(max-width:600px){.theme-btn{width:36px;height:36px;font-size:17px;top:8px;right:8px}header{padding-top:36px}}
+@media(max-width:600px){
+  .theme-btn{width:36px;height:36px;font-size:17px;top:8px;right:8px}
+  header{padding-top:36px}
+}
 
 .user-badge{margin:12px auto 0;display:inline-flex;align-items:center;gap:10px;padding:7px 14px;background:var(--card);border:1px solid var(--accent);border-radius:20px;font-size:13px;color:var(--text);max-width:100%}
 .user-badge .ub-icon{font-size:14px}
@@ -83,8 +95,30 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .login-modal{background:var(--card);border:2px solid var(--accent);border-radius:20px;padding:36px 30px 28px;max-width:440px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 50px rgba(245,197,66,.15);animation:pop .45s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden}
 .login-modal::before{content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 0%,rgba(245,197,66,.12),transparent 50%);pointer-events:none}
 .login-modal > *{position:relative}
-.login-modal .login-close{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.08);color:var(--text);font-size:20px;line-height:1;cursor:pointer;z-index:5;transition:.2s;padding:0;display:flex;align-items:center;justify-content:center}
-.login-modal .login-close:hover{background:rgba(255,255,255,.2);transform:scale(1.1)}
+.login-modal .login-close{
+  position:absolute;
+  top:10px;
+  right:10px;
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  border:none;
+  background:rgba(255,255,255,.08);
+  color:var(--text);
+  font-size:20px;
+  line-height:1;
+  cursor:pointer;
+  z-index:5;
+  transition:.2s;
+  padding:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.login-modal .login-close:hover{
+  background:rgba(255,255,255,.2);
+  transform:scale(1.1);
+}
 .login-modal .lm-crest{font-size:44px;margin-bottom:8px;filter:drop-shadow(0 4px 12px rgba(245,197,66,.4))}
 .login-modal h2{color:var(--accent);margin:0 0 6px;font-size:22px;letter-spacing:2px;font-weight:800}
 .login-modal .lm-tagline{color:var(--sub);font-size:12px;text-transform:uppercase;letter-spacing:1.5px;margin:0 0 18px}
@@ -92,6 +126,7 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .login-modal input[type="text"]{width:100%;padding:14px 16px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:16px;text-align:center;outline:none;font-family:inherit;letter-spacing:.5px;transition:.2s}
 .login-modal input[type="text"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(245,197,66,.15)}
 .login-modal .lm-msg{min-height:20px;font-size:13px;color:#ff5c5c;margin:10px 0 6px;font-weight:500}
+.login-modal .lm-msg.ok{color:#4CAF50}
 .login-modal .lm-msg.loading{color:var(--sub)}
 .login-modal #btnEntrar{width:100%;padding:14px;border-radius:12px;border:none;background:var(--accent);color:#1a1c30;font-size:15px;font-weight:800;cursor:pointer;transition:.2s;font-family:inherit;letter-spacing:.5px}
 .login-modal #btnEntrar:hover:not(:disabled){filter:brightness(1.1);transform:translateY(-1px)}
@@ -111,24 +146,10 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}
 @media(max-width:600px){.grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}}
 
-.grid-skeleton{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}
-@media(max-width:600px){.grid-skeleton{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}}
-.skeleton-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:8px;overflow:hidden;position:relative}
-.skeleton-card::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);animation:shimmer 1.6s infinite}
-body.light .skeleton-card::before{background:linear-gradient(90deg,transparent,rgba(0,0,0,.04),transparent)}
-@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-.skeleton-card .sk-img{aspect-ratio:3/4;border-radius:10px;background:var(--border);opacity:.4}
-.skeleton-card .sk-name{height:14px;border-radius:4px;background:var(--border);opacity:.4;width:70%;margin:0 auto}
-.skeleton-card .sk-btn{height:32px;border-radius:8px;background:var(--border);opacity:.4}
-
-.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px;text-align:center;transition:.3s;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px;text-align:center;transition:.3s;display:flex;flex-direction:column;gap:8px;position:relative}
 .card:hover{transform:translateY(-4px);border-color:var(--accent)}
 .card.winner{border-color:#f5c542;box-shadow:0 0 24px rgba(245,197,66,.5);transform:translateY(-4px)}
 .card.winner::after{content:"👑";position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:32px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6));z-index:2}
-
-@keyframes stampIn{0%{transform:translate(-50%,-50%) scale(2.5) rotate(-30deg);opacity:0}55%{transform:translate(-50%,-50%) scale(.85) rotate(-18deg);opacity:1}75%{transform:translate(-50%,-50%) scale(1.05) rotate(-14deg);opacity:1}100%{transform:translate(-50%,-50%) scale(1) rotate(-12deg);opacity:1}}
-.card.vote-stamp::before{content:"✓ VOTADO";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(1) rotate(-12deg);background:rgba(76,175,80,.95);color:#fff;border:3px solid #fff;border-radius:12px;padding:8px 14px;font-size:16px;font-weight:900;letter-spacing:2px;z-index:10;animation:stampIn .65s cubic-bezier(.34,1.56,.64,1) forwards;box-shadow:0 4px 20px rgba(0,0,0,.5),0 0 30px rgba(76,175,80,.6);text-shadow:0 2px 4px rgba(0,0,0,.3);pointer-events:none;white-space:nowrap}
-
 @keyframes votePop{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(76,175,80,0)}30%{transform:scale(1.1);box-shadow:0 0 30px 10px rgba(76,175,80,.65)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(76,175,80,0)}}
 .card.vote-pop{animation:votePop .85s cubic-bezier(.34,1.56,.64,1);z-index:5;border-color:#4CAF50!important}
 @keyframes rescuePop{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,152,0,0)}30%{transform:scale(1.1);box-shadow:0 0 30px 10px rgba(255,152,0,.65)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,152,0,0)}}
@@ -165,18 +186,11 @@ body.light .skeleton-card::before{background:linear-gradient(90deg,transparent,r
 .cd-card .salvar-btn.disabled{background:#444;color:#999;cursor:pointer;opacity:.7;transform:none}
 .cd-card .salvar-btn.voted{background:#4CAF50;color:#fff;cursor:default}
 
-.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:1000;align-items:center;justify-content:center;padding:20px}
 .lightbox.active{display:flex}
-.lightbox img{max-width:90vw;max-height:80vh;border-radius:12px;user-select:none}
-.lightbox .close{position:absolute;top:20px;right:30px;color:#fff;font-size:36px;cursor:pointer;font-weight:300;line-height:1;z-index:5}
-.lightbox .close:hover{color:var(--accent)}
-.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:40px;font-weight:300;line-height:1;width:56px;height:56px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;user-select:none;z-index:5;padding:0}
-.lb-nav:hover{background:rgba(245,197,66,.25);border-color:var(--accent);transform:translateY(-50%) scale(1.08)}
-.lb-prev{left:24px}
-.lb-next{right:24px}
-@media(max-width:600px){.lb-nav{width:44px;height:44px;font-size:32px}.lb-prev{left:8px}.lb-next{right:8px}}
-.lightbox .lb-name{position:absolute;bottom:60px;color:#fff;font-size:18px;text-align:center;width:100%}
-.lightbox .lb-counter{position:absolute;bottom:30px;color:var(--sub);font-size:13px;text-align:center;width:100%;font-variant-numeric:tabular-nums}
+.lightbox img{max-width:90vw;max-height:80vh;border-radius:12px}
+.lightbox .close{position:absolute;top:20px;right:30px;color:#fff;font-size:36px;cursor:pointer;font-weight:300}
+.lightbox .lb-name{position:absolute;bottom:30px;color:#fff;font-size:18px;text-align:center;width:100%}
 
 footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding:20px;line-height:1.6;max-width:900px;margin-left:auto;margin-right:auto}
 
@@ -225,62 +239,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
 @keyframes winnerSpin{0%{transform:rotateY(0deg) scale(1)}40%{transform:rotateY(180deg) scale(1.05)}100%{transform:rotateY(360deg) scale(1)}}
 @keyframes winnerFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 
-.share-btn{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:none;border-radius:10px;padding:10px 16px;font-weight:800;cursor:pointer;font-size:13px;transition:.2s;letter-spacing:.5px;margin-top:4px}
-.share-btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
-.share-btn:active{transform:translateY(0)}
-.share-btn:disabled{opacity:.6;cursor:wait}
-
-/* --- Gráfico de resultados con ganador/empate destacado --- */
-.chart-container{max-width:900px;margin:24px auto 20px;padding:20px;background:var(--card);border:2px solid var(--accent);border-radius:16px;display:none}
-.chart-container.visible{display:block}
-.chart-title{text-align:center;color:var(--accent);margin:0 0 20px;font-size:18px;letter-spacing:1px;font-weight:800}
-.chart-bars{display:flex;flex-direction:column;gap:6px}
-.chart-row{display:grid;grid-template-columns:minmax(120px,170px) 1fr 55px;gap:10px;align-items:center;font-size:13px;border-radius:8px;padding:5px 8px;margin:0 -8px;transition:background .2s}
-@media(max-width:600px){.chart-row{grid-template-columns:100px 1fr 40px;font-size:12px;gap:6px;padding:4px 6px}}
-
-.chart-name{display:flex;flex-direction:column;align-items:flex-end;gap:2px;overflow:hidden;min-width:0}
-.chart-name-text{font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;font-size:13px}
-@media(max-width:600px){.chart-name-text{font-size:12px}}
-
-.chart-badge{display:inline-block;font-size:9px;font-weight:900;padding:2px 7px;border-radius:8px;letter-spacing:.4px;white-space:nowrap;background:rgba(245,197,66,.2);color:var(--accent);border:1px solid rgba(245,197,66,.5)}
-.chart-badge.tie{background:rgba(168,85,247,.2);color:#a855f7;border-color:rgba(168,85,247,.5)}
-.chart-badge.resc{background:rgba(255,152,0,.2);color:#ff9800;border-color:rgba(255,152,0,.5)}
-
-.chart-bar-wrap{background:rgba(0,0,0,.25);border-radius:6px;height:22px;overflow:hidden;position:relative}
-body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
-.chart-bar{height:100%;background:linear-gradient(90deg,#6b7280,#9aa0b5);border-radius:6px;width:0;transition:width 1.2s cubic-bezier(.34,1.56,.64,1);opacity:.75}
-.chart-bar.winner{background:linear-gradient(90deg,#f5c542,#ff9800,#e91e63);box-shadow:0 0 15px rgba(245,197,66,.6);opacity:1}
-.chart-bar.tie{background:linear-gradient(90deg,#a855f7,#7c3aed);box-shadow:0 0 12px rgba(168,85,247,.5);opacity:1}
-
-.chart-row.is-winner{background:linear-gradient(90deg,rgba(245,197,66,.15),transparent 75%);box-shadow:inset 3px 0 0 var(--accent)}
-.chart-row.is-tie{background:linear-gradient(90deg,rgba(168,85,247,.15),transparent 75%);box-shadow:inset 3px 0 0 #a855f7}
-
-.chart-votes{font-weight:800;color:var(--sub);font-variant-numeric:tabular-nums;text-align:right;font-size:13px}
-.chart-row.is-winner .chart-votes{color:var(--accent);font-size:14px}
-.chart-row.is-tie .chart-votes{color:#a855f7;font-size:14px}
-.chart-empty{text-align:center;color:var(--sub);padding:20px;font-style:italic;font-size:13px}
-
-/* --- Salón de la Fama --- */
-.hall-container{max-width:1100px;margin:40px auto 20px;padding:20px;background:var(--card);border:2px solid #f5c542;border-radius:16px;box-shadow:0 0 30px rgba(245,197,66,.15);display:none}
-.hall-container.visible{display:block}
-.hall-title{text-align:center;color:var(--accent);margin:0 0 20px;font-size:20px;letter-spacing:2px;font-weight:800;text-shadow:0 0 15px rgba(245,197,66,.4)}
-.hall-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
-@media(max-width:600px){.hall-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}}
-.hall-card{background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;transition:.25s}
-.hall-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 24px rgba(245,197,66,.15)}
-.hall-card.rank-1{border-color:#f5c542;box-shadow:0 0 20px rgba(245,197,66,.35);background:linear-gradient(135deg,var(--bg),rgba(245,197,66,.08))}
-.hall-card.rank-2{border-color:#c0c0c0;box-shadow:0 0 12px rgba(192,192,192,.2)}
-.hall-card.rank-3{border-color:#cd7f32;box-shadow:0 0 12px rgba(205,127,50,.2)}
-.hall-img-wrap{aspect-ratio:1/1;border-radius:8px;overflow:hidden;background:#000}
-.hall-img-wrap img{width:100%;height:100%;object-fit:cover;object-position:top center;cursor:pointer}
-.hall-name{font-weight:800;color:var(--text);font-size:14px;text-align:center;word-break:break-word}
-.hall-stats{display:flex;flex-direction:column;gap:4px;align-items:center;font-size:12px}
-.hall-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-weight:800;font-size:11px;letter-spacing:.5px;white-space:nowrap}
-.hall-badge.wins{background:rgba(245,197,66,.15);color:var(--accent);border:1px solid rgba(245,197,66,.4)}
-.hall-badge.rescues{background:rgba(255,152,0,.15);color:#ff9800;border:1px solid rgba(255,152,0,.4)}
-.hall-empty{text-align:center;color:var(--sub);padding:24px;font-style:italic;font-size:13px}
-.hall-subtitle{text-align:center;color:var(--sub);font-size:12px;margin:-12px 0 16px;font-style:italic}
-
 .empate-aviso{max-width:680px;margin:16px auto 0;padding:16px 22px;background:linear-gradient(135deg,rgba(168,85,247,.15),rgba(255,152,0,.12));border:2px solid #a855f7;border-radius:14px;text-align:center;font-size:14px;color:var(--text);display:none;box-shadow:0 0 30px rgba(168,85,247,.25);animation:empPulse 2s ease-in-out infinite}
 .empate-aviso.visible{display:block}
 @keyframes empPulse{0%,100%{box-shadow:0 0 30px rgba(168,85,247,.25)}50%{box-shadow:0 0 45px rgba(168,85,247,.5)}}
@@ -310,8 +268,6 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
 </style>
 </head>
 <body>
-<canvas id="bgParticles"></canvas>
-
 <header>
 <button class="theme-btn" onclick="toggleTheme()" aria-label="Cambiar tema" title="Cambiar tema">&#9788;</button>
 <h1>AXCEND - LATAM -</h1>
@@ -334,34 +290,13 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
 
 <div class="winner-container" id="winnerContainer"></div>
 
-<div class="chart-container" id="chartContainer">
-  <h2 class="chart-title">📊 Resultados finales</h2>
-  <div class="chart-bars" id="chartBars"></div>
-</div>
-
 <div class="layout">
   <div class="col-main">
     <div class="controls">
       <input id="filtro" placeholder="Buscar personaje..." oninput="filtrar()">
       <div class="count" id="contador">27 personajes</div>
     </div>
-
-    <div class="grid-skeleton" id="gridSkeleton">
-      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
-      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
-      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
-      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
-      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
-      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
-      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
-      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
-      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
-      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
-      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
-      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
-    </div>
-
-    <div class="grid" id="grid" style="display:none">
+    <div class="grid" id="grid">
       <div class='card' data-name='akaoni atsushi'>
         <div class='img-wrap'><img src='Activos/Akaoni_Atsushi.webp' alt='Akaoni Atsushi' loading='lazy'></div>
         <div class='name'>Akaoni Atsushi</div>
@@ -511,23 +446,14 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
   </aside>
 </div>
 
-<div class="hall-container" id="hallContainer">
-  <h2 class="hall-title">🏆 Salón de la Fama 🏆</h2>
-  <p class="hall-subtitle" id="hallSubtitle">Los grandes del clan, para la posteridad</p>
-  <div class="hall-grid" id="hallGrid"></div>
-</div>
-
 <footer>
   Hecho con dedicación para los miembros del clan. &middot; A seguir disfrutando todos juntos de este juego bien RICO, BAROSO y SUCULENTO!
 </footer>
 
-<div class="lightbox" id="lightbox">
-  <span class="close" onclick="event.stopPropagation();cerrarLightbox()">&times;</span>
-  <button class="lb-nav lb-prev" id="lbPrev" onclick="event.stopPropagation();navegarLightbox(-1)" aria-label="Anterior">‹</button>
-  <button class="lb-nav lb-next" id="lbNext" onclick="event.stopPropagation();navegarLightbox(1)" aria-label="Siguiente">›</button>
-  <img id="lb-img" src="" alt="">
-  <div class="lb-name" id="lb-name"></div>
-  <div class="lb-counter" id="lb-counter"></div>
+<div class="lightbox" id="lightbox" onclick="cerrarLightbox()">
+<span class="close">&times;</span>
+<img id="lb-img" src="" alt="">
+<div class="lb-name" id="lb-name"></div>
 </div>
 
 <div class="modal" id="modalConfirm">
@@ -567,7 +493,7 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, runTransaction, get, onValue, set, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  import { getDatabase, ref, runTransaction, get, onValue, set, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBaKgNmCCTdFoE2YkU1B4a8AjnwwGFeBJ4",
@@ -612,51 +538,21 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
   let usernameOriginalActual = "";
   let unsubscribeVotanteActual = null;
   let unsubscribeRescatadorActual = null;
+
+  // Auto-CD config
   let autoCdActivo = false;
   let cdDiasConfig = 60;
-  let appInicializada = false;
-  let historialActual = {};
-  let ultimoHistorialRegistrado = "";
-
-  (function initParticles() {
-    const canvas = document.getElementById('bgParticles');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    let W, H, particles = [];
-    const isMobile = window.innerWidth < 700;
-    const COUNT = isMobile ? 25 : 45;
-    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-    resize(); window.addEventListener('resize', resize);
-    function crearParticulas() {
-      particles = [];
-      for (let i = 0; i < COUNT; i++) {
-        particles.push({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.8 + 0.5, vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3, alpha: Math.random() * 0.4 + 0.1 });
-      }
-    }
-    crearParticulas();
-    function colorPart() { return document.body.classList.contains('light') ? 'rgba(212,160,23,' : 'rgba(245,197,66,'; }
-    function animar() {
-      ctx.clearRect(0, 0, W, H);
-      const color = colorPart();
-      for (const p of particles) {
-        p.x += p.vx; p.y += p.vy;
-        if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
-        if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = color + p.alpha + ')'; ctx.fill();
-      }
-      requestAnimationFrame(animar);
-    }
-    animar();
-  })();
 
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(() => {}); });
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    });
   }
 
   async function agregarLog(tipo, subtipo, mensaje, detalles = {}) {
-    try { await push(ref(db, 'logs'), { tipo, subtipo, fecha: Date.now(), mensaje, detalles }); }
-    catch (e) { console.warn('log fail', e); }
+    try {
+      await push(ref(db, 'logs'), { tipo, subtipo, fecha: Date.now(), mensaje, detalles });
+    } catch (e) { console.warn('log fail', e); }
   }
 
   function dispararConfeti() {
@@ -681,28 +577,6 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
     setTimeout(() => { toast.remove(); }, 3500);
   }
 
-  function levenshtein(a, b) {
-    const m = a.length, n = b.length;
-    if (m === 0) return n; if (n === 0) return m;
-    const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
-    for (let i = 0; i <= m; i++) dp[i][0] = i;
-    for (let j = 0; j <= n; j++) dp[0][j] = j;
-    for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) {
-      dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
-    }
-    return dp[m][n];
-  }
-  function coincideBusqueda(nombreNorm, q) {
-    if (!q) return true;
-    if (nombreNorm.includes(q)) return true;
-    if (q.length < 3) return false;
-    const palabras = nombreNorm.split(/[\s_]+/).filter(Boolean);
-    const threshold = q.length <= 4 ? 1 : q.length <= 6 ? 2 : 3;
-    if (palabras.some(p => levenshtein(p, q) <= threshold)) return true;
-    if (levenshtein(nombreNorm, q) <= Math.min(threshold, 2)) return true;
-    return false;
-  }
-
   function normalizarNombre(nombre) {
     return nombre.toLowerCase().trim().normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "_").replace(/[^a-z0-9_\-]/g, "");
@@ -712,7 +586,8 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
   function setUsername(original, normalized) {
     localStorage.setItem(USER_KEY, normalized);
     localStorage.setItem(USER_ORIG_KEY, original);
-    usernameActual = normalized; usernameOriginalActual = original;
+    usernameActual = normalized;
+    usernameOriginalActual = original;
   }
   async function verificarDisponible(normalized) {
     const snap = await get(ref(db, 'votantes/' + normalized));
@@ -753,7 +628,8 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
         mostrarToast(`¡Bienvenido, ${original}!`, "success");
       }
       refrescarBotones(); renderCdPanel();
-      agregarLog('admin', 'login', `👤 Ingresó: ${original}${yaVoto ? ' (ya había votado)' : ''}`,
+      agregarLog('admin', 'login',
+        `👤 Ingresó: ${original}${yaVoto ? ' (ya había votado)' : ''}`,
         { username: normalized, usernameOriginal: original, yaVoto });
     } catch (e) {
       msg.textContent = "Error: " + e.message; msg.className = "lm-msg";
@@ -774,14 +650,27 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
 
   document.getElementById("btnCambiarNombre").addEventListener("click", () => {
     const nombre = usernameOriginalActual || "usuario actual";
-    if (!confirm(`⇄ CAMBIAR DE USUARIO\n\nActualmente estás como "${nombre}".\n\nAl cambiar, podrás ingresar con otro nombre. Tu voto (si ya votaste) queda registrado en el sistema y no se pierde.\n\n¿Continuar?`)) return;
+    if (!confirm(
+      `⇄ CAMBIAR DE USUARIO\n\n` +
+      `Actualmente estás como "${nombre}".\n\n` +
+      `Al cambiar, podrás ingresar con otro nombre. Tu voto (si ya votaste) queda registrado en el sistema y no se pierde.\n\n` +
+      `¿Continuar?`
+    )) return;
+
     detenerListenersUsuario();
-    localStorage.removeItem(USER_KEY); localStorage.removeItem(USER_ORIG_KEY);
-    localStorage.removeItem(VOTE_KEY); localStorage.removeItem(RESCUE_KEY);
-    usernameActual = ""; usernameOriginalActual = "";
-    votoPendiente = ""; rescatePendiente = "";
-    sessionStorage.removeItem('confetti_rescate'); sessionStorage.removeItem('confetti_ganador');
-    actualizarHeaderUsuario(); refrescarBotones(); renderCdPanel();
+    localStorage.removeItem(USER_KEY);
+    localStorage.removeItem(USER_ORIG_KEY);
+    localStorage.removeItem(VOTE_KEY);
+    localStorage.removeItem(RESCUE_KEY);
+    usernameActual = "";
+    usernameOriginalActual = "";
+    votoPendiente = "";
+    rescatePendiente = "";
+    sessionStorage.removeItem('confetti_rescate');
+    sessionStorage.removeItem('confetti_ganador');
+    actualizarHeaderUsuario();
+    refrescarBotones();
+    renderCdPanel();
     mostrarToast("Sesión cerrada. Ingresa el nuevo usuario.", "success");
     setTimeout(() => {
       document.getElementById("inputUsername").value = "";
@@ -811,22 +700,28 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
     if (!usernameActual) return;
     detenerListenersUsuario();
     const userAlIniciar = usernameActual;
+
     unsubscribeVotanteActual = onValue(ref(db, 'votantes/' + usernameActual), (snap) => {
       if (userAlIniciar !== usernameActual) return;
       if (snap.exists()) {
         const val = snap.val();
         const personaje = typeof val === 'string' ? val : (val.personaje || '');
         setVote(personaje);
-      } else localStorage.removeItem(VOTE_KEY);
+      } else {
+        localStorage.removeItem(VOTE_KEY);
+      }
       actualizarHeaderUsuario(); refrescarBotones();
     });
+
     unsubscribeRescatadorActual = onValue(ref(db, 'rescatadores/' + usernameActual), (snap) => {
       if (userAlIniciar !== usernameActual) return;
       if (snap.exists()) {
         const val = snap.val();
         const personaje = typeof val === 'string' ? val : (val.personaje || '');
         setRescue(personaje);
-      } else localStorage.removeItem(RESCUE_KEY);
+      } else {
+        localStorage.removeItem(RESCUE_KEY);
+      }
       actualizarHeaderUsuario(); refrescarBotones(); renderCdPanel();
     });
   }
@@ -863,61 +758,27 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
     document.body.classList.toggle("light");
     localStorage.setItem("axcend_theme", document.body.classList.contains("light") ? "light" : "dark");
   };
-
   window.filtrar = function() {
-    const q = document.getElementById("filtro").value.toLowerCase().trim();
-    let visibles = 0;
+    var q = document.getElementById("filtro").value.toLowerCase();
+    var visibles = 0;
     document.querySelectorAll("#grid .card").forEach(function(c) {
       if (c.dataset.ocultaPorCd === "1") { c.style.display = "none"; return; }
-      const coincide = coincideBusqueda(c.dataset.name, q);
-      c.style.display = coincide ? "" : "none";
-      if (coincide) visibles++;
+      var ok = c.dataset.name.includes(q);
+      c.style.display = ok ? "" : "none";
+      if (ok) visibles++;
     });
     document.getElementById("contador").textContent = visibles + " personaje" + (visibles !== 1 ? "s" : "");
   };
-
-  let lightboxImages = [];
-  let lightboxIndex = 0;
-  function recolectarImagenesLightbox() {
-    return Array.from(document.querySelectorAll('#grid .card img, #cdList .cd-card img'))
-      .filter(img => img.offsetParent !== null);
-  }
   function bindLightbox(img) {
     img.addEventListener("click", function() {
-      lightboxImages = recolectarImagenesLightbox();
-      lightboxIndex = lightboxImages.indexOf(this);
-      if (lightboxIndex < 0) lightboxIndex = 0;
-      abrirLightbox();
+      document.getElementById("lb-img").src = this.src;
+      document.getElementById("lb-name").textContent = this.alt;
+      document.getElementById("lightbox").classList.add("active");
     });
   }
-  function abrirLightbox() {
-    if (lightboxImages.length === 0) return;
-    const img = lightboxImages[lightboxIndex];
-    if (!img) return;
-    document.getElementById("lb-img").src = img.src;
-    document.getElementById("lb-name").textContent = img.alt;
-    document.getElementById("lb-counter").textContent = `${lightboxIndex + 1} / ${lightboxImages.length}`;
-    document.getElementById("lightbox").classList.add("active");
-  }
-  window.navegarLightbox = function(dir) {
-    if (lightboxImages.length === 0) return;
-    lightboxIndex = (lightboxIndex + dir + lightboxImages.length) % lightboxImages.length;
-    abrirLightbox();
-  };
   document.querySelectorAll(".card img").forEach(bindLightbox);
   window.cerrarLightbox = function() { document.getElementById("lightbox").classList.remove("active"); };
-  document.addEventListener("keydown", function(e) {
-    const lb = document.getElementById("lightbox");
-    if (!lb.classList.contains("active")) return;
-    if (e.key === "Escape") cerrarLightbox();
-    else if (e.key === "ArrowLeft") { e.preventDefault(); navegarLightbox(-1); }
-    else if (e.key === "ArrowRight") { e.preventDefault(); navegarLightbox(1); }
-  });
-  // ← FIX: cerrar lightbox al hacer clic fuera de la imagen
-  document.getElementById("lightbox").addEventListener("click", function(e) {
-    if (e.target.id === "lb-img") return;
-    cerrarLightbox();
-  });
+  document.addEventListener("keydown", function(e) { if (e.key === "Escape") cerrarLightbox(); });
 
   function votacionCerrada() { return finVotacion > 0 && Date.now() >= finVotacion; }
   function votacionFinalizada() { return votacionCerrada() || ganadorRescate !== "" || ganadorFinal !== ""; }
@@ -938,7 +799,7 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
   }
 
   function aplicarVisibilidadGrid() {
-    const q = (document.getElementById("filtro").value || "").toLowerCase().trim();
+    const q = (document.getElementById("filtro").value || "").toLowerCase();
     let visibles = 0;
     document.querySelectorAll("#grid .card").forEach(card => {
       const btn = card.querySelector(".vote-btn"); if (!btn) return;
@@ -946,7 +807,7 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
       if (estaEnCd(nombre)) { card.style.display = "none"; card.dataset.ocultaPorCd = "1"; }
       else {
         delete card.dataset.ocultaPorCd;
-        const coincide = coincideBusqueda(card.dataset.name, q);
+        const coincide = card.dataset.name.includes(q);
         card.style.display = coincide ? "" : "none";
         if (coincide) visibles++;
       }
@@ -955,17 +816,31 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
   }
 
   function refrescarBotones() {
-    const v = getVote(); const r = getRescue(); const finalizada = votacionFinalizada(); const logueado = !!usernameActual;
+    const v = getVote();
+    const r = getRescue();
+    const finalizada = votacionFinalizada();
+    const logueado = !!usernameActual;
+
     document.querySelectorAll("#grid .vote-btn").forEach(function(btn) {
       const nombre = btn.dataset.vote;
-      btn.classList.remove("voted", "disabled"); btn.disabled = false;
+      btn.classList.remove("voted", "disabled");
+      btn.disabled = false;
+
       if (finalizada) { btn.style.display = "none"; return; }
       btn.style.display = "";
-      if (!logueado) { btn.classList.add("disabled"); btn.textContent = "Ingresa tu nombre"; }
-      else if (r !== "") { btn.classList.add("disabled"); btn.textContent = "Ya usaste tu voto en rescate"; btn.disabled = true; }
-      else if (v === nombre) { btn.classList.add("voted"); btn.textContent = "✓ Tu voto"; btn.disabled = true; }
-      else if (v !== "") { btn.classList.add("disabled"); btn.textContent = "Ya votaste por otro"; btn.disabled = true; }
-      else { btn.textContent = "Votar"; }
+
+      if (!logueado) {
+        btn.classList.add("disabled");
+        btn.textContent = "Ingresa tu nombre";
+      } else if (r !== "") {
+        btn.classList.add("disabled"); btn.textContent = "Ya usaste tu voto en rescate"; btn.disabled = true;
+      } else if (v === nombre) {
+        btn.classList.add("voted"); btn.textContent = "✓ Tu voto"; btn.disabled = true;
+      } else if (v !== "") {
+        btn.classList.add("disabled"); btn.textContent = "Ya votaste por otro"; btn.disabled = true;
+      } else {
+        btn.textContent = "Votar";
+      }
     });
   }
 
@@ -986,13 +861,14 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
       const imgAlt = cardOriginal.querySelector("img").alt;
       const votosRescate = rescates[nombre] || 0;
       const pct = Math.min(100, Math.round((votosRescate / umbral) * 100));
+      const dias = Math.max(0, Math.ceil((cd.hasta - Date.now()) / 86400000));
       const div = document.createElement("div");
       div.className = "cd-card"; div.dataset.cardName = nombre;
       div.innerHTML = `
-        <div class="cd-badge">EN COOLDOWN</div>
+        <div class="cd-badge">EN COOLDOWN · ${dias}d</div>
         <div class="img-wrap"><img src="${imgSrc}" alt="${imgAlt}" loading="lazy"></div>
         <div class="name">${nombre}</div>
-        <div class="cd-time" data-hasta="${cd.hasta}">⏳ calculando...</div>
+        <div class="cd-time">⏳ ${dias} día${dias !== 1 ? "s" : ""} restantes</div>
         <div class="progress">
           <div class="progress-fill" style="width:${pct}%"></div>
           <div class="progress-text">${votosRescate} / ${umbral} rescates</div>
@@ -1006,29 +882,16 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
       const nombre = btn.dataset.salvar;
       const imgSrc = btn.closest(".cd-card").querySelector("img").src;
       if (finalizada) { btn.classList.add("disabled"); btn.textContent = "Votación finalizada"; btn.disabled = true; }
-      else if (!logueado) { btn.classList.add("disabled"); btn.textContent = "Ingresa tu nombre"; }
+      else if (!logueado) {
+        btn.classList.add("disabled");
+        btn.textContent = "Ingresa tu nombre";
+      }
       else if (r === nombre) { btn.classList.add("voted"); btn.textContent = "✓ Tu rescate"; btn.disabled = true; }
       else if (r !== "") { btn.classList.add("disabled"); btn.textContent = "Ya usaste tu rescate"; btn.disabled = true; }
       else if (getVote() !== "") { btn.classList.add("disabled"); btn.textContent = "Ya usaste tu voto"; btn.disabled = true; }
       else { btn.addEventListener("click", () => abrirModalRescate(nombre, imgSrc)); }
     });
-    actualizarContadoresCd();
   }
-
-  function actualizarContadoresCd() {
-    document.querySelectorAll('.cd-time[data-hasta]').forEach(el => {
-      const hasta = parseInt(el.dataset.hasta);
-      if (!hasta) return;
-      const restante = hasta - Date.now();
-      if (restante <= 0) { el.textContent = '⏳ 0d 0h 0m 0s'; return; }
-      const d = Math.floor(restante / 86400000);
-      const h = Math.floor((restante % 86400000) / 3600000);
-      const m = Math.floor((restante % 3600000) / 60000);
-      const s = Math.floor((restante % 60000) / 1000);
-      el.textContent = `⏳ ${d}d ${h}h ${m}m ${s}s`;
-    });
-  }
-  setInterval(actualizarContadoresCd, 1000);
 
   function abrirModal(nombre, imgSrc) {
     accionModal = "votar"; votoPendiente = nombre;
@@ -1070,9 +933,7 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
     }
     if (!card) return;
     card.classList.add(esRescate ? "vote-pop-rescue" : "vote-pop");
-    if (!esRescate) card.classList.add("vote-stamp");
     setTimeout(() => card.classList.remove("vote-pop", "vote-pop-rescue"), 900);
-    setTimeout(() => card.classList.remove("vote-stamp"), 3500);
   }
 
   async function ejecutarVoto(nombre) {
@@ -1126,13 +987,22 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
         agregarLog('rescate', 'rescate_exitoso',
           `🔥 "${nombre}" alcanzó ${nuevos}/${umbral} rescates y es el GANADOR`,
           { personaje: nombre, votosRescate: nuevos, umbral });
+
+        // Auto-CD: resetear el CD del ganador por rescate
         if (autoCdActivo) {
-          const ahora = Date.now(); const hasta = ahora + cdDiasConfig * 24 * 60 * 60 * 1000;
-          set(ref(db, `cooldowns/${nombre}`), { activo: true, desde: ahora, hasta, motivo: "Auto-CD al ganar por rescate" });
+          const ahora = Date.now();
+          const hasta = ahora + cdDiasConfig * 24 * 60 * 60 * 1000;
+          set(ref(db, `cooldowns/${nombre}`), {
+            activo: true,
+            desde: ahora,
+            hasta,
+            motivo: "Auto-CD al ganar por rescate"
+          });
           agregarLog('cd', 'auto_aplicado',
             `⏳ Auto-CD de ${cdDiasConfig} días aplicado a "${nombre}" (ganador por rescate)`,
             { personaje: nombre, dias: cdDiasConfig, hasta });
         }
+
         setTimeout(() => { mostrarToast(`🔥 ¡${nombre} ha sido SALVADO y es el GANADOR!`, "rescue"); dispararConfeti(); }, 1500);
       }
     } catch (error) {
@@ -1220,29 +1090,22 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
         if ((mostrarResultados || cerrada || ganadorRescate || ganadorFinal) && !resultadosMostrados) {
           resultadosMostrados = true; mostrarVotosEnCartas();
         }
-        if (!appInicializada) {
-          appInicializada = true;
-          document.getElementById('gridSkeleton').style.display = 'none';
-          document.getElementById('grid').style.display = '';
-        }
       }
       actualizarCountdown(); refrescarBotones(); aplicarVisibilidadGrid(); renderCdPanel();
       actualizarAvisoEmpate(); verificarAutoRng();
       aplicarRanking();
-      renderChart();
-      registrarHistorialSiNuevo();
     });
 
     onValue(ref(db, 'cooldowns'), (snap) => {
       cooldowns = snap.val() || {};
-      aplicarVisibilidadGrid(); renderCdPanel(); actualizarAvisoEmpate(); verificarAutoRng(); renderChart();
+      aplicarVisibilidadGrid(); renderCdPanel(); actualizarAvisoEmpate(); verificarAutoRng();
     });
     onValue(ref(db, 'rescates'), (snap) => {
-      rescates = snap.val() || {}; renderCdPanel(); renderChart();
+      rescates = snap.val() || {}; renderCdPanel();
     });
     onValue(ref(db, 'votos'), (snap) => {
       votosActuales = snap.val() || {};
-      actualizarAvisoEmpate(); verificarAutoRng(); renderChart();
+      actualizarAvisoEmpate(); verificarAutoRng();
     });
     onValue(ref(db, 'config/rng_resultado'), (snap) => {
       if (snap.exists()) {
@@ -1255,18 +1118,6 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
         }
       }
     });
-    onValue(ref(db, 'historial'), (snap) => {
-      historialActual = snap.val() || {};
-      renderHallOfFame();
-    });
-
-    setTimeout(() => {
-      if (!appInicializada) {
-        appInicializada = true;
-        document.getElementById('gridSkeleton').style.display = 'none';
-        document.getElementById('grid').style.display = '';
-      }
-    }, 5000);
 
     setInterval(() => {
       aplicarVisibilidadGrid(); renderCdPanel(); actualizarCountdown();
@@ -1283,307 +1134,11 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
     });
   }
 
-  async function registrarHistorialSiNuevo() {
-    const ganadorActual = ganadorRescate || ganadorFinal;
-    if (!ganadorActual) return;
-    if (!resetToken) return;
-
-    const histKey = `${resetToken}_${ganadorActual}`;
-    if (ultimoHistorialRegistrado === histKey) return;
-
-    try {
-      const snap = await get(ref(db, `historial/${histKey}`));
-      if (snap.exists()) { ultimoHistorialRegistrado = histKey; return; }
-
-      const metodo = ganadorRescate ? 'rescate' : (ganadorMetodo || 'votos');
-      const totalVotosCast = Object.values(votosActuales || {}).reduce((a, b) => a + (b || 0), 0);
-      const totalRescatesCast = Object.values(rescates || {}).reduce((a, b) => a + (b || 0), 0);
-      await set(ref(db, `historial/${histKey}`), {
-        ganador: ganadorActual,
-        metodo,
-        votos: votosActuales[ganadorActual] || 0,
-        fecha: Date.now(),
-        votosFinales: votosActuales || {},
-        rescatesFinales: rescates || {},
-        totalMiembros,
-        participantes: totalVotosCast + totalRescatesCast
-      });
-      ultimoHistorialRegistrado = histKey;
-      await agregarLog('admin', 'historial_registrado',
-        `📜 Historial guardado: ${ganadorActual} (${metodo})`,
-        { ganador: ganadorActual, metodo });
-    } catch (e) { console.warn('historial fail:', e); }
-  }
-
-  function calcularHallOfFame() {
-    const stats = {};
-    Object.values(historialActual).forEach(h => {
-      if (!h.ganador) return;
-      if (!stats[h.ganador]) stats[h.ganador] = { victorias: 0, rescates: 0, votos: 0 };
-      stats[h.ganador].victorias++;
-      if (h.metodo === 'rescate') stats[h.ganador].rescates++;
-      else stats[h.ganador].votos++;
-    });
-    return stats;
-  }
-
-  function renderHallOfFame() {
-    const stats = calcularHallOfFame();
-    const arr = Object.entries(stats).sort((a, b) => {
-      if (b[1].victorias !== a[1].victorias) return b[1].victorias - a[1].victorias;
-      return b[1].rescates - a[1].rescates;
-    });
-
-    const cont = document.getElementById('hallContainer');
-    const grid = document.getElementById('hallGrid');
-    const subtitle = document.getElementById('hallSubtitle');
-
-    if (arr.length === 0) { cont.classList.remove('visible'); return; }
-
-    cont.classList.add('visible');
-    subtitle.textContent = `${arr.length} campeón${arr.length !== 1 ? 'es' : ''} en la historia del clan`;
-
-    grid.innerHTML = arr.map(([nombre, s], idx) => {
-      const card = [...document.querySelectorAll('#grid .card')].find(c => {
-        const b = c.querySelector('.vote-btn'); return b && b.dataset.vote === nombre;
-      });
-      const imgSrc = card ? card.querySelector('img').src : '';
-      const rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : '';
-      const crown = idx === 0 ? '👑 ' : '';
-      return `
-        <div class="hall-card ${rankClass}">
-          <div class="hall-img-wrap"><img src="${imgSrc}" alt="${nombre}" loading="lazy"></div>
-          <div class="hall-name">${crown}${nombre}</div>
-          <div class="hall-stats">
-            <span class="hall-badge wins">🏆 ${s.victorias} victoria${s.victorias !== 1 ? 's' : ''}</span>
-            ${s.rescates > 0 ? `<span class="hall-badge rescues">🔥 ${s.rescates} rescate${s.rescates !== 1 ? 's' : ''}</span>` : ''}
-          </div>
-        </div>
-      `;
-    }).join('');
-
-    grid.querySelectorAll('img').forEach(bindLightbox);
-  }
-
-  // ============================================================
-  // GRÁFICO DE BARRAS (con ganador / empate destacado)
-  // ============================================================
-  function renderChart() {
-    const cont = document.getElementById('chartContainer');
-    const barsCont = document.getElementById('chartBars');
-    const debeMostrar = votacionFinalizada() || votacionCerrada();
-    if (!debeMostrar) { cont.classList.remove('visible'); return; }
-
-    const ganadorActual = ganadorRescate || ganadorFinal;
-    const esRescate = !!ganadorRescate;
-
-    // Incluye el ganador aunque esté en CD o tenga 0 votos
-    const ranking = Object.entries(votosActuales)
-      .filter(([n]) => n === ganadorActual || !estaEnCd(n))
-      .map(([n, v]) => ({ nombre: n, votos: v || 0 }))
-      .filter(x => x.votos > 0 || x.nombre === ganadorActual)
-      .sort((a, b) => b.votos - a.votos);
-
-    if (ranking.length === 0) { cont.classList.remove('visible'); return; }
-    cont.classList.add('visible');
-
-    // Determinar ganadores y empate
-    let ganadores = [];
-    let esEmpate = false;
-
-    if (esRescate) {
-      ganadores = [ganadorActual];
-    } else {
-      const maxVotos = Math.max(...ranking.map(r => r.votos));
-      ganadores = ranking.filter(r => r.votos === maxVotos && maxVotos > 0).map(r => r.nombre);
-      // Si ganadorFinal está definido, priorizarlo
-      if (ganadorFinal) {
-        ganadores = [ganadorFinal];
-      } else {
-        esEmpate = ganadores.length > 1;
-      }
-    }
-
-    const maxVotos = Math.max(...ranking.map(r => r.votos), 1);
-
-    barsCont.innerHTML = ranking.map((r) => {
-      const pctBase = Math.max(5, (r.votos / maxVotos) * 100);
-      const esGanadorReal = r.nombre === (ganadorFinal || ganadorRescate);
-      const estaEnEmpate = esEmpate && ganadores.includes(r.nombre);
-
-      let rowClass = '';
-      let barClass = '';
-      let badgeHTML = '';
-
-      if (esGanadorReal) {
-        rowClass = 'is-winner';
-        barClass = 'winner';
-        badgeHTML = esRescate
-          ? `<span class="chart-badge resc">🔥 GANADOR</span>`
-          : `<span class="chart-badge">👑 GANADOR</span>`;
-      } else if (estaEnEmpate) {
-        rowClass = 'is-tie';
-        barClass = 'tie';
-        badgeHTML = `<span class="chart-badge tie">⚖️ EMPATE</span>`;
-      }
-
-      const votosLabel = (esRescate && esGanadorReal)
-        ? `${rescates[ganadorActual] || 0} 🔥`
-        : r.votos;
-
-      return `
-        <div class="chart-row ${rowClass}">
-          <div class="chart-name" title="${r.nombre}">
-            <div class="chart-name-text">${r.nombre}</div>
-            ${badgeHTML}
-          </div>
-          <div class="chart-bar-wrap"><div class="chart-bar ${barClass}" data-pct="${pctBase}"></div></div>
-          <div class="chart-votes">${votosLabel}</div>
-        </div>
-      `;
-    }).join('');
-
-    requestAnimationFrame(() => {
-      barsCont.querySelectorAll('.chart-bar').forEach(bar => {
-        const pct = parseFloat(bar.dataset.pct);
-        setTimeout(() => { bar.style.width = pct + '%'; }, 50);
-      });
-    });
-  }
-
-  // ============================================================
-  // COMPARTIR COMO IMAGEN
-  // ============================================================
-  async function compartirComoImagen(boton) {
-    const ganadorActual = ganadorRescate || ganadorFinal;
-    if (!ganadorActual) return;
-    const btnOriginal = boton.textContent;
-    boton.disabled = true;
-    boton.textContent = '⏳ Generando...';
-
-    try {
-      const card = [...document.querySelectorAll('#grid .card')].find(c => {
-        const b = c.querySelector('.vote-btn'); return b && b.dataset.vote === ganadorActual;
-      });
-      if (!card) throw new Error('Card no encontrada');
-      const imgOriginal = card.querySelector('img');
-
-      const W = 1080, H = 1350;
-      const canvas = document.createElement('canvas');
-      canvas.width = W; canvas.height = H;
-      const ctx = canvas.getContext('2d');
-
-      const grad = ctx.createLinearGradient(0, 0, W, H);
-      grad.addColorStop(0, '#0f1020');
-      grad.addColorStop(0.5, '#1a1c30');
-      grad.addColorStop(1, '#0f1020');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, W, H);
-
-      ctx.fillStyle = 'rgba(245,197,66,0.15)';
-      for (let i = 0; i < 60; i++) {
-        const x = Math.random() * W; const y = Math.random() * H; const r = Math.random() * 2;
-        ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
-      }
-
-      ctx.strokeStyle = '#f5c542'; ctx.lineWidth = 6;
-      ctx.strokeRect(30, 30, W - 60, H - 60);
-      ctx.strokeStyle = 'rgba(245,197,66,0.4)'; ctx.lineWidth = 2;
-      ctx.strokeRect(45, 45, W - 90, H - 90);
-
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      await new Promise((resolve, reject) => {
-        img.onload = resolve;
-        img.onerror = reject;
-        img.src = imgOriginal.src;
-      });
-
-      const imgW = 620, imgH = Math.round(imgW * 4 / 3);
-      const imgX = (W - imgW) / 2;
-      const imgY = 180;
-
-      ctx.fillStyle = 'rgba(245,197,66,0.2)';
-      ctx.fillRect(imgX - 8, imgY - 8, imgW + 16, imgH + 16);
-
-      // ← FIX: imagen alineada arriba (no centrada verticalmente)
-      const ratio = Math.max(imgW / img.width, imgH / img.height);
-      const dw = img.width * ratio;
-      const dh = img.height * ratio;
-      const dx = imgX + (imgW - dw) / 2;
-      const dy = imgY;
-
-      ctx.save();
-      ctx.beginPath();
-      ctx.rect(imgX, imgY, imgW, imgH);
-      ctx.clip();
-      ctx.drawImage(img, dx, dy, dw, dh);
-      ctx.restore();
-
-      ctx.strokeStyle = '#f5c542';
-      ctx.lineWidth = 4;
-      ctx.strokeRect(imgX, imgY, imgW, imgH);
-
-      ctx.textAlign = 'center';
-      ctx.fillStyle = '#f5c542';
-      ctx.font = 'bold 64px "Segoe UI", Arial, sans-serif';
-      ctx.shadowColor = 'rgba(245,197,66,0.6)';
-      ctx.shadowBlur = 20;
-      ctx.fillText('★ GANADOR ★', W / 2, 130);
-      ctx.shadowBlur = 0;
-
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 84px "Segoe UI", Arial, sans-serif';
-      ctx.shadowColor = 'rgba(0,0,0,0.5)';
-      ctx.shadowBlur = 15;
-      ctx.fillText(ganadorActual, W / 2, imgY + imgH + 120);
-      ctx.shadowBlur = 0;
-
-      const metodoTexto = ganadorRescate ? 'Salvado por el clan' : (ganadorMetodo === 'rng' ? 'Ganador por dados' : 'Ganador por votos');
-      ctx.fillStyle = '#9aa0b5';
-      ctx.font = '36px "Segoe UI", Arial, sans-serif';
-      ctx.fillText(metodoTexto, W / 2, imgY + imgH + 180);
-
-      const votos = votosActuales[ganadorActual] || 0;
-      const rescatesGanador = rescates[ganadorActual] || 0;
-      ctx.fillStyle = '#f5c542';
-      ctx.font = 'bold 44px "Segoe UI", Arial, sans-serif';
-      if (ganadorRescate) {
-        ctx.fillText(`🔥 ${rescatesGanador} rescates`, W / 2, imgY + imgH + 250);
-      } else {
-        ctx.fillText(`🗳 ${votos} voto${votos !== 1 ? 's' : ''}`, W / 2, imgY + imgH + 250);
-      }
-
-      ctx.fillStyle = 'rgba(154,160,181,0.7)';
-      ctx.font = '28px "Segoe UI", Arial, sans-serif';
-      ctx.fillText('AXCEND - LATAM -', W / 2, H - 70);
-
-      const blob = await new Promise(res => canvas.toBlob(res, 'image/png', 1));
-      if (!blob) throw new Error('No se pudo generar la imagen');
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `axcend-ganador-${ganadorActual.replace(/\s+/g,'_')}-${Date.now()}.png`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-      mostrarToast("¡Imagen generada y descargada! 📸", "success");
-    } catch (err) {
-      console.error('Share fail:', err);
-      mostrarToast("No se pudo generar la imagen. Intenta de nuevo.", "error");
-    } finally {
-      boton.disabled = false;
-      boton.textContent = btnOriginal;
-    }
-  }
-
-  // ============================================================
-  // EMPATE / RNG
-  // ============================================================
   function actualizarAvisoEmpate() {
     const el = document.getElementById('empateAviso');
-    if (ganadorRescate || ganadorFinal || !votacionCerrada() || rngResultado) { ocultarBannerEmpate(); return; }
+    if (ganadorRescate || ganadorFinal || !votacionCerrada() || rngResultado) {
+      ocultarBannerEmpate(); return;
+    }
     const emp = obtenerEmpateLocal();
     if (!emp) { ocultarBannerEmpate(); return; }
     if (rngTriggerAt > 0) {
@@ -1610,7 +1165,9 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
       el.classList.add('visible');
     }
   }
-  function ocultarBannerEmpate() { document.getElementById('empateAviso').classList.remove('visible'); }
+  function ocultarBannerEmpate() {
+    document.getElementById('empateAviso').classList.remove('visible');
+  }
 
   async function verificarAutoRng() {
     if (!votacionCerrada()) return;
@@ -1619,6 +1176,7 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
     const emp = obtenerEmpateLocal();
     if (!emp) return;
     if (rngTriggerAt > 0) return;
+
     try {
       const tx = await runTransaction(ref(db, 'config/rng_trigger_at'), (current) => {
         if (current && current > 0) return;
@@ -1630,16 +1188,18 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
           { empatados: emp.empatados.map(e => e.nombre), maxVotos: emp.maxVotos, triggerAt: tx.snapshot.val() });
         mostrarToast("⚖️ Empate detectado. Desempate por dados en 60 segundos.", "dice");
       }
-    } catch (e) {}
+    } catch (e) { /* otro cliente se encargó */ }
   }
 
   async function ejecutarRollRng() {
     const emp = obtenerEmpateLocal();
     if (!emp) { rngYaIntentado = false; return; }
+
     const rondas = [];
     let candidatos = emp.empatados.map(e => e.nombre);
     let rondaNum = 0;
     let ganador = null;
+
     while (candidatos.length > 1 && rondaNum < 10) {
       rondaNum++;
       const tiradas = {};
@@ -1651,7 +1211,15 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
       candidatos = nuevosCandidatos;
     }
     ganador = candidatos[0] || emp.empatados[0].nombre;
-    const resultado = { rondas, ganador, empate: emp.empatados.map(e => e.nombre), votosMax: emp.maxVotos, fecha: Date.now(), totalRondas: rondaNum };
+
+    const resultado = {
+      rondas, ganador,
+      empate: emp.empatados.map(e => e.nombre),
+      votosMax: emp.maxVotos,
+      fecha: Date.now(),
+      totalRondas: rondaNum
+    };
+
     try {
       const tx = await runTransaction(ref(db, 'config/rng_resultado'), (current) => {
         if (current) return;
@@ -1664,15 +1232,28 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
           `🎲 Desempate por dados: ganador "${ganador}" tras ${rondaNum} ronda(s)`,
           { rondas, ganador, empatados: emp.empatados.map(e => e.nombre), votosMax: emp.maxVotos });
         if (!votacionCerrada()) await set(ref(db, 'config/fin_votacion'), Date.now() - 1);
+
+        // Auto-CD del ganador por RNG (si aplica)
         if (autoCdActivo) {
-          const ahora = Date.now(); const hasta = ahora + cdDiasConfig * 24 * 60 * 60 * 1000;
-          await set(ref(db, `cooldowns/${ganador}`), { activo: true, desde: ahora, hasta, motivo: "Auto-CD al ganar por RNG" });
+          const ahora = Date.now();
+          const hasta = ahora + cdDiasConfig * 24 * 60 * 60 * 1000;
+          await set(ref(db, `cooldowns/${ganador}`), {
+            activo: true,
+            desde: ahora,
+            hasta,
+            motivo: "Auto-CD al ganar por RNG"
+          });
           await agregarLog('cd', 'auto_aplicado',
             `⏳ Auto-CD de ${cdDiasConfig} días aplicado a "${ganador}" (ganador por RNG)`,
             { personaje: ganador, dias: cdDiasConfig, hasta });
         }
-      } else { rngYaIntentado = false; }
-    } catch (e) { rngYaIntentado = false; }
+      } else {
+        rngYaIntentado = false;
+      }
+    } catch (e) {
+      console.error("Error al ejecutar RNG:", e);
+      rngYaIntentado = false;
+    }
   }
 
   setInterval(() => {
@@ -1691,19 +1272,24 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
   async function animarDados(resultado) {
     if (rngAnimacionEnCurso) return;
     rngAnimacionEnCurso = true;
+
     const overlay = document.getElementById('diceOverlay');
     const grid = document.getElementById('diceGrid');
     const roundInfo = document.getElementById('diceRoundInfo');
     const status = document.getElementById('diceStatus');
+
     overlay.classList.add('active');
     status.className = "dice-status";
+
     const totalRondas = resultado.rondas.length;
+
     for (let i = 0; i < totalRondas; i++) {
       const ronda = resultado.rondas[i];
       roundInfo.textContent = `Ronda ${ronda.ronda} / ${totalRondas}`;
       status.textContent = `Tirando dados...`;
       status.className = "dice-status";
       grid.innerHTML = '';
+
       const diceElements = {};
       ronda.candidatos.forEach(c => {
         const die = document.createElement('div');
@@ -1712,6 +1298,7 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
         grid.appendChild(die);
         diceElements[c] = die;
       });
+
       const rollDuration = 1800;
       const startTime = Date.now();
       await new Promise(resolve => {
@@ -1722,26 +1309,33 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
           });
         }, 70);
       });
+
       ronda.candidatos.forEach(c => {
         diceElements[c].classList.remove('rolling');
         diceElements[c].querySelector('.die-face').textContent = ronda.tiradas[c];
       });
+
       const maxRoll = Math.max(...Object.values(ronda.tiradas));
       const winnersThisRound = ronda.candidatos.filter(c => ronda.tiradas[c] === maxRoll);
       const losers = ronda.candidatos.filter(c => ronda.tiradas[c] !== maxRoll);
+
       losers.forEach(c => diceElements[c].classList.add('eliminated'));
       winnersThisRound.forEach(c => diceElements[c].classList.add('winner'));
+
       if (winnersThisRound.length === 1) {
         status.textContent = `🏆 ¡${winnersThisRound[0]} gana la ronda!`;
       } else {
         status.textContent = `Empate en tirada: ${winnersThisRound.join(', ')}. Nueva ronda...`;
       }
+
       await new Promise(r => setTimeout(r, winnersThisRound.length === 1 ? 1700 : 1200));
     }
+
     roundInfo.textContent = `🎲 RESULTADO FINAL 🎲`;
     status.className = "dice-status winner-text";
     status.innerHTML = `🏆 ¡Ganador: ${resultado.ganador}! 🏆`;
     dispararConfeti();
+
     await new Promise(r => setTimeout(r, 3500));
     overlay.classList.remove('active');
     rngAnimacionEnCurso = false;
@@ -1760,7 +1354,7 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
         if (!badge) { badge = document.createElement('div'); badge.className = 'votos-badge'; card.insertBefore(badge, btn); }
         badge.textContent = '🗳 ' + cantidad + ' voto' + (cantidad !== 1 ? 's' : '');
       });
-      aplicarRanking(); actualizarAvisoEmpate(); renderChart();
+      aplicarRanking(); actualizarAvisoEmpate();
     });
     onValue(ref(db, 'votantes'), () => actualizarContadorVotantes());
   }
@@ -1768,24 +1362,17 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
   function construirWinnerCard(card, variante, badgeTexto) {
     const clone = card.cloneNode(true);
     clone.className = "winner-card" + (variante ? " " + variante : "");
+    // FIX: forzar visible aunque la tarjeta original esté oculta por CD
     clone.style.removeProperty('display');
     delete clone.dataset.ocultaPorCd;
-    clone.classList.remove('vote-stamp', 'vote-pop', 'vote-pop-rescue');
     if (badgeTexto) {
       const badge = document.createElement("div");
       badge.className = "votos-badge"; badge.textContent = badgeTexto; clone.appendChild(badge);
     }
-    const shareBtn = document.createElement("button");
-    shareBtn.className = "share-btn";
-    shareBtn.textContent = "📸 Compartir";
-    shareBtn.addEventListener("click", function(e) {
-      e.stopPropagation();
-      compartirComoImagen(this);
-    });
-    clone.appendChild(shareBtn);
-
     clone.querySelector("img").addEventListener("click", function() {
-      lightboxImages = [this]; lightboxIndex = 0; abrirLightbox();
+      document.getElementById("lb-img").src = this.src;
+      document.getElementById("lb-name").textContent = this.alt;
+      document.getElementById("lightbox").classList.add("active");
     });
     return clone;
   }
@@ -1809,7 +1396,8 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
         const clone = construirWinnerCard(card, "rescue-winner", `🔥 ${r} / ${umbral} rescates`);
         winnerContainer.appendChild(clone); winnerContainer.classList.add("visible");
         if (!sessionStorage.getItem('confetti_rescate')) {
-          sessionStorage.setItem('confetti_rescate', '1'); setTimeout(dispararConfeti, 500);
+          sessionStorage.setItem('confetti_rescate', '1');
+          setTimeout(dispararConfeti, 500);
         }
       }
       return;
@@ -1839,7 +1427,8 @@ body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
           const clone = construirWinnerCard(card, "", `🗳 ${top.votos} voto${top.votos !== 1 ? 's' : ''}`);
           winnerContainer.appendChild(clone); winnerContainer.classList.add("visible");
           if (!sessionStorage.getItem('confetti_ganador')) {
-            sessionStorage.setItem('confetti_ganador', '1'); setTimeout(dispararConfeti, 500);
+            sessionStorage.setItem('confetti_ganador', '1');
+            setTimeout(dispararConfeti, 500);
           }
         }
       }
