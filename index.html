@@ -35,13 +35,33 @@
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <link rel="manifest" href="./manifest.json">
 
+<!-- Precarga de las primeras 6 imágenes -->
+<link rel="preload" as="image" href="Activos/Akaoni_Atsushi.webp">
+<link rel="preload" as="image" href="Activos/Baade.webp">
+<link rel="preload" as="image" href="Activos/Capt._Locke.webp">
+<link rel="preload" as="image" href="Activos/Choi_Yuhee.webp">
+<link rel="preload" as="image" href="Activos/Choi_Yuhyun.webp">
+<link rel="preload" as="image" href="Activos/Code_B.webp">
+
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
 <style>
 :root{--bg:#0f1020;--card:#1a1c30;--text:#eee;--accent:#f5c542;--sub:#9aa0b5;--border:#2a2d45}
 body.light{--bg:#f2f3f7;--card:#ffffff;--text:#1a1c30;--accent:#d4a017;--sub:#555;--border:#e0e0e8}
 *{box-sizing:border-box}
-body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text);padding:16px;transition:.3s}
+html,body{margin:0;padding:0}
+body{font-family:Segoe UI,Arial,sans-serif;background:transparent;color:var(--text);padding:16px;transition:.3s;position:relative;min-height:100vh}
+
+/* Fondo de partículas */
+#bgParticles{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  background:var(--bg);
+  transition:background .3s;
+  pointer-events:none;
+}
+
 header{text-align:center;margin-bottom:20px;position:relative}
 h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:2px;font-weight:800}
 .sub{color:var(--sub);font-size:clamp(13px,3vw,16px);margin-top:8px;letter-spacing:.5px}
@@ -54,25 +74,10 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .votantes strong{color:var(--accent)}
 
 .theme-btn{
-  position:fixed;
-  top:14px;
-  right:14px;
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  background:var(--card);
-  color:var(--text);
-  border:1px solid var(--border);
-  cursor:pointer;
-  font-size:20px;
-  z-index:50;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 2px 10px rgba(0,0,0,.35);
-  transition:.2s;
-  padding:0;
-  line-height:1;
+  position:fixed;top:14px;right:14px;width:42px;height:42px;border-radius:50%;
+  background:var(--card);color:var(--text);border:1px solid var(--border);cursor:pointer;
+  font-size:20px;z-index:50;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 10px rgba(0,0,0,.35);transition:.2s;padding:0;line-height:1;
 }
 .theme-btn:hover{transform:scale(1.08);filter:brightness(1.15);border-color:var(--accent)}
 .theme-btn:active{transform:scale(.95)}
@@ -96,29 +101,12 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .login-modal::before{content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 0%,rgba(245,197,66,.12),transparent 50%);pointer-events:none}
 .login-modal > *{position:relative}
 .login-modal .login-close{
-  position:absolute;
-  top:10px;
-  right:10px;
-  width:32px;
-  height:32px;
-  border-radius:50%;
-  border:none;
-  background:rgba(255,255,255,.08);
-  color:var(--text);
-  font-size:20px;
-  line-height:1;
-  cursor:pointer;
-  z-index:5;
-  transition:.2s;
-  padding:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;
+  border:none;background:rgba(255,255,255,.08);color:var(--text);font-size:20px;
+  line-height:1;cursor:pointer;z-index:5;transition:.2s;padding:0;
+  display:flex;align-items:center;justify-content:center;
 }
-.login-modal .login-close:hover{
-  background:rgba(255,255,255,.2);
-  transform:scale(1.1);
-}
+.login-modal .login-close:hover{background:rgba(255,255,255,.2);transform:scale(1.1)}
 .login-modal .lm-crest{font-size:44px;margin-bottom:8px;filter:drop-shadow(0 4px 12px rgba(245,197,66,.4))}
 .login-modal h2{color:var(--accent);margin:0 0 6px;font-size:22px;letter-spacing:2px;font-weight:800}
 .login-modal .lm-tagline{color:var(--sub);font-size:12px;text-transform:uppercase;letter-spacing:1.5px;margin:0 0 18px}
@@ -126,7 +114,6 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .login-modal input[type="text"]{width:100%;padding:14px 16px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:16px;text-align:center;outline:none;font-family:inherit;letter-spacing:.5px;transition:.2s}
 .login-modal input[type="text"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(245,197,66,.15)}
 .login-modal .lm-msg{min-height:20px;font-size:13px;color:#ff5c5c;margin:10px 0 6px;font-weight:500}
-.login-modal .lm-msg.ok{color:#4CAF50}
 .login-modal .lm-msg.loading{color:var(--sub)}
 .login-modal #btnEntrar{width:100%;padding:14px;border-radius:12px;border:none;background:var(--accent);color:#1a1c30;font-size:15px;font-weight:800;cursor:pointer;transition:.2s;font-family:inherit;letter-spacing:.5px}
 .login-modal #btnEntrar:hover:not(:disabled){filter:brightness(1.1);transform:translateY(-1px)}
@@ -146,10 +133,86 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}
 @media(max-width:600px){.grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}}
 
-.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px;text-align:center;transition:.3s;display:flex;flex-direction:column;gap:8px;position:relative}
+/* SKELETON LOADER */
+.grid-skeleton{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}
+@media(max-width:600px){.grid-skeleton{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}}
+.skeleton-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  overflow:hidden;
+  position:relative;
+}
+.skeleton-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);
+  animation:shimmer 1.6s infinite;
+}
+body.light .skeleton-card::before{
+  background:linear-gradient(90deg,transparent,rgba(0,0,0,.04),transparent);
+}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.skeleton-card .sk-img{
+  aspect-ratio:3/4;
+  border-radius:10px;
+  background:var(--border);
+  opacity:.4;
+}
+.skeleton-card .sk-name{
+  height:14px;
+  border-radius:4px;
+  background:var(--border);
+  opacity:.4;
+  width:70%;
+  margin:0 auto;
+}
+.skeleton-card .sk-btn{
+  height:32px;
+  border-radius:8px;
+  background:var(--border);
+  opacity:.4;
+}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px;text-align:center;transition:.3s;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden}
 .card:hover{transform:translateY(-4px);border-color:var(--accent)}
 .card.winner{border-color:#f5c542;box-shadow:0 0 24px rgba(245,197,66,.5);transform:translateY(-4px)}
 .card.winner::after{content:"👑";position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:32px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6));z-index:2}
+
+/* SELLO VOTADO */
+@keyframes stampIn{
+  0%{transform:translate(-50%,-50%) scale(2.5) rotate(-30deg);opacity:0}
+  55%{transform:translate(-50%,-50%) scale(.85) rotate(-18deg);opacity:1}
+  75%{transform:translate(-50%,-50%) scale(1.05) rotate(-14deg);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(1) rotate(-12deg);opacity:1}
+}
+.card.vote-stamp::before{
+  content:"✓ VOTADO";
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%) scale(1) rotate(-12deg);
+  background:rgba(76,175,80,.95);
+  color:#fff;
+  border:3px solid #fff;
+  border-radius:12px;
+  padding:8px 14px;
+  font-size:16px;
+  font-weight:900;
+  letter-spacing:2px;
+  z-index:10;
+  animation:stampIn .65s cubic-bezier(.34,1.56,.64,1) forwards;
+  box-shadow:0 4px 20px rgba(0,0,0,.5),0 0 30px rgba(76,175,80,.6);
+  text-shadow:0 2px 4px rgba(0,0,0,.3);
+  pointer-events:none;
+  white-space:nowrap;
+}
+
 @keyframes votePop{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(76,175,80,0)}30%{transform:scale(1.1);box-shadow:0 0 30px 10px rgba(76,175,80,.65)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(76,175,80,0)}}
 .card.vote-pop{animation:votePop .85s cubic-bezier(.34,1.56,.64,1);z-index:5;border-color:#4CAF50!important}
 @keyframes rescuePop{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,152,0,0)}30%{transform:scale(1.1);box-shadow:0 0 30px 10px rgba(255,152,0,.65)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,152,0,0)}}
@@ -186,11 +249,30 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .cd-card .salvar-btn.disabled{background:#444;color:#999;cursor:pointer;opacity:.7;transform:none}
 .cd-card .salvar-btn.voted{background:#4CAF50;color:#fff;cursor:default}
 
-.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:1000;align-items:center;justify-content:center;padding:20px}
+/* LIGHTBOX con prev/next */
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:1000;align-items:center;justify-content:center;padding:20px}
 .lightbox.active{display:flex}
-.lightbox img{max-width:90vw;max-height:80vh;border-radius:12px}
-.lightbox .close{position:absolute;top:20px;right:30px;color:#fff;font-size:36px;cursor:pointer;font-weight:300}
-.lightbox .lb-name{position:absolute;bottom:30px;color:#fff;font-size:18px;text-align:center;width:100%}
+.lightbox img{max-width:90vw;max-height:80vh;border-radius:12px;user-select:none}
+.lightbox .close{position:absolute;top:20px;right:30px;color:#fff;font-size:36px;cursor:pointer;font-weight:300;line-height:1;z-index:5}
+.lightbox .close:hover{color:var(--accent)}
+.lb-nav{
+  position:absolute;top:50%;transform:translateY(-50%);
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);
+  color:#fff;font-size:40px;font-weight:300;line-height:1;
+  width:56px;height:56px;border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:.2s;user-select:none;z-index:5;padding:0;
+}
+.lb-nav:hover{background:rgba(245,197,66,.25);border-color:var(--accent);transform:translateY(-50%) scale(1.08)}
+.lb-prev{left:24px}
+.lb-next{right:24px}
+@media(max-width:600px){
+  .lb-nav{width:44px;height:44px;font-size:32px}
+  .lb-prev{left:8px}
+  .lb-next{right:8px}
+}
+.lightbox .lb-name{position:absolute;bottom:60px;color:#fff;font-size:18px;text-align:center;width:100%}
+.lightbox .lb-counter{position:absolute;bottom:30px;color:var(--sub);font-size:13px;text-align:center;width:100%;font-variant-numeric:tabular-nums}
 
 footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding:20px;line-height:1.6;max-width:900px;margin-left:auto;margin-right:auto}
 
@@ -268,6 +350,8 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
 </style>
 </head>
 <body>
+<canvas id="bgParticles"></canvas>
+
 <header>
 <button class="theme-btn" onclick="toggleTheme()" aria-label="Cambiar tema" title="Cambiar tema">&#9788;</button>
 <h1>AXCEND - LATAM -</h1>
@@ -296,7 +380,24 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       <input id="filtro" placeholder="Buscar personaje..." oninput="filtrar()">
       <div class="count" id="contador">27 personajes</div>
     </div>
-    <div class="grid" id="grid">
+
+    <!-- Skeletons iniciales -->
+    <div class="grid-skeleton" id="gridSkeleton">
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+    </div>
+
+    <div class="grid" id="grid" style="display:none">
       <div class='card' data-name='akaoni atsushi'>
         <div class='img-wrap'><img src='Activos/Akaoni_Atsushi.webp' alt='Akaoni Atsushi' loading='lazy'></div>
         <div class='name'>Akaoni Atsushi</div>
@@ -450,10 +551,13 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
   Hecho con dedicación para los miembros del clan. &middot; A seguir disfrutando todos juntos de este juego bien RICO, BAROSO y SUCULENTO!
 </footer>
 
-<div class="lightbox" id="lightbox" onclick="cerrarLightbox()">
-<span class="close">&times;</span>
-<img id="lb-img" src="" alt="">
-<div class="lb-name" id="lb-name"></div>
+<div class="lightbox" id="lightbox">
+  <span class="close" onclick="event.stopPropagation();cerrarLightbox()">&times;</span>
+  <button class="lb-nav lb-prev" id="lbPrev" onclick="event.stopPropagation();navegarLightbox(-1)" aria-label="Anterior">‹</button>
+  <button class="lb-nav lb-next" id="lbNext" onclick="event.stopPropagation();navegarLightbox(1)" aria-label="Siguiente">›</button>
+  <img id="lb-img" src="" alt="">
+  <div class="lb-name" id="lb-name"></div>
+  <div class="lb-counter" id="lb-counter"></div>
 </div>
 
 <div class="modal" id="modalConfirm">
@@ -493,7 +597,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, runTransaction, get, onValue, set, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  import { getDatabase, ref, runTransaction, get, onValue, set, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBaKgNmCCTdFoE2YkU1B4a8AjnwwGFeBJ4",
@@ -538,17 +642,81 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
   let usernameOriginalActual = "";
   let unsubscribeVotanteActual = null;
   let unsubscribeRescatadorActual = null;
-
-  // Auto-CD config
   let autoCdActivo = false;
   let cdDiasConfig = 60;
+  let appInicializada = false;
 
+  // ============================================================
+  // FONDO DE PARTÍCULAS
+  // ============================================================
+  (function initParticles() {
+    const canvas = document.getElementById('bgParticles');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [];
+    const isMobile = window.innerWidth < 700;
+    const COUNT = isMobile ? 25 : 45;
+
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    function crearParticulas() {
+      particles = [];
+      for (let i = 0; i < COUNT; i++) {
+        particles.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          r: Math.random() * 1.8 + 0.5,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
+          alpha: Math.random() * 0.4 + 0.1
+        });
+      }
+    }
+    crearParticulas();
+
+    function colorPart() {
+      return document.body.classList.contains('light')
+        ? 'rgba(212,160,23,' // acento oscuro
+        : 'rgba(245,197,66,';
+    }
+
+    function animar() {
+      ctx.clearRect(0, 0, W, H);
+      const color = colorPart();
+      for (const p of particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0) p.x = W;
+        if (p.x > W) p.x = 0;
+        if (p.y < 0) p.y = H;
+        if (p.y > H) p.y = 0;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = color + p.alpha + ')';
+        ctx.fill();
+      }
+      requestAnimationFrame(animar);
+    }
+    animar();
+  })();
+
+  // ============================================================
+  // PWA
+  // ============================================================
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js').catch(() => {});
     });
   }
 
+  // ============================================================
+  // UTILIDADES
+  // ============================================================
   async function agregarLog(tipo, subtipo, mensaje, detalles = {}) {
     try {
       await push(ref(db, 'logs'), { tipo, subtipo, fecha: Date.now(), mensaje, detalles });
@@ -577,6 +745,38 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     setTimeout(() => { toast.remove(); }, 3500);
   }
 
+  // Búsqueda fuzzy (Levenshtein)
+  function levenshtein(a, b) {
+    const m = a.length, n = b.length;
+    if (m === 0) return n;
+    if (n === 0) return m;
+    const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+    for (let i = 0; i <= m; i++) dp[i][0] = i;
+    for (let j = 0; j <= n; j++) dp[0][j] = j;
+    for (let i = 1; i <= m; i++) {
+      for (let j = 1; j <= n; j++) {
+        dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+      }
+    }
+    return dp[m][n];
+  }
+
+  function coincideBusqueda(nombreNorm, q) {
+    if (!q) return true;
+    if (nombreNorm.includes(q)) return true;
+    if (q.length < 3) return false;
+    // Fuzzy por palabras
+    const palabras = nombreNorm.split(/[\s_]+/).filter(Boolean);
+    const threshold = q.length <= 4 ? 1 : q.length <= 6 ? 2 : 3;
+    if (palabras.some(p => levenshtein(p, q) <= threshold)) return true;
+    // Fuzzy al nombre completo
+    if (levenshtein(nombreNorm, q) <= Math.min(threshold, 2)) return true;
+    return false;
+  }
+
+  // ============================================================
+  // LOGIN / USERNAME
+  // ============================================================
   function normalizarNombre(nombre) {
     return nombre.toLowerCase().trim().normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "_").replace(/[^a-z0-9_\-]/g, "");
@@ -656,7 +856,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       `Al cambiar, podrás ingresar con otro nombre. Tu voto (si ya votaste) queda registrado en el sistema y no se pierde.\n\n` +
       `¿Continuar?`
     )) return;
-
     detenerListenersUsuario();
     localStorage.removeItem(USER_KEY);
     localStorage.removeItem(USER_ORIG_KEY);
@@ -700,7 +899,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     if (!usernameActual) return;
     detenerListenersUsuario();
     const userAlIniciar = usernameActual;
-
     unsubscribeVotanteActual = onValue(ref(db, 'votantes/' + usernameActual), (snap) => {
       if (userAlIniciar !== usernameActual) return;
       if (snap.exists()) {
@@ -712,7 +910,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       }
       actualizarHeaderUsuario(); refrescarBotones();
     });
-
     unsubscribeRescatadorActual = onValue(ref(db, 'rescatadores/' + usernameActual), (snap) => {
       if (userAlIniciar !== usernameActual) return;
       if (snap.exists()) {
@@ -758,28 +955,70 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     document.body.classList.toggle("light");
     localStorage.setItem("axcend_theme", document.body.classList.contains("light") ? "light" : "dark");
   };
+
   window.filtrar = function() {
-    var q = document.getElementById("filtro").value.toLowerCase();
-    var visibles = 0;
+    const q = document.getElementById("filtro").value.toLowerCase().trim();
+    let visibles = 0;
     document.querySelectorAll("#grid .card").forEach(function(c) {
       if (c.dataset.ocultaPorCd === "1") { c.style.display = "none"; return; }
-      var ok = c.dataset.name.includes(q);
-      c.style.display = ok ? "" : "none";
-      if (ok) visibles++;
+      const coincide = coincideBusqueda(c.dataset.name, q);
+      c.style.display = coincide ? "" : "none";
+      if (coincide) visibles++;
     });
     document.getElementById("contador").textContent = visibles + " personaje" + (visibles !== 1 ? "s" : "");
   };
+
+  // ============================================================
+  // LIGHTBOX con prev/next
+  // ============================================================
+  let lightboxImages = [];
+  let lightboxIndex = 0;
+
+  function recolectarImagenesLightbox() {
+    return Array.from(document.querySelectorAll('#grid .card img, #cdList .cd-card img'))
+      .filter(img => img.offsetParent !== null);
+  }
+
   function bindLightbox(img) {
     img.addEventListener("click", function() {
-      document.getElementById("lb-img").src = this.src;
-      document.getElementById("lb-name").textContent = this.alt;
-      document.getElementById("lightbox").classList.add("active");
+      lightboxImages = recolectarImagenesLightbox();
+      lightboxIndex = lightboxImages.indexOf(this);
+      if (lightboxIndex < 0) lightboxIndex = 0;
+      abrirLightbox();
     });
   }
-  document.querySelectorAll(".card img").forEach(bindLightbox);
-  window.cerrarLightbox = function() { document.getElementById("lightbox").classList.remove("active"); };
-  document.addEventListener("keydown", function(e) { if (e.key === "Escape") cerrarLightbox(); });
 
+  function abrirLightbox() {
+    if (lightboxImages.length === 0) return;
+    const img = lightboxImages[lightboxIndex];
+    if (!img) return;
+    document.getElementById("lb-img").src = img.src;
+    document.getElementById("lb-name").textContent = img.alt;
+    document.getElementById("lb-counter").textContent = `${lightboxIndex + 1} / ${lightboxImages.length}`;
+    document.getElementById("lightbox").classList.add("active");
+  }
+
+  window.navegarLightbox = function(dir) {
+    if (lightboxImages.length === 0) return;
+    lightboxIndex = (lightboxIndex + dir + lightboxImages.length) % lightboxImages.length;
+    abrirLightbox();
+  };
+
+  document.querySelectorAll(".card img").forEach(bindLightbox);
+
+  window.cerrarLightbox = function() { document.getElementById("lightbox").classList.remove("active"); };
+
+  document.addEventListener("keydown", function(e) {
+    const lb = document.getElementById("lightbox");
+    if (!lb.classList.contains("active")) return;
+    if (e.key === "Escape") cerrarLightbox();
+    else if (e.key === "ArrowLeft") { e.preventDefault(); navegarLightbox(-1); }
+    else if (e.key === "ArrowRight") { e.preventDefault(); navegarLightbox(1); }
+  });
+
+  // ============================================================
+  // ESTADO
+  // ============================================================
   function votacionCerrada() { return finVotacion > 0 && Date.now() >= finVotacion; }
   function votacionFinalizada() { return votacionCerrada() || ganadorRescate !== "" || ganadorFinal !== ""; }
   function estaEnCd(nombre) { const cd = cooldowns[nombre]; return !!(cd && cd.activo && cd.hasta > Date.now()); }
@@ -799,7 +1038,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
   }
 
   function aplicarVisibilidadGrid() {
-    const q = (document.getElementById("filtro").value || "").toLowerCase();
+    const q = (document.getElementById("filtro").value || "").toLowerCase().trim();
     let visibles = 0;
     document.querySelectorAll("#grid .card").forEach(card => {
       const btn = card.querySelector(".vote-btn"); if (!btn) return;
@@ -807,7 +1046,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       if (estaEnCd(nombre)) { card.style.display = "none"; card.dataset.ocultaPorCd = "1"; }
       else {
         delete card.dataset.ocultaPorCd;
-        const coincide = card.dataset.name.includes(q);
+        const coincide = coincideBusqueda(card.dataset.name, q);
         card.style.display = coincide ? "" : "none";
         if (coincide) visibles++;
       }
@@ -861,14 +1100,13 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       const imgAlt = cardOriginal.querySelector("img").alt;
       const votosRescate = rescates[nombre] || 0;
       const pct = Math.min(100, Math.round((votosRescate / umbral) * 100));
-      const dias = Math.max(0, Math.ceil((cd.hasta - Date.now()) / 86400000));
       const div = document.createElement("div");
       div.className = "cd-card"; div.dataset.cardName = nombre;
       div.innerHTML = `
-        <div class="cd-badge">EN COOLDOWN · ${dias}d</div>
+        <div class="cd-badge">EN COOLDOWN</div>
         <div class="img-wrap"><img src="${imgSrc}" alt="${imgAlt}" loading="lazy"></div>
         <div class="name">${nombre}</div>
-        <div class="cd-time">⏳ ${dias} día${dias !== 1 ? "s" : ""} restantes</div>
+        <div class="cd-time" data-hasta="${cd.hasta}">⏳ calculando...</div>
         <div class="progress">
           <div class="progress-fill" style="width:${pct}%"></div>
           <div class="progress-text">${votosRescate} / ${umbral} rescates</div>
@@ -882,17 +1120,34 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       const nombre = btn.dataset.salvar;
       const imgSrc = btn.closest(".cd-card").querySelector("img").src;
       if (finalizada) { btn.classList.add("disabled"); btn.textContent = "Votación finalizada"; btn.disabled = true; }
-      else if (!logueado) {
-        btn.classList.add("disabled");
-        btn.textContent = "Ingresa tu nombre";
-      }
+      else if (!logueado) { btn.classList.add("disabled"); btn.textContent = "Ingresa tu nombre"; }
       else if (r === nombre) { btn.classList.add("voted"); btn.textContent = "✓ Tu rescate"; btn.disabled = true; }
       else if (r !== "") { btn.classList.add("disabled"); btn.textContent = "Ya usaste tu rescate"; btn.disabled = true; }
       else if (getVote() !== "") { btn.classList.add("disabled"); btn.textContent = "Ya usaste tu voto"; btn.disabled = true; }
       else { btn.addEventListener("click", () => abrirModalRescate(nombre, imgSrc)); }
     });
+    actualizarContadoresCd();
   }
 
+  // Contador animado de CD
+  function actualizarContadoresCd() {
+    document.querySelectorAll('.cd-time[data-hasta]').forEach(el => {
+      const hasta = parseInt(el.dataset.hasta);
+      if (!hasta) return;
+      const restante = hasta - Date.now();
+      if (restante <= 0) { el.textContent = '⏳ 0d 0h 0m 0s'; return; }
+      const d = Math.floor(restante / 86400000);
+      const h = Math.floor((restante % 86400000) / 3600000);
+      const m = Math.floor((restante % 3600000) / 60000);
+      const s = Math.floor((restante % 60000) / 1000);
+      el.textContent = `⏳ ${d}d ${h}h ${m}m ${s}s`;
+    });
+  }
+  setInterval(actualizarContadoresCd, 1000);
+
+  // ============================================================
+  // MODALES
+  // ============================================================
   function abrirModal(nombre, imgSrc) {
     accionModal = "votar"; votoPendiente = nombre;
     document.getElementById("modalImg").src = imgSrc;
@@ -922,6 +1177,9 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     else { const n = votoPendiente; cerrarModal(); if (n) ejecutarVoto(n); }
   };
 
+  // ============================================================
+  // ANIMACIÓN VOTO + SELLO
+  // ============================================================
   function animarVotoEnCard(nombre, esRescate) {
     let card = null;
     if (esRescate) {
@@ -933,9 +1191,18 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     }
     if (!card) return;
     card.classList.add(esRescate ? "vote-pop-rescue" : "vote-pop");
-    setTimeout(() => card.classList.remove("vote-pop", "vote-pop-rescue"), 900);
+    if (!esRescate) card.classList.add("vote-stamp");
+    setTimeout(() => {
+      card.classList.remove("vote-pop", "vote-pop-rescue");
+    }, 900);
+    setTimeout(() => {
+      card.classList.remove("vote-stamp");
+    }, 3500);
   }
 
+  // ============================================================
+  // VOTO / RESCATE
+  // ============================================================
   async function ejecutarVoto(nombre) {
     if (!usernameActual) { mostrarLoginModal(); return; }
     if (getRescue() !== "") { mostrarToast("Ya usaste tu voto en rescate.", "error"); return; }
@@ -987,22 +1254,14 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
         agregarLog('rescate', 'rescate_exitoso',
           `🔥 "${nombre}" alcanzó ${nuevos}/${umbral} rescates y es el GANADOR`,
           { personaje: nombre, votosRescate: nuevos, umbral });
-
-        // Auto-CD: resetear el CD del ganador por rescate
         if (autoCdActivo) {
           const ahora = Date.now();
           const hasta = ahora + cdDiasConfig * 24 * 60 * 60 * 1000;
-          set(ref(db, `cooldowns/${nombre}`), {
-            activo: true,
-            desde: ahora,
-            hasta,
-            motivo: "Auto-CD al ganar por rescate"
-          });
+          set(ref(db, `cooldowns/${nombre}`), { activo: true, desde: ahora, hasta, motivo: "Auto-CD al ganar por rescate" });
           agregarLog('cd', 'auto_aplicado',
             `⏳ Auto-CD de ${cdDiasConfig} días aplicado a "${nombre}" (ganador por rescate)`,
             { personaje: nombre, dias: cdDiasConfig, hasta });
         }
-
         setTimeout(() => { mostrarToast(`🔥 ¡${nombre} ha sido SALVADO y es el GANADOR!`, "rescue"); dispararConfeti(); }, 1500);
       }
     } catch (error) {
@@ -1024,6 +1283,9 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     });
   });
 
+  // ============================================================
+  // COUNTDOWN
+  // ============================================================
   function formatearTiempo(ms) {
     const d = Math.floor(ms / 86400000); const h = Math.floor((ms % 86400000) / 3600000);
     const m = Math.floor((ms % 3600000) / 60000); const s = Math.floor((ms % 60000) / 1000);
@@ -1059,6 +1321,9 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     }
   }
 
+  // ============================================================
+  // CONFIG
+  // ============================================================
   function cargarConfig() {
     onValue(ref(db, 'config'), (snapshot) => {
       if (snapshot.exists()) {
@@ -1090,6 +1355,12 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
         if ((mostrarResultados || cerrada || ganadorRescate || ganadorFinal) && !resultadosMostrados) {
           resultadosMostrados = true; mostrarVotosEnCartas();
         }
+        // Quitar skeletons y mostrar grid real
+        if (!appInicializada) {
+          appInicializada = true;
+          document.getElementById('gridSkeleton').style.display = 'none';
+          document.getElementById('grid').style.display = '';
+        }
       }
       actualizarCountdown(); refrescarBotones(); aplicarVisibilidadGrid(); renderCdPanel();
       actualizarAvisoEmpate(); verificarAutoRng();
@@ -1119,6 +1390,15 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       }
     });
 
+    // Fallback: si en 5s no cargó config, quitar skeletons igual
+    setTimeout(() => {
+      if (!appInicializada) {
+        appInicializada = true;
+        document.getElementById('gridSkeleton').style.display = 'none';
+        document.getElementById('grid').style.display = '';
+      }
+    }, 5000);
+
     setInterval(() => {
       aplicarVisibilidadGrid(); renderCdPanel(); actualizarCountdown();
       actualizarAvisoEmpate(); verificarAutoRng();
@@ -1134,6 +1414,9 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     });
   }
 
+  // ============================================================
+  // EMPATE / RNG (sin cambios)
+  // ============================================================
   function actualizarAvisoEmpate() {
     const el = document.getElementById('empateAviso');
     if (ganadorRescate || ganadorFinal || !votacionCerrada() || rngResultado) {
@@ -1176,7 +1459,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     const emp = obtenerEmpateLocal();
     if (!emp) return;
     if (rngTriggerAt > 0) return;
-
     try {
       const tx = await runTransaction(ref(db, 'config/rng_trigger_at'), (current) => {
         if (current && current > 0) return;
@@ -1188,18 +1470,16 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
           { empatados: emp.empatados.map(e => e.nombre), maxVotos: emp.maxVotos, triggerAt: tx.snapshot.val() });
         mostrarToast("⚖️ Empate detectado. Desempate por dados en 60 segundos.", "dice");
       }
-    } catch (e) { /* otro cliente se encargó */ }
+    } catch (e) {}
   }
 
   async function ejecutarRollRng() {
     const emp = obtenerEmpateLocal();
     if (!emp) { rngYaIntentado = false; return; }
-
     const rondas = [];
     let candidatos = emp.empatados.map(e => e.nombre);
     let rondaNum = 0;
     let ganador = null;
-
     while (candidatos.length > 1 && rondaNum < 10) {
       rondaNum++;
       const tiradas = {};
@@ -1211,7 +1491,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       candidatos = nuevosCandidatos;
     }
     ganador = candidatos[0] || emp.empatados[0].nombre;
-
     const resultado = {
       rondas, ganador,
       empate: emp.empatados.map(e => e.nombre),
@@ -1219,7 +1498,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       fecha: Date.now(),
       totalRondas: rondaNum
     };
-
     try {
       const tx = await runTransaction(ref(db, 'config/rng_resultado'), (current) => {
         if (current) return;
@@ -1232,16 +1510,11 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
           `🎲 Desempate por dados: ganador "${ganador}" tras ${rondaNum} ronda(s)`,
           { rondas, ganador, empatados: emp.empatados.map(e => e.nombre), votosMax: emp.maxVotos });
         if (!votacionCerrada()) await set(ref(db, 'config/fin_votacion'), Date.now() - 1);
-
-        // Auto-CD del ganador por RNG (si aplica)
         if (autoCdActivo) {
           const ahora = Date.now();
           const hasta = ahora + cdDiasConfig * 24 * 60 * 60 * 1000;
           await set(ref(db, `cooldowns/${ganador}`), {
-            activo: true,
-            desde: ahora,
-            hasta,
-            motivo: "Auto-CD al ganar por RNG"
+            activo: true, desde: ahora, hasta, motivo: "Auto-CD al ganar por RNG"
           });
           await agregarLog('cd', 'auto_aplicado',
             `⏳ Auto-CD de ${cdDiasConfig} días aplicado a "${ganador}" (ganador por RNG)`,
@@ -1250,10 +1523,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       } else {
         rngYaIntentado = false;
       }
-    } catch (e) {
-      console.error("Error al ejecutar RNG:", e);
-      rngYaIntentado = false;
-    }
+    } catch (e) { rngYaIntentado = false; }
   }
 
   setInterval(() => {
@@ -1272,24 +1542,19 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
   async function animarDados(resultado) {
     if (rngAnimacionEnCurso) return;
     rngAnimacionEnCurso = true;
-
     const overlay = document.getElementById('diceOverlay');
     const grid = document.getElementById('diceGrid');
     const roundInfo = document.getElementById('diceRoundInfo');
     const status = document.getElementById('diceStatus');
-
     overlay.classList.add('active');
     status.className = "dice-status";
-
     const totalRondas = resultado.rondas.length;
-
     for (let i = 0; i < totalRondas; i++) {
       const ronda = resultado.rondas[i];
       roundInfo.textContent = `Ronda ${ronda.ronda} / ${totalRondas}`;
       status.textContent = `Tirando dados...`;
       status.className = "dice-status";
       grid.innerHTML = '';
-
       const diceElements = {};
       ronda.candidatos.forEach(c => {
         const die = document.createElement('div');
@@ -1298,7 +1563,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
         grid.appendChild(die);
         diceElements[c] = die;
       });
-
       const rollDuration = 1800;
       const startTime = Date.now();
       await new Promise(resolve => {
@@ -1309,38 +1573,34 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
           });
         }, 70);
       });
-
       ronda.candidatos.forEach(c => {
         diceElements[c].classList.remove('rolling');
         diceElements[c].querySelector('.die-face').textContent = ronda.tiradas[c];
       });
-
       const maxRoll = Math.max(...Object.values(ronda.tiradas));
       const winnersThisRound = ronda.candidatos.filter(c => ronda.tiradas[c] === maxRoll);
       const losers = ronda.candidatos.filter(c => ronda.tiradas[c] !== maxRoll);
-
       losers.forEach(c => diceElements[c].classList.add('eliminated'));
       winnersThisRound.forEach(c => diceElements[c].classList.add('winner'));
-
       if (winnersThisRound.length === 1) {
         status.textContent = `🏆 ¡${winnersThisRound[0]} gana la ronda!`;
       } else {
         status.textContent = `Empate en tirada: ${winnersThisRound.join(', ')}. Nueva ronda...`;
       }
-
       await new Promise(r => setTimeout(r, winnersThisRound.length === 1 ? 1700 : 1200));
     }
-
     roundInfo.textContent = `🎲 RESULTADO FINAL 🎲`;
     status.className = "dice-status winner-text";
     status.innerHTML = `🏆 ¡Ganador: ${resultado.ganador}! 🏆`;
     dispararConfeti();
-
     await new Promise(r => setTimeout(r, 3500));
     overlay.classList.remove('active');
     rngAnimacionEnCurso = false;
   }
 
+  // ============================================================
+  // RESULTADOS Y GANADOR
+  // ============================================================
   function mostrarVotosEnCartas() {
     if (votosListenerActivo) return;
     votosListenerActivo = true;
@@ -1362,17 +1622,17 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
   function construirWinnerCard(card, variante, badgeTexto) {
     const clone = card.cloneNode(true);
     clone.className = "winner-card" + (variante ? " " + variante : "");
-    // FIX: forzar visible aunque la tarjeta original esté oculta por CD
     clone.style.removeProperty('display');
     delete clone.dataset.ocultaPorCd;
+    clone.classList.remove('vote-stamp', 'vote-pop', 'vote-pop-rescue');
     if (badgeTexto) {
       const badge = document.createElement("div");
       badge.className = "votos-badge"; badge.textContent = badgeTexto; clone.appendChild(badge);
     }
     clone.querySelector("img").addEventListener("click", function() {
-      document.getElementById("lb-img").src = this.src;
-      document.getElementById("lb-name").textContent = this.alt;
-      document.getElementById("lightbox").classList.add("active");
+      lightboxImages = [this];
+      lightboxIndex = 0;
+      abrirLightbox();
     });
     return clone;
   }
@@ -1436,6 +1696,9 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     }
   }
 
+  // ============================================================
+  // ATAJO ADMIN
+  // ============================================================
   const ADMIN_CODE = "2552321";
   let adminKeyBuffer = "";
   document.addEventListener("keydown", function(e) {
@@ -1446,6 +1709,9 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     if (adminKeyBuffer.endsWith(ADMIN_CODE)) { adminKeyBuffer = ""; window.open("admin.html", "_blank"); }
   });
 
+  // ============================================================
+  // INIT
+  // ============================================================
   usernameActual = getUsername();
   usernameOriginalActual = getUsernameOriginal();
   if (!usernameActual) mostrarLoginModal();
