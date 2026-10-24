@@ -60,7 +60,6 @@ input:focus{border-color:var(--accent)}
 .status-no{color:#ff5c5c}
 .status-purple{color:#a855f7}
 
-/* Toggle row */
 .toggle-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;margin:8px 0 12px;transition:.2s;user-select:none}
 .toggle-row:hover{border-color:var(--accent)}
 .toggle-row input[type="checkbox"]{accent-color:#ff9800;width:16px;height:16px;cursor:pointer;flex-shrink:0;margin:0}
@@ -72,7 +71,6 @@ input:focus{border-color:var(--accent)}
 .cd-item input[type="checkbox"]{accent-color:#ff9800;width:16px;height:16px;cursor:pointer;flex-shrink:0}
 .cd-item .nombre{flex:1;word-break:break-word}
 
-/* En CD actual */
 .cd-activos-list{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg);padding:6px}
 .cd-activo-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:var(--card);border-left:3px solid #ff9800;border-radius:6px;padding:9px 11px;font-size:13px}
 .cd-activo-item .cda-info{display:flex;flex-direction:column;gap:3px;min-width:0}
@@ -85,7 +83,6 @@ input:focus{border-color:var(--accent)}
 
 .rescate-info{font-size:12px;color:var(--sub);margin-top:8px;padding:8px;background:var(--bg);border-radius:6px;border-left:3px solid #ff9800}
 
-/* --- VOTANTES --- */
 .personas-list{max-height:340px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg);padding:6px}
 .persona-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:var(--card);border-left:3px solid var(--accent);border-radius:6px;padding:9px 11px;margin-bottom:6px;font-size:13px}
 .persona-item.rescate-item{border-left-color:#ff9800}
@@ -116,6 +113,37 @@ input:focus{border-color:var(--accent)}
 .empate-lista .emp-nombre{color:#a855f7;font-weight:800}
 .empate-lista .emp-votos{color:var(--sub);font-size:11px;margin-left:6px}
 .empate-estado{font-size:12px;color:var(--sub);margin:8px 0;padding:8px;background:rgba(0,0,0,.2);border-radius:6px;text-align:center;font-weight:600}
+
+/* --- ESTADÍSTICAS --- */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+@media(max-width:600px){.stats-grid{grid-template-columns:1fr 1fr}}
+.stat-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
+.stat-icon{font-size:22px;margin-bottom:4px}
+.stat-value{font-size:24px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.1}
+.stat-value small{font-size:13px;color:var(--sub);font-weight:600}
+.stat-label{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-top:2px}
+
+.stat-winner{background:linear-gradient(135deg,rgba(245,197,66,.1),rgba(255,152,0,.05));border:1px solid var(--accent);border-radius:8px;padding:12px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.stat-winner.resc{border-color:#ff9800;background:linear-gradient(135deg,rgba(255,152,0,.1),rgba(245,197,66,.05))}
+.stat-winner-name{font-weight:800;color:var(--text);font-size:14px;word-break:break-word}
+.stat-winner-count{font-weight:800;color:var(--accent);font-size:12px;background:rgba(245,197,66,.15);padding:4px 10px;border-radius:12px;white-space:nowrap;border:1px solid rgba(245,197,66,.3)}
+.stat-winner.resc .stat-winner-count{color:#ff9800;background:rgba(255,152,0,.15);border-color:rgba(255,152,0,.3)}
+
+.stat-metodos{display:flex;flex-direction:column;gap:4px;margin-bottom:14px}
+.stat-metodo{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:12px}
+.stat-metodo-icon{font-size:16px;flex-shrink:0}
+.stat-metodo-label{flex:1;color:var(--sub);font-weight:600}
+.stat-metodo-count{font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}
+
+.historial-list{display:flex;flex-direction:column;gap:4px;max-height:320px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg);padding:6px}
+.historial-item{display:grid;grid-template-columns:72px 1fr auto;gap:8px;align-items:center;background:var(--card);border-radius:6px;padding:8px 10px;font-size:12px}
+@media(max-width:600px){.historial-item{grid-template-columns:60px 1fr;font-size:11px}.historial-item .hi-metodo{grid-column:1/-1;justify-self:flex-start;margin-top:2px;font-size:10px}}
+.hi-fecha{font-size:10px;color:var(--sub);font-variant-numeric:tabular-nums;font-weight:600}
+.hi-ganador{font-weight:700;color:var(--text);word-break:break-word}
+.hi-metodo{font-size:11px;padding:3px 8px;border-radius:10px;font-weight:700;white-space:nowrap}
+.hi-metodo.votos{color:var(--accent);background:rgba(245,197,66,.12);border:1px solid rgba(245,197,66,.25)}
+.hi-metodo.rng{color:#a855f7;background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.25)}
+.hi-metodo.rescate{color:#ff9800;background:rgba(255,152,0,.12);border:1px solid rgba(255,152,0,.25)}
 
 .logs-filters{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
 .btn-mini{padding:5px 10px;font-size:11px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;transition:.2s;font-family:inherit;font-weight:600}
@@ -242,6 +270,13 @@ input:focus{border-color:var(--accent)}
     </div>
 
     <div class="section">
+      <h3>📊 Estadísticas del clan</h3>
+      <div id="statsContent">
+        <div class="personas-empty">Sin votaciones en el historial todavía.</div>
+      </div>
+    </div>
+
+    <div class="section">
       <h3>📜 Logs / Auditoría</h3>
       <p style="font-size:12px;color:var(--sub);margin:0 0 8px">
         Registro de los últimos sucesos. Útil para auditar votos, CDs, RNG y acciones de admin.
@@ -303,6 +338,7 @@ input:focus{border-color:var(--accent)}
   let votosActuales = {};
   let votantesActuales = {};
   let rescatadoresActuales = {};
+  let historialActual = {};
   let ganadorRescateActual = "";
   let ganadorFinalActual = "";
   let ganadorMetodoActual = "";
@@ -315,9 +351,7 @@ input:focus{border-color:var(--accent)}
   const rescatesRevelados = new Set();
 
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').catch(() => {});
-    });
+    window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(() => {}); });
   }
 
   function aplicarTema() {
@@ -332,13 +366,9 @@ input:focus{border-color:var(--accent)}
   };
   aplicarTema();
 
-  // ============================================================
-  // LOGS
-  // ============================================================
   async function agregarLog(tipo, subtipo, mensaje, detalles = {}) {
-    try {
-      await push(ref(db, 'logs'), { tipo, subtipo, fecha: Date.now(), mensaje, detalles });
-    } catch (e) { console.warn('No se pudo guardar log:', e); }
+    try { await push(ref(db, 'logs'), { tipo, subtipo, fecha: Date.now(), mensaje, detalles }); }
+    catch (e) { console.warn('No se pudo guardar log:', e); }
   }
 
   function formatearFechaLog(ts) {
@@ -361,6 +391,14 @@ input:focus{border-color:var(--accent)}
     return `${dd}/${mm}/${yy} ${hh}:${mi}`;
   }
 
+  function formatearFechaCorta(ts) {
+    const d = new Date(ts);
+    const dd = String(d.getDate()).padStart(2,'0');
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    const yy = String(d.getFullYear()).slice(-2);
+    return `${dd}/${mm}/${yy}`;
+  }
+
   function iconoLog(tipo) {
     return { rng:'🎲', voto:'🗳', rescate:'🔥', cd:'⏳', admin:'🔧' }[tipo] || '📌';
   }
@@ -368,8 +406,7 @@ input:focus{border-color:var(--accent)}
   function cargarLogs() {
     onValue(query(ref(db, 'logs'), orderByKey(), limitToLast(100)), (snap) => {
       const obj = snap.val() || {};
-      logsCache = Object.entries(obj)
-        .map(([key, val]) => ({ key, ...val }))
+      logsCache = Object.entries(obj).map(([key, val]) => ({ key, ...val }))
         .sort((a, b) => (b.fecha || 0) - (a.fecha || 0));
       renderLogs();
     });
@@ -422,9 +459,6 @@ input:focus{border-color:var(--accent)}
     await agregarLog('admin', 'logs_limpiados', '🧹 Se limpiaron todos los logs', {});
   });
 
-  // ============================================================
-  // UTILIDADES
-  // ============================================================
   async function sha256(text) {
     const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
     return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
@@ -445,9 +479,7 @@ input:focus{border-color:var(--accent)}
     const cd = cooldownsActuales[nombre];
     return !!(cd && cd.activo && cd.hasta > Date.now());
   }
-
   function votacionCerrada() { return finVotacion > 0 && Date.now() >= finVotacion; }
-
   function calcularRanking() {
     return Object.entries(votosActuales).filter(([n]) => !estaEnCdAdmin(n))
       .map(([n, v]) => ({ nombre: n, votos: v || 0 }))
@@ -462,32 +494,17 @@ input:focus{border-color:var(--accent)}
     return { empatados: emp, maxVotos: max };
   }
 
-  // ============================================================
-  // AUTO-CD
-  // ============================================================
   async function aplicarCdAutomatico(nombre) {
     const autoSnap = await get(ref(db, "config/auto_cd_activo"));
     if (!autoSnap.exists() || autoSnap.val() !== true) return null;
-
     const diasSnap = await get(ref(db, "config/cd_dias"));
     const dias = diasSnap.val() || 60;
-
     const ahora = Date.now();
     const hasta = ahora + dias * 24 * 60 * 60 * 1000;
-
-    await set(ref(db, `cooldowns/${nombre}`), {
-      activo: true,
-      desde: ahora,
-      hasta,
-      motivo: "Auto-CD al ganar"
-    });
-
+    await set(ref(db, `cooldowns/${nombre}`), { activo: true, desde: ahora, hasta, motivo: "Auto-CD al ganar" });
     return { dias, hasta };
   }
 
-  // ============================================================
-  // LOGIN
-  // ============================================================
   const loginDiv = document.getElementById("login");
   const adminDiv = document.getElementById("admin");
   const loginMsg = document.getElementById("loginMsg");
@@ -514,14 +531,9 @@ input:focus{border-color:var(--accent)}
         loginMsg.textContent = "❌ Clave incorrecta.";
         keywordInput.value = "";
       }
-    } catch (err) {
-      loginMsg.textContent = "❌ Error: " + err.message;
-    }
+    } catch (err) { loginMsg.textContent = "❌ Error: " + err.message; }
   }
 
-  // ============================================================
-  // PANEL
-  // ============================================================
   function iniciarPanel() {
     onValue(ref(db, "config"), (snap) => {
       if (!snap.exists()) return;
@@ -553,13 +565,8 @@ input:focus{border-color:var(--accent)}
       const elTrigger = document.getElementById("aRngTrigger");
       if (rngTriggerAt > 0) {
         const seg = Math.max(0, Math.ceil((rngTriggerAt - Date.now()) / 1000));
-        if (seg > 0) {
-          elTrigger.textContent = `🎲 en ${seg}s`;
-          elTrigger.className = "status-purple";
-        } else {
-          elTrigger.textContent = "⏳ En curso...";
-          elTrigger.className = "status-purple";
-        }
+        elTrigger.textContent = seg > 0 ? `🎲 en ${seg}s` : "⏳ En curso...";
+        elTrigger.className = "status-purple";
       } else {
         elTrigger.textContent = "—";
         elTrigger.className = "";
@@ -581,53 +588,41 @@ input:focus{border-color:var(--accent)}
 
     onValue(ref(db, "votantes"), (snap) => {
       votantesActuales = snap.val() || {};
-      const count = Object.keys(votantesActuales).length;
-      document.getElementById("aVotantes").textContent = count;
+      document.getElementById("aVotantes").textContent = Object.keys(votantesActuales).length;
       renderPersonasList();
     });
-
     onValue(ref(db, "rescatadores"), (snap) => {
       rescatadoresActuales = snap.val() || {};
       renderPersonasList();
     });
-
     onValue(ref(db, "cooldowns"), (snap) => {
       cooldownsActuales = snap.val() || {};
-      renderCdSection();
-      chequearEmpate();
+      renderCdSection(); chequearEmpate();
     });
-
     onValue(ref(db, "rescates"), (snap) => {
       rescatesActuales = snap.val() || {};
       renderCdSection();
     });
-
     onValue(ref(db, "votos"), (snap) => {
       votosActuales = snap.val() || {};
       chequearEmpate();
+    });
+    onValue(ref(db, "historial"), (snap) => {
+      historialActual = snap.val() || {};
+      renderStats();
     });
 
     cargarLogs();
   }
 
-  // ============================================================
-  // VOTANTES
-  // ============================================================
   function extraerDatosPersona(valor, username) {
-    if (typeof valor === 'string') {
-      return { personaje: valor, nombreOriginal: username, fecha: 0 };
-    }
-    return {
-      personaje: valor.personaje || '',
-      nombreOriginal: valor.nombreOriginal || username,
-      fecha: valor.fecha || 0
-    };
+    if (typeof valor === 'string') return { personaje: valor, nombreOriginal: username, fecha: 0 };
+    return { personaje: valor.personaje || '', nombreOriginal: valor.nombreOriginal || username, fecha: valor.fecha || 0 };
   }
 
   function renderPersonasList() {
     const cont = document.getElementById('personasList');
     const counter = document.getElementById('personasCounter');
-
     const todos = [];
     Object.entries(votantesActuales).forEach(([username, valor]) => {
       const d = extraerDatosPersona(valor, username);
@@ -637,18 +632,14 @@ input:focus{border-color:var(--accent)}
       const d = extraerDatosPersona(valor, username);
       todos.push({ username, tipo: 'rescate', personaje: d.personaje, nombreOriginal: d.nombreOriginal, fecha: d.fecha });
     });
-
     const nVotantes = Object.keys(votantesActuales).length;
     const nRescatadores = Object.keys(rescatadoresActuales).length;
-
     if (todos.length === 0) {
       cont.innerHTML = '<div class="personas-empty">Nadie ha votado ni rescatado aún.</div>';
       counter.innerHTML = `<b>0</b> de ${totalMiembros} han votado · <b class="resc">0</b> rescates`;
       return;
     }
-
     todos.sort((a, b) => (b.fecha || 0) - (a.fecha || 0));
-
     cont.innerHTML = todos.map(p => {
       const set = p.tipo === 'rescate' ? rescatesRevelados : votosRevelados;
       const revelado = set.has(p.username) ? ' revealed' : '';
@@ -665,10 +656,8 @@ input:focus{border-color:var(--accent)}
             <div class="p-fecha">${fecha}</div>
           </div>
           <button class="p-del" data-del-user="${p.username}" data-del-tipo="${p.tipo}" title="Eliminar ${p.tipo === 'rescate' ? 'rescate' : 'voto'}">Eliminar</button>
-        </div>
-      `;
+        </div>`;
     }).join('');
-
     cont.querySelectorAll('.p-vote[data-reveal-user]').forEach(el => {
       el.addEventListener('click', (ev) => {
         if (ev.target.closest('.p-del')) return;
@@ -679,7 +668,6 @@ input:focus{border-color:var(--accent)}
         else set.delete(username);
       });
     });
-
     cont.querySelectorAll('.p-del').forEach(btn => {
       btn.addEventListener('click', (ev) => {
         ev.stopPropagation();
@@ -689,7 +677,6 @@ input:focus{border-color:var(--accent)}
         else eliminarVotante(username);
       });
     });
-
     counter.innerHTML = `<b>${nVotantes}</b> de ${totalMiembros} han votado · <b class="resc">${nRescatadores}</b> rescate${nRescatadores !== 1 ? 's' : ''}`;
   }
 
@@ -699,9 +686,7 @@ input:focus{border-color:var(--accent)}
     if (!v) return;
     const d = extraerDatosPersona(v, username);
     const personaje = d.personaje;
-
     if (!confirm(`¿Eliminar el voto de "${d.nombreOriginal}"?\n\nPersonaje votado: ${personaje || '—'}\n\nEsto liberará su nombre y restará 1 voto a ese personaje.`)) return;
-
     try {
       await remove(ref(db, 'votantes/' + username));
       if (personaje) {
@@ -715,9 +700,7 @@ input:focus{border-color:var(--accent)}
         `🗑 Admin eliminó el voto de "${d.nombreOriginal}" (${username}) que votó por "${personaje}"`,
         { username, nombreOriginal: d.nombreOriginal, personaje });
       alert('✅ Voto eliminado.');
-    } catch (e) {
-      alert('❌ ' + e.message);
-    }
+    } catch (e) { alert('❌ ' + e.message); }
   }
 
   async function eliminarRescatador(username) {
@@ -726,9 +709,7 @@ input:focus{border-color:var(--accent)}
     if (!r) return;
     const d = extraerDatosPersona(r, username);
     const personaje = d.personaje;
-
     if (!confirm(`¿Eliminar el rescate de "${d.nombreOriginal}"?\n\nPersonaje rescatado: ${personaje || '—'}\n\nEsto liberará su nombre y restará 1 rescate a ese personaje.`)) return;
-
     try {
       await remove(ref(db, 'rescatadores/' + username));
       if (personaje) {
@@ -742,18 +723,12 @@ input:focus{border-color:var(--accent)}
         `🗑 Admin eliminó el rescate de "${d.nombreOriginal}" (${username}) que rescató a "${personaje}"`,
         { username, nombreOriginal: d.nombreOriginal, personaje });
       alert('✅ Rescate eliminado.');
-    } catch (e) {
-      alert('❌ ' + e.message);
-    }
+    } catch (e) { alert('❌ ' + e.message); }
   }
 
-  // ============================================================
-  // CD SECTION (disponibles + activos)
-  // ============================================================
   function renderCdSection() {
     const disponibles = [];
     const enCd = [];
-
     PERSONAJES.forEach(nombre => {
       const cd = cooldownsActuales[nombre];
       const activo = cd && cd.activo && cd.hasta > Date.now();
@@ -761,7 +736,6 @@ input:focus{border-color:var(--accent)}
       else disponibles.push(nombre);
     });
 
-    // Disponibles
     const gridDisp = document.getElementById("cdDisponibles");
     if (disponibles.length === 0) {
       gridDisp.innerHTML = '<div class="personas-empty" style="grid-column:1/-1;padding:12px">Todos los personajes están en CD.</div>';
@@ -774,7 +748,6 @@ input:focus{border-color:var(--accent)}
       `).join('');
     }
 
-    // En CD
     const listaActivos = document.getElementById("cdActivos");
     const umbral = Math.ceil(totalMiembros / 2);
     if (enCd.length === 0) {
@@ -792,15 +765,12 @@ input:focus{border-color:var(--accent)}
               <div class="cda-progress">🔥 <b>${rescates}/${umbral}</b> rescates</div>
             </div>
             <button class="cda-liberar" data-liberar="${nombre}">Liberar</button>
-          </div>
-        `;
+          </div>`;
       }).join('');
-
       listaActivos.querySelectorAll('.cda-liberar').forEach(btn => {
         btn.addEventListener('click', () => liberarCd(btn.dataset.liberar));
       });
     }
-
     actualizarRescateInfo();
   }
 
@@ -810,15 +780,12 @@ input:focus{border-color:var(--accent)}
     try {
       await remove(ref(db, `cooldowns/${nombre}`));
       await agregarLog('cd', 'liberado_manual', `🔓 Admin liberó a "${nombre}" del CD`, { personaje: nombre });
-    } catch (err) {
-      alert("❌ " + err.message);
-    }
+    } catch (err) { alert("❌ " + err.message); }
   }
 
   function actualizarRescateInfo() {
     const umbral = Math.ceil(totalMiembros / 2);
-    const activos = Object.entries(cooldownsActuales)
-      .filter(([_, cd]) => cd && cd.activo && cd.hasta > Date.now());
+    const activos = Object.entries(cooldownsActuales).filter(([_, cd]) => cd && cd.activo && cd.hasta > Date.now());
     if (activos.length === 0) {
       document.getElementById("rescateInfo").textContent = "No hay personajes en la Sala de Espera.";
       return;
@@ -832,29 +799,137 @@ input:focus{border-color:var(--accent)}
   }
 
   // ============================================================
+  // ESTADÍSTICAS DEL CLAN
+  // ============================================================
+  function calcularEstadisticas() {
+    const entries = Object.values(historialActual).filter(h => h && h.ganador);
+    const totalVotaciones = entries.length;
+    if (totalVotaciones === 0) return null;
+
+    const victoriasPorPersonaje = {};
+    const victoriasRescatePorPersonaje = {};
+    const metodos = { votos: 0, rng: 0, rescate: 0 };
+    let totalParticipacion = 0;
+
+    entries.forEach(h => {
+      victoriasPorPersonaje[h.ganador] = (victoriasPorPersonaje[h.ganador] || 0) + 1;
+      if (h.metodo === 'rescate') {
+        victoriasRescatePorPersonaje[h.ganador] = (victoriasRescatePorPersonaje[h.ganador] || 0) + 1;
+        metodos.rescate++;
+      } else if (h.metodo === 'rng') {
+        metodos.rng++;
+      } else {
+        metodos.votos++;
+      }
+      totalParticipacion += (h.participantes || 0);
+    });
+
+    const topGanador = Object.entries(victoriasPorPersonaje).sort((a, b) => b[1] - a[1])[0] || null;
+    const topRescatado = Object.entries(victoriasRescatePorPersonaje).sort((a, b) => b[1] - a[1])[0] || null;
+
+    return {
+      totalVotaciones,
+      totalParticipacion,
+      participacionPromedio: Math.round(totalParticipacion / totalVotaciones),
+      topGanador: topGanador ? { nombre: topGanador[0], victorias: topGanador[1] } : null,
+      topRescatado: topRescatado ? { nombre: topRescatado[0], victorias: topRescatado[1] } : null,
+      metodos,
+      entries: entries.sort((a, b) => (b.fecha || 0) - (a.fecha || 0))
+    };
+  }
+
+  function renderStats() {
+    const cont = document.getElementById('statsContent');
+    const stats = calcularEstadisticas();
+    if (!stats) {
+      cont.innerHTML = '<div class="personas-empty">Sin votaciones en el historial todavía.<br><span style="font-size:11px;opacity:.7">Se llenará después de la primera votación cerrada.</span></div>';
+      return;
+    }
+
+    cont.innerHTML = `
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-icon">📊</div>
+          <div class="stat-value">${stats.totalVotaciones}</div>
+          <div class="stat-label">Votaciones</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-icon">👥</div>
+          <div class="stat-value">${stats.totalParticipacion}</div>
+          <div class="stat-label">Votos totales</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-icon">📈</div>
+          <div class="stat-value">${stats.participacionPromedio}<small> / ${totalMiembros}</small></div>
+          <div class="stat-label">Promedio</div>
+        </div>
+      </div>
+
+      ${stats.topGanador ? `
+        <h4>🏆 Personaje más ganador</h4>
+        <div class="stat-winner">
+          <span class="stat-winner-name">${stats.topGanador.nombre}</span>
+          <span class="stat-winner-count">${stats.topGanador.victorias} victoria${stats.topGanador.victorias !== 1 ? 's' : ''}</span>
+        </div>
+      ` : ''}
+
+      ${stats.topRescatado ? `
+        <h4>🔥 Personaje más rescatado</h4>
+        <div class="stat-winner resc">
+          <span class="stat-winner-name">${stats.topRescatado.nombre}</span>
+          <span class="stat-winner-count">${stats.topRescatado.victorias} rescate${stats.topRescatado.victorias !== 1 ? 's' : ''}</span>
+        </div>
+      ` : ''}
+
+      <h4>📊 Métodos usados</h4>
+      <div class="stat-metodos">
+        <div class="stat-metodo">
+          <span class="stat-metodo-icon">🗳</span>
+          <span class="stat-metodo-label">Por votos</span>
+          <span class="stat-metodo-count">${stats.metodos.votos}</span>
+        </div>
+        <div class="stat-metodo">
+          <span class="stat-metodo-icon">🎲</span>
+          <span class="stat-metodo-label">Por dados (RNG)</span>
+          <span class="stat-metodo-count">${stats.metodos.rng}</span>
+        </div>
+        <div class="stat-metodo">
+          <span class="stat-metodo-icon">🔥</span>
+          <span class="stat-metodo-label">Por rescate</span>
+          <span class="stat-metodo-count">${stats.metodos.rescate}</span>
+        </div>
+      </div>
+
+      <h4>📜 Historial de votaciones (${stats.entries.length})</h4>
+      <div class="historial-list">
+        ${stats.entries.map(e => {
+          const metodoIcon = e.metodo === 'rescate' ? '🔥' : e.metodo === 'rng' ? '🎲' : '🗳';
+          const metodoText = e.metodo === 'rescate' ? 'Por rescate' : e.metodo === 'rng' ? 'Por dados' : 'Por votos';
+          const fecha = formatearFechaCorta(e.fecha || 0);
+          return `
+            <div class="historial-item">
+              <div class="hi-fecha">${fecha}</div>
+              <div class="hi-ganador">${e.ganador}</div>
+              <div class="hi-metodo ${e.metodo || 'votos'}">${metodoIcon} ${metodoText}</div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }
+
+  // ============================================================
   // EMPATE
   // ============================================================
   function chequearEmpate() {
     const sec = document.getElementById("sectionEmpate");
     const cerrada = votacionCerrada();
     const yaResuelto = !!ganadorFinalActual || !!ganadorRescateActual;
-
-    if (!cerrada || yaResuelto) {
-      sec.style.display = "none";
-      return;
-    }
-
+    if (!cerrada || yaResuelto) { sec.style.display = "none"; return; }
     const emp = obtenerEmpate();
-    if (!emp) {
-      sec.style.display = "none";
-      return;
-    }
-
-    const lista = emp.empatados
-      .map(x => `<div><span class="emp-nombre">${x.nombre}</span><span class="emp-votos">${x.votos} votos</span></div>`)
-      .join("");
-    document.getElementById("empateLista").innerHTML =
-      `<strong>Empate a ${emp.maxVotos} votos:</strong>${lista}`;
+    if (!emp) { sec.style.display = "none"; return; }
+    const lista = emp.empatados.map(x => `<div><span class="emp-nombre">${x.nombre}</span><span class="emp-votos">${x.votos} votos</span></div>`).join("");
+    document.getElementById("empateLista").innerHTML = `<strong>Empate a ${emp.maxVotos} votos:</strong>${lista}`;
     sec.style.display = "block";
     actualizarEmpateEstado();
   }
@@ -865,16 +940,12 @@ input:focus{border-color:var(--accent)}
     if (rngTriggerAt > 0) {
       const restante = rngTriggerAt - Date.now();
       if (restante > 0) {
-        const seg = Math.ceil(restante / 1000);
-        el.textContent = `⏱ Desempate automático en ${seg}s. El index lo está mostrando en vivo. Si no quieres esperar, fuerza ahora.`;
-        el.className = "empate-estado";
+        el.textContent = `⏱ Desempate automático en ${Math.ceil(restante / 1000)}s. Si no quieres esperar, fuerza ahora.`;
       } else {
         el.textContent = `🎲 Desempate automático en curso... esperando resultado.`;
-        el.className = "empate-estado";
       }
     } else {
-      el.textContent = `⏱ Aún sin programar (se activará automáticamente en el index en unos segundos).`;
-      el.className = "empate-estado";
+      el.textContent = `⏱ Aún sin programar (se activará automáticamente en el index).`;
     }
   }
 
@@ -886,10 +957,8 @@ input:focus{border-color:var(--accent)}
     votosActuales = votosSnap.val() || {};
     const cdSnap = await get(ref(db, 'cooldowns'));
     cooldownsActuales = cdSnap.val() || {};
-
     const emp = obtenerEmpate();
     if (!emp) return null;
-
     const rondas = [];
     let candidatos = emp.empatados.map(x => x.nombre);
     let rondaNum = 0;
@@ -905,30 +974,18 @@ input:focus{border-color:var(--accent)}
       candidatos = nuevos;
     }
     ganador = candidatos[0] || emp.empatados[0].nombre;
-
-    const resultado = {
-      rondas, ganador,
-      empate: emp.empatados.map(x => x.nombre),
-      votosMax: emp.maxVotos,
-      fecha: Date.now(),
-      totalRondas: rondaNum
-    };
-
+    const resultado = { rondas, ganador, empate: emp.empatados.map(x => x.nombre), votosMax: emp.maxVotos, fecha: Date.now(), totalRondas: rondaNum };
     const tx = await runTransaction(ref(db, 'config/rng_resultado'), (current) => {
       if (current) return;
       return resultado;
     });
     if (!tx.committed) return null;
-
     await set(ref(db, 'config/ganador_final'), ganador);
     await set(ref(db, 'config/ganador_metodo'), 'rng');
     await set(ref(db, 'config/rng_trigger_at'), 0);
-
     await agregarLog('rng', manual ? 'resuelto_manual' : 'resuelto_auto',
       `🎲 Desempate ${manual ? 'FORZADO por admin' : 'automático'}: ganador "${ganador}" tras ${rondaNum} ronda(s)`,
       { rondas, ganador, empatados: emp.empatados.map(x => x.nombre), votosMax: emp.maxVotos });
-
-    // Auto-CD para el ganador por RNG
     const cdInfo = await aplicarCdAutomatico(ganador);
     if (cdInfo) {
       await agregarLog('cd', 'auto_aplicado',
@@ -936,7 +993,6 @@ input:focus{border-color:var(--accent)}
         { personaje: ganador, dias: cdInfo.dias, hasta: cdInfo.hasta });
       resultado.autoCdAplicado = cdInfo;
     }
-
     return resultado;
   }
 
@@ -944,29 +1000,14 @@ input:focus{border-color:var(--accent)}
     if (!isAdmin) return;
     const emp = obtenerEmpate();
     if (!emp) { alert("No hay empate ahora mismo."); return; }
-
     const nombres = emp.empatados.map(x => x.nombre);
-    const ok = confirm(
-      `🎲 FORZAR DESEMPATE POR DADOS\n\n` +
-      `Empate a ${emp.maxVotos} votos entre ${nombres.length} personajes:\n\n` +
-      nombres.map(n => `• ${n}`).join('\n') +
-      `\n\nSe lanzarán dados de 6 caras. El mayor gana. Si empatan en la tirada, solo los empatados vuelven a tirar.\n\n¿Continuar?`
-    );
+    const ok = confirm(`🎲 FORZAR DESEMPATE POR DADOS\n\nEmpate a ${emp.maxVotos} votos entre ${nombres.length} personajes:\n\n${nombres.map(n => `• ${n}`).join('\n')}\n\nSe lanzarán dados de 6 caras. El mayor gana. Si empatan en la tirada, solo los empatados vuelven a tirar.\n\n¿Continuar?`);
     if (!ok) return;
-
     const resultado = await ejecutarRngSilencioso(true);
-    if (!resultado) {
-      alert("⚠️ Otro admin ya lanzó los dados o no hay empate.");
-      return;
-    }
-
-    const resumen = resultado.rondas.map(r => {
-      return `Ronda ${r.ronda}:\n` + r.candidatos.map(c => `   ${c}: 🎲 ${r.tiradas[c]}`).join('\n');
-    }).join('\n\n');
+    if (!resultado) { alert("⚠️ Otro admin ya lanzó los dados o no hay empate."); return; }
+    const resumen = resultado.rondas.map(r => `Ronda ${r.ronda}:\n` + r.candidatos.map(c => `   ${c}: 🎲 ${r.tiradas[c]}`).join('\n')).join('\n\n');
     let msg = `🎲 RESULTADO 🎲\n\n${resumen}\n\n🏆 GANADOR: ${resultado.ganador}\n\n(El index está mostrando la animación en vivo)`;
-    if (resultado.autoCdAplicado) {
-      msg += `\n\n⏳ Auto-CD de ${resultado.autoCdAplicado.dias} días aplicado al ganador.`;
-    }
+    if (resultado.autoCdAplicado) msg += `\n\n⏳ Auto-CD de ${resultado.autoCdAplicado.dias} días aplicado al ganador.`;
     alert(msg);
   }
 
@@ -995,15 +1036,13 @@ input:focus{border-color:var(--accent)}
     const dias = parseInt(document.getElementById("inputCdDias").value) || 60;
     if (dias < 1) { alert("Días inválidos."); return; }
     if (!confirm(`Aplicar CD de ${dias} días a:\n\n${marcados.join("\n")}\n\n¿Continuar?`)) return;
-
     const ahora = Date.now();
     const hasta = ahora + dias * 24 * 60 * 60 * 1000;
     try {
       await Promise.all(marcados.map(nombre =>
         set(ref(db, `cooldowns/${nombre}`), { activo: true, desde: ahora, hasta, motivo: "CD manual" })
       ));
-      await agregarLog('cd', 'aplicar', `⏳ CD de ${dias} días aplicado a: ${marcados.join(', ')}`,
-        { dias, personajes: marcados, hasta });
+      await agregarLog('cd', 'aplicar', `⏳ CD de ${dias} días aplicado a: ${marcados.join(', ')}`, { dias, personajes: marcados, hasta });
       alert(`✅ CD aplicado a ${marcados.length} personaje(s) durante ${dias} días.`);
     } catch (err) { alert("❌ " + err.message); }
   }
@@ -1022,28 +1061,13 @@ input:focus{border-color:var(--accent)}
 
   async function accionReiniciarVotos() {
     if (!isAdmin) return;
-    if (!confirm(
-      "🔄 REINICIAR VOTOS\n\n" +
-      "Esto hará:\n" +
-      "• Votos normales a 0\n" +
-      "• Borrar los votantes registrados (podrán votar de nuevo)\n" +
-      "• Borrar ganadores y resultados pendientes\n" +
-      "• Abrir la votación sin fecha\n\n" +
-      "SE CONSERVAN:\n" +
-      "• Cooldowns (Sala de Espera)\n" +
-      "• Rescates acumulados\n" +
-      "• Rescatadores (quien ya usó su rescate sigue bloqueado)\n" +
-      "• Configuración (miembros, mensaje, días de CD, auto-CD)\n\n" +
-      "¿Continuar?"
-    )) return;
+    if (!confirm("🔄 REINICIAR VOTOS\n\nEsto hará:\n• Votos normales a 0\n• Borrar los votantes registrados (podrán votar de nuevo)\n• Borrar ganadores y resultados pendientes\n• Abrir la votación sin fecha\n\nSE CONSERVAN:\n• Cooldowns (Sala de Espera)\n• Rescates acumulados\n• Rescatadores\n• Configuración\n• Historial\n\n¿Continuar?")) return;
     if (!confirm("¿Estás TOTALMENTE seguro? Esta acción no se puede deshacer.")) return;
-
     try {
       const snap = await get(ref(db, "votos"));
       const votosSnap = snap.val() || {};
       const votosVacios = {};
       Object.keys(votosSnap).forEach(k => votosVacios[k] = 0);
-
       await Promise.all([
         set(ref(db, "votos"), votosVacios),
         remove(ref(db, "votantes")),
@@ -1055,29 +1079,21 @@ input:focus{border-color:var(--accent)}
         set(ref(db, "config/ganador_metodo"), ""),
         set(ref(db, "config/fin_votacion"), 0)
       ]);
-
       votosRevelados.clear();
-
-      await agregarLog('admin', 'reiniciar_votos',
-        '🔄 Reiniciar Votos ejecutado (votos y votantes a 0, CDs y rescates conservados, votación abierta)',
-        {});
-
-      alert("✅ Votos reiniciados. La votación está abierta y lista para un nuevo ciclo.\n\nSe conservaron: cooldowns, rescates acumulados y rescatadores.");
-    } catch (err) {
-      alert("❌ " + err.message);
-    }
+      await agregarLog('admin', 'reiniciar_votos', '🔄 Reiniciar Votos ejecutado (votos y votantes a 0, CDs y rescates conservados, votación abierta, historial intacto)', {});
+      alert("✅ Votos reiniciados. La votación está abierta y lista para un nuevo ciclo.\n\nSe conservaron: cooldowns, rescates acumulados, rescatadores e historial.");
+    } catch (err) { alert("❌ " + err.message); }
   }
 
   async function accionResetTotal() {
     if (!isAdmin) return;
-    if (!confirm("⚠️ RESET TOTAL\n\nEsto pondrá TODOS los votos a 0, borrará CDs, rescates, rescatadores, votantes, ganadores y liberará a todos.\n\n¿Continuar?")) return;
+    if (!confirm("⚠️ RESET TOTAL\n\nEsto pondrá TODOS los votos a 0, borrará CDs, rescates, rescatadores, votantes, ganadores y liberará a todos.\n\n⚠️ El historial (Salón de la Fama) NO se borra.\n\n¿Continuar?")) return;
     if (!confirm("¿Estás TOTALMENTE seguro? Esta acción no se puede deshacer.")) return;
     try {
       const snap = await get(ref(db, "votos"));
       const votosSnap = snap.val() || {};
       const votosVacios = {};
       Object.keys(votosSnap).forEach(k => votosVacios[k] = 0);
-
       await Promise.all([
         set(ref(db, "votos"), votosVacios),
         remove(ref(db, "votantes")),
@@ -1091,20 +1107,16 @@ input:focus{border-color:var(--accent)}
         set(ref(db, "config/ganador_final"), ""),
         set(ref(db, "config/ganador_metodo"), "")
       ]);
-
       votosRevelados.clear();
       rescatesRevelados.clear();
-
-      await agregarLog('admin', 'reset_total', '💥 RESET TOTAL ejecutado (votos, CDs, rescates, votantes, ganadores)', {});
-      alert("✅ Reset total completado.");
+      await agregarLog('admin', 'reset_total', '💥 RESET TOTAL ejecutado (votos, CDs, rescates, votantes, ganadores — historial intacto)', {});
+      alert("✅ Reset total completado.\n\nEl historial se conservó.");
     } catch (err) { alert("❌ " + err.message); }
   }
 
   async function accionCerrarAhora() {
     if (!isAdmin) return;
     if (!confirm("¿Cerrar la votación AHORA?")) return;
-
-    // Recalcular estado fresco
     const votosSnap = await get(ref(db, 'votos'));
     const cdSnap = await get(ref(db, 'cooldowns'));
     const cfgSnap = await get(ref(db, 'config'));
@@ -1112,36 +1124,25 @@ input:focus{border-color:var(--accent)}
     cooldownsActuales = cdSnap.val() || {};
     const cfg = cfgSnap.val() || {};
 
-    // Si ya hay ganador (rescate o final), solo cerrar
     if (cfg.ganador_rescate || cfg.ganador_final) {
       await set(ref(db, "config/fin_votacion"), Date.now() - 1);
-      await agregarLog('admin', 'cerrar_votacion',
-        '⛔ Votación cerrada manualmente (ya tenía ganador)',
-        { fin_votacion: Date.now() - 1 });
+      await agregarLog('admin', 'cerrar_votacion', '⛔ Votación cerrada manualmente (ya tenía ganador)', { fin_votacion: Date.now() - 1 });
       alert("✅ Votación cerrada.\n\nYa había un ganador determinado previamente.");
       return;
     }
 
     const ranking = calcularRanking();
-    const hayGanadorClaro = ranking.length > 0 && (
-      ranking.length === 1 || ranking[0].votos > ranking[1].votos
-    );
-
+    const hayGanadorClaro = ranking.length > 0 && (ranking.length === 1 || ranking[0].votos > ranking[1].votos);
     await set(ref(db, "config/fin_votacion"), Date.now() - 1);
-    await agregarLog('admin', 'cerrar_votacion',
-      '⛔ Votación cerrada manualmente por el admin',
-      { fin_votacion: Date.now() - 1 });
+    await agregarLog('admin', 'cerrar_votacion', '⛔ Votación cerrada manualmente por el admin', { fin_votacion: Date.now() - 1 });
 
     if (hayGanadorClaro) {
       const ganador = ranking[0].nombre;
       await set(ref(db, 'config/ganador_final'), ganador);
       await set(ref(db, 'config/ganador_metodo'), 'votos');
-
       const cdInfo = await aplicarCdAutomatico(ganador);
       if (cdInfo) {
-        await agregarLog('cd', 'auto_aplicado',
-          `⏳ Auto-CD de ${cdInfo.dias} días aplicado a "${ganador}" (ganador por votos)`,
-          { personaje: ganador, dias: cdInfo.dias, hasta: cdInfo.hasta });
+        await agregarLog('cd', 'auto_aplicado', `⏳ Auto-CD de ${cdInfo.dias} días aplicado a "${ganador}" (ganador por votos)`, { personaje: ganador, dias: cdInfo.dias, hasta: cdInfo.hasta });
         alert(`✅ Votación cerrada.\n\n🏆 Ganador: ${ganador}\n\n⏳ Auto-CD de ${cdInfo.dias} días aplicado automáticamente.`);
       } else {
         alert(`✅ Votación cerrada.\n\n🏆 Ganador: ${ganador}\n\n(Auto-CD desactivado en la configuración)`);
@@ -1155,7 +1156,7 @@ input:focus{border-color:var(--accent)}
 
   async function accionReabrir() {
     if (!isAdmin) return;
-    if (!confirm("¿Reabrir la votación sin límite? Esto también borrará ganadores y desempates pendientes.\n\n(Los CDs aplicados al ganador anterior NO se liberan automáticamente — puedes hacerlo manualmente desde la lista 'En CD actual'.)")) return;
+    if (!confirm("¿Reabrir la votación sin límite? Esto también borrará ganadores y desempates pendientes.\n\n(Los CDs aplicados al ganador anterior NO se liberan automáticamente.)")) return;
     await Promise.all([
       set(ref(db, "config/fin_votacion"), 0),
       set(ref(db, "config/ganador_rescate"), ""),
@@ -1174,14 +1175,11 @@ input:focus{border-color:var(--accent)}
     if (!val) { alert("Selecciona fecha y hora."); return; }
     const ts = new Date(val).getTime();
     if (isNaN(ts)) { alert("Fecha inválida."); return; }
-    if (ts <= Date.now()) {
-      if (!confirm("⚠️ La fecha ya pasó. La votación se cerrará de inmediato. ¿Continuar?")) return;
-    }
+    if (ts <= Date.now()) { if (!confirm("⚠️ La fecha ya pasó. La votación se cerrará de inmediato. ¿Continuar?")) return; }
     await set(ref(db, "config/fin_votacion"), ts);
     await agregarLog('admin', 'fecha_limite', `💾 Fecha límite guardada: ${formatearFechaBonita(ts)}`, { fin_votacion: ts });
     alert("✅ Fecha guardada:\n" + formatearFechaBonita(ts));
   }
-
   async function accionQuitarFecha() {
     if (!isAdmin) return;
     if (!confirm("¿Quitar fecha límite?")) return;
@@ -1189,7 +1187,6 @@ input:focus{border-color:var(--accent)}
     await agregarLog('admin', 'fecha_limite', '🗑 Fecha límite eliminada', {});
     alert("✅ Fecha eliminada.");
   }
-
   async function accionGuardarMiembros() {
     if (!isAdmin) return;
     const val = parseInt(document.getElementById("inputMiembros").value);
@@ -1198,7 +1195,6 @@ input:focus{border-color:var(--accent)}
     await agregarLog('admin', 'miembros', `👥 Total de miembros cambiado a ${val}`, { total_miembros: val });
     alert("✅ Miembros actualizados a " + val);
   }
-
   async function accionGuardarMensaje() {
     if (!isAdmin) return;
     const val = document.getElementById("inputMensaje").value.trim();
@@ -1206,7 +1202,6 @@ input:focus{border-color:var(--accent)}
     await agregarLog('admin', 'mensaje', val ? `✏️ Mensaje actualizado: "${val}"` : '🗑 Mensaje borrado', {});
     alert(val ? "✅ Mensaje guardado." : "✅ Mensaje borrado.");
   }
-
   function accionCerrarSesion() {
     isAdmin = false;
     adminDiv.classList.remove("visible");
@@ -1215,9 +1210,6 @@ input:focus{border-color:var(--accent)}
     loginMsg.textContent = "";
   }
 
-  // ============================================================
-  // LISTENERS
-  // ============================================================
   document.getElementById("btnResetTotal").addEventListener("click", accionResetTotal);
   document.getElementById("btnCerrarAhora").addEventListener("click", accionCerrarAhora);
   document.getElementById("btnReabrir").addEventListener("click", accionReabrir);
@@ -1234,13 +1226,10 @@ input:focus{border-color:var(--accent)}
     const v = parseInt(e.target.value) || 60;
     if (isAdmin) set(ref(db, "config/cd_dias"), v);
   });
-
   document.getElementById("inputAutoCd").addEventListener("change", async (e) => {
     if (!isAdmin) return;
     await set(ref(db, "config/auto_cd_activo"), e.target.checked);
-    await agregarLog('admin', 'auto_cd_toggle',
-      e.target.checked ? '☑ Auto-CD activado' : '☐ Auto-CD desactivado',
-      { activo: e.target.checked });
+    await agregarLog('admin', 'auto_cd_toggle', e.target.checked ? '☑ Auto-CD activado' : '☐ Auto-CD desactivado', { activo: e.target.checked });
   });
 
   setInterval(actualizarEmpateEstado, 1000);
