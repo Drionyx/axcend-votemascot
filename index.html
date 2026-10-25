@@ -2074,60 +2074,133 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
     if (!ganadorActual) return;
     const btnOriginal = boton.textContent;
     boton.disabled = true; boton.textContent = '⏳ Generando...';
-    
+
     const shareBtn = boton;
     const originalDisplay = shareBtn.style.display;
     shareBtn.style.display = 'none';
 
+    let styleFix = null;
     try {
       const originalCard = document.querySelector('.winner-card');
       if (!originalCard) throw new Error('Card no encontrada');
 
-      // 🌟 FIX DEFINITIVO: Convertir imagen a Base64 para evitar Tainted Canvas
-      const imgElement = originalCard.querySelector('img');
-      let base64Img = '';
-      
+      // 1. Contenedor principal (fondo y márgenes)
+      const wrapper = document.createElement('div');
+      wrapper.style.position = 'fixed';
+      wrapper.style.top = '-9999px';
+      wrapper.style.left = '0';
+      wrapper.style.width = '1080px';
+      wrapper.style.padding = '40px'; 
+      wrapper.style.background = 'linear-gradient(135deg, #0f1020, #1a1c30, #0f1020)';
+      wrapper.style.boxSizing = 'border-box';
+      wrapper.style.display = 'flex';
+      wrapper.style.flexDirection = 'column';
+      wrapper.style.alignItems = 'center';
+      wrapper.style.fontFamily = '"Segoe UI", Arial, sans-serif';
+
+      // 2. Caja con borde dorado (el marco visual)
+      const innerBox = document.createElement('div');
+      innerBox.style.border = '6px solid #f5c542';
+      innerBox.style.borderRadius = '20px';
+      innerBox.style.padding = '60px 50px';
+      innerBox.style.display = 'flex';
+      innerBox.style.flexDirection = 'column';
+      innerBox.style.alignItems = 'center';
+      innerBox.style.width = '100%';
+      innerBox.style.boxSizing = 'border-box';
+      innerBox.style.background = 'rgba(26,28,48,0.8)'; 
+
+      // 3. Título
+      const title = document.createElement('h1');
+      title.textContent = ganadorRescate ? '🔥 SALVADO 🔥' : (ganadorMetodo === 'rng' ? '🎲 GANADOR POR DADOS 🎲' : '★ GANADOR ★');
+      title.style.color = '#f5c542';
+      title.style.fontSize = '64px';
+      title.style.margin = '0 0 40px 0';
+      title.style.textShadow = '0 0 20px rgba(245,197,66,0.6)';
+      title.style.fontWeight = '900';
+      title.style.letterSpacing = '2px';
+      title.style.textAlign = 'center';
+      innerBox.appendChild(title);
+
+      // 4. La Tarjeta
+      const clone = originalCard.cloneNode(true);
+      clone.style.animation = 'none';
+      clone.style.transform = 'none';
+      clone.style.width = '560px'; 
+      clone.style.margin = '0';
+      clone.style.boxShadow = '0 0 40px rgba(245,197,66,0.5)';
+      clone.style.border = '4px solid #f5c542'; 
+      clone.style.padding = '20px';
+
+      // Ocultar elementos internos que no queremos en la foto
+      styleFix = document.createElement('style');
+      styleFix.textContent = `
+        .winner-card::before { display: none !important; }
+        .share-btn { display: none !important; }
+        .votos-badge { display: none !important; } 
+      `;
+      document.head.appendChild(styleFix);
+
+      // Convertir imagen a Base64 para evitar Tainted Canvas
+      const imgElement = clone.querySelector('img');
       if (imgElement && imgElement.src) {
         try {
           const busted = imgElement.src + (imgElement.src.includes('?') ? '&' : '?') + 'nocache=' + Date.now();
           const resp = await fetch(busted, { mode: 'cors', cache: 'no-store' });
           const blob = await resp.blob();
-          base64Img = await new Promise((resolve, reject) => {
+          const base64Img = await new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onloadend = () => resolve(reader.result);
             reader.onerror = reject;
             reader.readAsDataURL(blob);
           });
-        } catch (e) {
-          console.warn('No se pudo convertir a base64, intentando sin fetch', e);
-        }
+          if (base64Img) imgElement.src = base64Img;
+        } catch (e) { console.warn('Error cargando imagen para Base64', e); }
       }
 
-      const clone = originalCard.cloneNode(true);
-      clone.style.animation = 'none'; 
-      clone.style.transform = 'none';
-      clone.style.position = 'fixed';
-      clone.style.top = '-9999px';
-      clone.style.display = 'flex';
-      
-      const clonedBtn = clone.querySelector('.share-btn');
-      if (clonedBtn) clonedBtn.remove();
-      
-      if (base64Img) {
-        const cloneImg = clone.querySelector('img');
-        if (cloneImg) cloneImg.src = base64Img;
-      }
-      
-      document.body.appendChild(clone);
+      innerBox.appendChild(clone);
 
-      const canvas = await html2canvas(clone, {
-        scale: 3,
+      // 5. Método
+      const methodText = document.createElement('div');
+      methodText.textContent = ganadorRescate ? '🔥 Salvado por el clan' : (ganadorMetodo === 'rng' ? '🎲 Ganador por dados' : '🏆 Ganador por votos');
+      methodText.style.color = '#9aa0b5';
+      methodText.style.fontSize = '36px';
+      methodText.style.marginTop = '30px';
+      innerBox.appendChild(methodText);
+
+      // 6. Votos
+      const votesText = document.createElement('div');
+      const votos = votosActuales[ganadorActual] || 0;
+      const rescatesGanador = rescates[ganadorActual] || 0;
+      votesText.textContent = ganadorRescate ? `🔥 ${rescatesGanador} rescates` : `🗳 ${votos} voto${votos !== 1 ? 's' : ''}`;
+      votesText.style.color = '#f5c542';
+      votesText.style.fontSize = '44px';
+      votesText.style.fontWeight = 'bold';
+      votesText.style.marginTop = '20px';
+      innerBox.appendChild(votesText);
+
+      // 7. Footer
+      const footer = document.createElement('div');
+      footer.textContent = 'AXCEND - LATAM -';
+      footer.style.color = 'rgba(154,160,181,0.85)';
+      footer.style.fontSize = '28px';
+      footer.style.fontWeight = 'bold';
+      footer.style.marginTop = '60px';
+      footer.style.letterSpacing = '2px';
+      innerBox.appendChild(footer);
+
+      wrapper.appendChild(innerBox);
+      document.body.appendChild(wrapper);
+
+      // 8. Capturar
+      const canvas = await html2canvas(wrapper, {
+        scale: 2, 
         useCORS: true,
         allowTaint: false,
-        backgroundColor: '#1a1c30'
+        backgroundColor: '#0f1020'
       });
 
-      document.body.removeChild(clone);
+      document.body.removeChild(wrapper);
 
       const filename = `axcend-ganador-${ganadorActual.replace(/\s+/g, '_')}-${Date.now()}.png`;
       await compartirOExportarCanvas(canvas, filename, 'Ganador AXCEND', `¡${ganadorActual} ganó la votación!`, boton, btnOriginal);
@@ -2138,6 +2211,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
     } finally {
       boton.disabled = false; boton.textContent = btnOriginal;
       shareBtn.style.display = originalDisplay;
+      if (styleFix && styleFix.parentNode) styleFix.parentNode.removeChild(styleFix);
     }
   }
 
