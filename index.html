@@ -2090,7 +2090,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
       wrapper.style.top = '-9999px';
       wrapper.style.left = '0';
       wrapper.style.width = '1080px';
-      wrapper.style.padding = '40px'; 
+      wrapper.style.padding = '60px'; 
       wrapper.style.background = 'linear-gradient(135deg, #0f1020, #1a1c30, #0f1020)';
       wrapper.style.boxSizing = 'border-box';
       wrapper.style.display = 'flex';
@@ -2101,36 +2101,46 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
       // 2. Caja con borde dorado (el marco visual)
       const innerBox = document.createElement('div');
       innerBox.style.border = '6px solid #f5c542';
-      innerBox.style.borderRadius = '20px';
-      innerBox.style.padding = '60px 50px';
+      innerBox.style.borderRadius = '30px';
+      innerBox.style.padding = '50px 40px';
       innerBox.style.display = 'flex';
       innerBox.style.flexDirection = 'column';
       innerBox.style.alignItems = 'center';
       innerBox.style.width = '100%';
       innerBox.style.boxSizing = 'border-box';
-      innerBox.style.background = 'rgba(26,28,48,0.8)'; 
+      innerBox.style.background = 'rgba(26,28,48,0.85)'; 
+      innerBox.style.boxShadow = '0 0 50px rgba(245,197,66,0.15)';
 
       // 3. Título
       const title = document.createElement('h1');
       title.textContent = ganadorRescate ? '🔥 SALVADO 🔥' : (ganadorMetodo === 'rng' ? '🎲 GANADOR POR DADOS 🎲' : '★ GANADOR ★');
       title.style.color = '#f5c542';
-      title.style.fontSize = '64px';
-      title.style.margin = '0 0 40px 0';
+      title.style.fontSize = '52px';
+      title.style.margin = '0 0 50px 0';
       title.style.textShadow = '0 0 20px rgba(245,197,66,0.6)';
       title.style.fontWeight = '900';
       title.style.letterSpacing = '2px';
       title.style.textAlign = 'center';
       innerBox.appendChild(title);
 
-      // 4. La Tarjeta
+      // 4. La Tarjeta del Personaje
       const clone = originalCard.cloneNode(true);
       clone.style.animation = 'none';
       clone.style.transform = 'none';
-      clone.style.width = '560px'; 
+      clone.style.width = '520px'; // Ancho equilibrado
       clone.style.margin = '0';
-      clone.style.boxShadow = '0 0 40px rgba(245,197,66,0.5)';
+      clone.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
       clone.style.border = '4px solid #f5c542'; 
-      clone.style.padding = '20px';
+      clone.style.padding = '24px';
+      clone.style.borderRadius = '24px';
+      
+      // Forzar el tamaño de la imagen para que no se aplaste
+      const imgWrap = clone.querySelector('.img-wrap');
+      if (imgWrap) {
+        imgWrap.style.width = '100%';
+        imgWrap.style.height = '650px'; // Altura fija para mantener proporción sin aplastar
+        imgWrap.style.borderRadius = '16px';
+      }
 
       // Ocultar elementos internos que no queremos en la foto
       styleFix = document.createElement('style');
@@ -2164,8 +2174,9 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
       const methodText = document.createElement('div');
       methodText.textContent = ganadorRescate ? '🔥 Salvado por el clan' : (ganadorMetodo === 'rng' ? '🎲 Ganador por dados' : '🏆 Ganador por votos');
       methodText.style.color = '#9aa0b5';
-      methodText.style.fontSize = '36px';
-      methodText.style.marginTop = '30px';
+      methodText.style.fontSize = '32px';
+      methodText.style.marginTop = '40px';
+      methodText.style.fontWeight = '600';
       innerBox.appendChild(methodText);
 
       // 6. Votos
@@ -2174,9 +2185,10 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
       const rescatesGanador = rescates[ganadorActual] || 0;
       votesText.textContent = ganadorRescate ? `🔥 ${rescatesGanador} rescates` : `🗳 ${votos} voto${votos !== 1 ? 's' : ''}`;
       votesText.style.color = '#f5c542';
-      votesText.style.fontSize = '44px';
+      votesText.style.fontSize = '48px';
       votesText.style.fontWeight = 'bold';
       votesText.style.marginTop = '20px';
+      votesText.style.textShadow = '0 0 15px rgba(245,197,66,0.4)';
       innerBox.appendChild(votesText);
 
       // 7. Footer
