@@ -47,6 +47,14 @@
 body.light{--bg:#f2f3f7;--card:#ffffff;--text:#1a1c30;--accent:#d4a017;--sub:#555;--border:#e0e0e8}
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
+
+/* Bloqueo de scroll para mantenimiento */
+html.no-scroll, body.no-scroll {
+  overflow: hidden !important;
+  height: 100vh !important;
+  touch-action: none !important;
+}
+
 body{font-family:Segoe UI,Arial,sans-serif;background:transparent;color:var(--text);padding:16px;transition:.3s;position:relative;min-height:100vh}
 
 #bgParticles{position:fixed;inset:0;z-index:-1;background:var(--bg);transition:background .3s;pointer-events:none}
@@ -1706,8 +1714,12 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
           : "Estamos haciendo unos ajustes. Volvemos en un rato.";
       }
       overlay.classList.add('active');
+      document.documentElement.classList.add('no-scroll');
+      document.body.classList.add('no-scroll');
     } else {
       overlay.classList.remove('active');
+      document.documentElement.classList.remove('no-scroll');
+      document.body.classList.remove('no-scroll');
     }
 
     let aviso = document.getElementById('devBypassAviso');
@@ -2084,12 +2096,11 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
       const originalCard = document.querySelector('.winner-card');
       if (!originalCard) throw new Error('Card no encontrada');
 
-      // 1. Contenedor principal (fondo y márgenes)
       const wrapper = document.createElement('div');
       wrapper.style.position = 'fixed';
       wrapper.style.top = '-9999px';
       wrapper.style.left = '0';
-      wrapper.style.width = '1080px';
+      wrapper.style.width = '1200px'; // Aumentado para dar más espacio
       wrapper.style.padding = '60px'; 
       wrapper.style.background = 'linear-gradient(135deg, #0f1020, #1a1c30, #0f1020)';
       wrapper.style.boxSizing = 'border-box';
@@ -2098,11 +2109,10 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
       wrapper.style.alignItems = 'center';
       wrapper.style.fontFamily = '"Segoe UI", Arial, sans-serif';
 
-      // 2. Caja con borde dorado (el marco visual)
       const innerBox = document.createElement('div');
       innerBox.style.border = '6px solid #f5c542';
       innerBox.style.borderRadius = '30px';
-      innerBox.style.padding = '50px 40px';
+      innerBox.style.padding = '60px 50px';
       innerBox.style.display = 'flex';
       innerBox.style.flexDirection = 'column';
       innerBox.style.alignItems = 'center';
@@ -2111,11 +2121,10 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
       innerBox.style.background = 'rgba(26,28,48,0.85)'; 
       innerBox.style.boxShadow = '0 0 50px rgba(245,197,66,0.15)';
 
-      // 3. Título
       const title = document.createElement('h1');
       title.textContent = ganadorRescate ? '🔥 SALVADO 🔥' : (ganadorMetodo === 'rng' ? '🎲 GANADOR POR DADOS 🎲' : '★ GANADOR ★');
       title.style.color = '#f5c542';
-      title.style.fontSize = '52px';
+      title.style.fontSize = '56px'; // Un poco más grande
       title.style.margin = '0 0 50px 0';
       title.style.textShadow = '0 0 20px rgba(245,197,66,0.6)';
       title.style.fontWeight = '900';
@@ -2123,26 +2132,23 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
       title.style.textAlign = 'center';
       innerBox.appendChild(title);
 
-      // 4. La Tarjeta del Personaje
       const clone = originalCard.cloneNode(true);
       clone.style.animation = 'none';
       clone.style.transform = 'none';
-      clone.style.width = '520px'; // Ancho equilibrado
+      clone.style.width = '600px'; // 15% más ancho (antes 520px)
       clone.style.margin = '0';
       clone.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
       clone.style.border = '4px solid #f5c542'; 
       clone.style.padding = '24px';
       clone.style.borderRadius = '24px';
       
-      // Forzar el tamaño de la imagen para que no se aplaste
       const imgWrap = clone.querySelector('.img-wrap');
       if (imgWrap) {
         imgWrap.style.width = '100%';
-        imgWrap.style.height = '650px'; // Altura fija para mantener proporción sin aplastar
+        imgWrap.style.height = '750px'; // Proporcional al nuevo ancho
         imgWrap.style.borderRadius = '16px';
       }
 
-      // Ocultar elementos internos que no queremos en la foto
       styleFix = document.createElement('style');
       styleFix.textContent = `
         .winner-card::before { display: none !important; }
@@ -2151,7 +2157,6 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
       `;
       document.head.appendChild(styleFix);
 
-      // Convertir imagen a Base64 para evitar Tainted Canvas
       const imgElement = clone.querySelector('img');
       if (imgElement && imgElement.src) {
         try {
@@ -2170,32 +2175,29 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
 
       innerBox.appendChild(clone);
 
-      // 5. Método
       const methodText = document.createElement('div');
       methodText.textContent = ganadorRescate ? '🔥 Salvado por el clan' : (ganadorMetodo === 'rng' ? '🎲 Ganador por dados' : '🏆 Ganador por votos');
       methodText.style.color = '#9aa0b5';
-      methodText.style.fontSize = '32px';
+      methodText.style.fontSize = '36px';
       methodText.style.marginTop = '40px';
       methodText.style.fontWeight = '600';
       innerBox.appendChild(methodText);
 
-      // 6. Votos
       const votesText = document.createElement('div');
       const votos = votosActuales[ganadorActual] || 0;
       const rescatesGanador = rescates[ganadorActual] || 0;
       votesText.textContent = ganadorRescate ? `🔥 ${rescatesGanador} rescates` : `🗳 ${votos} voto${votos !== 1 ? 's' : ''}`;
       votesText.style.color = '#f5c542';
-      votesText.style.fontSize = '48px';
+      votesText.style.fontSize = '52px'; // Un poco más grande
       votesText.style.fontWeight = 'bold';
       votesText.style.marginTop = '20px';
       votesText.style.textShadow = '0 0 15px rgba(245,197,66,0.4)';
       innerBox.appendChild(votesText);
 
-      // 7. Footer
       const footer = document.createElement('div');
       footer.textContent = 'AXCEND - LATAM -';
       footer.style.color = 'rgba(154,160,181,0.85)';
-      footer.style.fontSize = '28px';
+      footer.style.fontSize = '32px';
       footer.style.fontWeight = 'bold';
       footer.style.marginTop = '60px';
       footer.style.letterSpacing = '2px';
@@ -2204,7 +2206,6 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
       wrapper.appendChild(innerBox);
       document.body.appendChild(wrapper);
 
-      // 8. Capturar
       const canvas = await html2canvas(wrapper, {
         scale: 2, 
         useCORS: true,
