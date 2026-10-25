@@ -35,13 +35,22 @@
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <link rel="manifest" href="./manifest.json">
 
+<link rel="preload" as="image" href="Activos/Akaoni_Atsushi.webp">
+<link rel="preload" as="image" href="Activos/Baade.webp">
+<link rel="preload" as="image" href="Activos/Capt._Locke.webp">
+
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
 :root{--bg:#0f1020;--card:#1a1c30;--text:#eee;--accent:#f5c542;--sub:#9aa0b5;--border:#2a2d45}
 body.light{--bg:#f2f3f7;--card:#ffffff;--text:#1a1c30;--accent:#d4a017;--sub:#555;--border:#e0e0e8}
 *{box-sizing:border-box}
-body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text);padding:16px;transition:.3s}
+html,body{margin:0;padding:0}
+body{font-family:Segoe UI,Arial,sans-serif;background:transparent;color:var(--text);padding:16px;transition:.3s;position:relative;min-height:100vh}
+
+#bgParticles{position:fixed;inset:0;z-index:-1;background:var(--bg);transition:background .3s;pointer-events:none}
+
 header{text-align:center;margin-bottom:20px;position:relative}
 h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:2px;font-weight:800}
 .sub{color:var(--sub);font-size:clamp(13px,3vw,16px);margin-top:8px;letter-spacing:.5px}
@@ -53,91 +62,123 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .votantes{margin-top:8px;font-size:13px;color:var(--sub);font-weight:600}
 .votantes strong{color:var(--accent)}
 
-.theme-btn{
-  position:fixed;
-  top:14px;
-  right:14px;
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  background:var(--card);
-  color:var(--text);
-  border:1px solid var(--border);
-  cursor:pointer;
-  font-size:20px;
-  z-index:50;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 2px 10px rgba(0,0,0,.35);
-  transition:.2s;
-  padding:0;
-  line-height:1;
+.login-prompt-btn {
+  margin: 14px auto 0;
+  padding: 10px 24px;
+  background: var(--accent);
+  color: #1a1c30;
+  border: none;
+  border-radius: 22px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: .2s;
+  font-family: inherit;
+  letter-spacing: .5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 14px rgba(245,197,66,.4);
+  animation: loginBtnPulse 2.5s ease-in-out infinite;
 }
+.login-prompt-btn:hover {
+  filter: brightness(1.15);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(245,197,66,.55);
+}
+.login-prompt-btn:active { transform: scale(.97); }
+@keyframes loginBtnPulse {
+  0%, 100% { box-shadow: 0 4px 14px rgba(245,197,66,.4); }
+  50% { box-shadow: 0 4px 20px rgba(245,197,66,.65); }
+}
+
+.theme-btn{position:fixed;top:14px;right:14px;width:42px;height:42px;border-radius:50%;background:var(--card);color:var(--text);border:1px solid var(--border);cursor:pointer;font-size:20px;z-index:50;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.35);transition:.2s;padding:0;line-height:1}
 .theme-btn:hover{transform:scale(1.08);filter:brightness(1.15);border-color:var(--accent)}
 .theme-btn:active{transform:scale(.95)}
-@media(max-width:600px){
-  .theme-btn{width:36px;height:36px;font-size:17px;top:8px;right:8px}
-  header{padding-top:36px}
-}
+@media(max-width:600px){.theme-btn{width:36px;height:36px;font-size:17px;top:8px;right:8px}header{padding-top:36px}}
 
-.user-badge{margin:12px auto 0;display:inline-flex;align-items:center;gap:10px;padding:7px 14px;background:var(--card);border:1px solid var(--accent);border-radius:20px;font-size:13px;color:var(--text);max-width:100%}
-.user-badge .ub-icon{font-size:14px}
-.user-badge strong{color:var(--accent)}
-.user-badge .ub-lock{font-size:12px;opacity:.7}
-.user-badge button{background:transparent;border:1px solid var(--border);color:var(--sub);padding:4px 10px;border-radius:12px;cursor:pointer;font-size:11px;font-family:inherit;font-weight:600;transition:.2s;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
-.user-badge button:hover{border-color:var(--accent);color:var(--accent);background:rgba(245,197,66,.08)}
-.user-badge button:active{transform:scale(.95)}
+.user-badge{display:none!important}
 
-#loginOverlay{position:fixed;inset:0;background:rgba(15,16,32,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:900;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .3s ease}
-#loginOverlay.hidden{display:none}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.login-modal{background:var(--card);border:2px solid var(--accent);border-radius:20px;padding:36px 30px 28px;max-width:440px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 50px rgba(245,197,66,.15);animation:pop .45s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden}
-.login-modal::before{content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 0%,rgba(245,197,66,.12),transparent 50%);pointer-events:none}
-.login-modal > *{position:relative}
-.login-modal .login-close{
-  position:absolute;
-  top:10px;
-  right:10px;
-  width:32px;
-  height:32px;
-  border-radius:50%;
-  border:none;
-  background:rgba(255,255,255,.08);
-  color:var(--text);
-  font-size:20px;
-  line-height:1;
-  cursor:pointer;
-  z-index:5;
-  transition:.2s;
-  padding:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.login-modal .login-close:hover{
-  background:rgba(255,255,255,.2);
-  transform:scale(1.1);
-}
-.login-modal .lm-crest{font-size:44px;margin-bottom:8px;filter:drop-shadow(0 4px 12px rgba(245,197,66,.4))}
-.login-modal h2{color:var(--accent);margin:0 0 6px;font-size:22px;letter-spacing:2px;font-weight:800}
-.login-modal .lm-tagline{color:var(--sub);font-size:12px;text-transform:uppercase;letter-spacing:1.5px;margin:0 0 18px}
-.login-modal .lm-desc{color:var(--text);font-size:14px;line-height:1.5;margin:0 0 20px;opacity:.9}
-.login-modal input[type="text"]{width:100%;padding:14px 16px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:16px;text-align:center;outline:none;font-family:inherit;letter-spacing:.5px;transition:.2s}
-.login-modal input[type="text"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(245,197,66,.15)}
-.login-modal .lm-msg{min-height:20px;font-size:13px;color:#ff5c5c;margin:10px 0 6px;font-weight:500}
-.login-modal .lm-msg.ok{color:#4CAF50}
-.login-modal .lm-msg.loading{color:var(--sub)}
-.login-modal #btnEntrar{width:100%;padding:14px;border-radius:12px;border:none;background:var(--accent);color:#1a1c30;font-size:15px;font-weight:800;cursor:pointer;transition:.2s;font-family:inherit;letter-spacing:.5px}
-.login-modal #btnEntrar:hover:not(:disabled){filter:brightness(1.1);transform:translateY(-1px)}
-.login-modal #btnEntrar:disabled{opacity:.6;cursor:not-allowed}
-.login-modal .lm-note{font-size:11px;color:var(--sub);margin:16px 0 0;opacity:.8;line-height:1.4}
+.badges-row{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.badge-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:800;border:1px solid var(--border);background:var(--card);cursor:help;transition:.2s;letter-spacing:.3px}
+.badge-chip:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.badge-chip.lider{background:linear-gradient(135deg,rgba(245,197,66,.2),rgba(255,152,0,.1));color:var(--accent);border-color:rgba(245,197,66,.6);box-shadow:0 0 10px rgba(245,197,66,.2)}
+.badge-chip.sublider{background:rgba(154,160,181,.15);color:#c0c0d0;border-color:rgba(154,160,181,.5)}
+.badge-chip.rescatista{background:rgba(255,152,0,.15);color:#ff9800;border-color:rgba(255,152,0,.5)}
+.badge-chip.oraculo{background:rgba(168,85,247,.15);color:#a855f7;border-color:rgba(168,85,247,.5)}
+.badge-chip.aciertos{background:rgba(6,182,212,.15);color:#06b6d4;border-color:rgba(6,182,212,.5)}
+.badge-chip.racha{background:rgba(76,175,80,.15);color:#4CAF50;border-color:rgba(76,175,80,.5)}
+.badge-chip.primer-voto{background:rgba(245,197,66,.12);color:#f5c542;border-color:rgba(245,197,66,.4)}
 
-.layout{display:grid;grid-template-columns:1fr 320px;gap:20px;max-width:1500px;margin:20px auto 0;align-items:start}
-@media(max-width:1100px){.layout{grid-template-columns:1fr}}
+.col-user .prediccion-row{margin:12px 0 0;max-width:none;flex-direction:column;align-items:stretch;padding:0}
+.col-user .prediccion-btn{width:100%;justify-content:center;padding:12px 16px;font-size:13px}
+
+.prediccion-row{margin:12px auto 0;max-width:600px;display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap}
+.prediccion-btn{background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(124,58,237,.15));color:#a855f7;border:1px solid #a855f7;border-radius:20px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;transition:.2s;font-family:inherit;display:inline-flex;align-items:center;gap:6px}
+.prediccion-btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.prediccion-btn.done{background:rgba(76,175,80,.15);color:#4CAF50;border-color:#4CAF50;cursor:default}
+.prediccion-btn.done:hover{transform:none;filter:none}
+.prediccion-btn.acierto{background:linear-gradient(135deg,rgba(245,197,66,.2),rgba(168,85,247,.15));color:var(--accent);border-color:var(--accent);animation:predPulse 2s ease-in-out infinite}
+@keyframes predPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,197,66,.4)}50%{box-shadow:0 0 15px 3px rgba(245,197,66,.3)}}
+
+#modalPrediccion{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:850;align-items:center;justify-content:center;padding:20px}
+#modalPrediccion.active{display:flex}
+.pred-modal-content{background:var(--card);border:2px solid #a855f7;border-radius:18px;padding:24px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;animation:pop .3s;position:relative}
+.pred-modal-content h2{color:#a855f7;margin:0 0 8px;text-align:center;font-size:20px;letter-spacing:1px}
+.pred-modal-content .pred-desc{color:var(--sub);font-size:13px;text-align:center;margin:0 0 16px;line-height:1.5}
+.pred-close{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.08);color:var(--text);font-size:18px;line-height:1;cursor:pointer;transition:.2s}
+.pred-close:hover{background:rgba(255,255,255,.2);transform:scale(1.1)}
+.pred-search{width:100%;padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;outline:none;margin-bottom:10px;font-family:inherit}
+.pred-search:focus{border-color:#a855f7}
+.pred-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;max-height:320px;overflow-y:auto;margin-bottom:16px}
+.pred-item{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:8px;text-align:center;cursor:pointer;transition:.2s;display:flex;flex-direction:column;align-items:center;gap:6px}
+.pred-item:hover{border-color:#a855f7;transform:translateY(-2px)}
+.pred-item.selected{border-color:#a855f7;background:rgba(168,85,247,.15);box-shadow:0 0 12px rgba(168,85,247,.3)}
+.pred-item img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:top center;border-radius:6px;background:#000}
+.pred-item .pred-name{font-size:11px;font-weight:700;word-break:break-word;color:var(--text)}
+.pred-item.en-cd{opacity:.7}
+.pred-item.en-cd .pred-name::after{content:" (CD)";color:#ff9800;font-weight:600}
+.pred-btns{display:flex;gap:8px}
+.pred-btns button{flex:1;padding:12px;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px;font-family:inherit;transition:.2s}
+.pred-btns .cancel{background:var(--border);color:var(--text)}
+.pred-btns .confirm{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff}
+.pred-btns button:hover:not(:disabled){filter:brightness(1.15)}
+.pred-btns button:disabled{opacity:.5;cursor:not-allowed}
+
+.layout{display:grid;grid-template-columns:260px 1fr 320px;gap:20px;max-width:1500px;margin:20px auto 0;align-items:start;transition:opacity .4s ease}
+.layout.no-user{grid-template-columns:1fr 320px}
+.layout.no-user .col-user{display:none}
+.layout.hidden{display:none}
 .col-main{min-width:0}
 .col-cd{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow-y:auto}
-@media(max-width:1100px){.col-cd{position:static;max-height:none}}
+@media(max-width:1300px){
+  .layout,.layout.no-user{grid-template-columns:minmax(0,1fr) 320px}
+  .col-user{grid-column:1/-1;grid-row:1}
+  .col-main{grid-column:1;grid-row:2}
+  .col-cd{grid-column:2;grid-row:2}
+  .layout.no-user .col-main{grid-row:1}
+  .layout.no-user .col-cd{grid-row:1}
+}
+@media(max-width:1100px){
+  .layout,.layout.no-user{grid-template-columns:minmax(0,1fr)}
+  .col-user,.col-main,.col-cd{grid-column:1;grid-row:auto}
+  .col-cd{position:static;max-height:none}
+}
+
+.col-user{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow-y:auto}
+@media(max-width:1300px){.col-user{position:static;max-height:none}}
+.user-panel{background:var(--card);border:2px solid var(--accent);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:14px;box-shadow:0 0 20px rgba(245,197,66,.12)}
+.up-header{display:flex;align-items:center;gap:12px}
+.up-avatar{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,rgba(245,197,66,.25),rgba(255,152,0,.15));border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:var(--accent);flex-shrink:0;text-transform:uppercase;letter-spacing:1px}
+.up-info{display:flex;flex-direction:column;gap:2px;min-width:0}
+.up-label{font-size:10.5px;color:var(--sub);text-transform:uppercase;letter-spacing:1px;font-weight:700}
+.up-name{font-size:15px;font-weight:800;color:var(--text);word-break:break-word;line-height:1.2}
+.up-section{display:flex;flex-direction:column;gap:8px}
+.up-section-title{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:1px;font-weight:800;opacity:.85}
+.user-panel .badges-row{display:flex;flex-direction:column;gap:6px;margin:0;justify-content:flex-start}
+.user-panel .badge-chip{justify-content:flex-start;width:100%;padding:8px 12px;font-size:12px;text-align:left}
+.up-change-btn{background:transparent;border:1px solid var(--border);color:var(--sub);padding:10px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;transition:.2s;font-family:inherit}
+.up-change-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(245,197,66,.08)}
 
 .controls{display:flex;gap:10px;margin:0 0 16px;flex-wrap:wrap}
 .controls input{flex:1;min-width:200px;padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:15px;outline:none}
@@ -146,10 +187,23 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}
 @media(max-width:600px){.grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}}
 
-.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px;text-align:center;transition:.3s;display:flex;flex-direction:column;gap:8px;position:relative}
+.grid-skeleton{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}
+@media(max-width:600px){.grid-skeleton{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}}
+.skeleton-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:8px;overflow:hidden;position:relative}
+.skeleton-card::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);animation:shimmer 1.6s infinite}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.skeleton-card .sk-img{aspect-ratio:3/4;border-radius:10px;background:var(--border);opacity:.4}
+.skeleton-card .sk-name{height:14px;border-radius:4px;background:var(--border);opacity:.4;width:70%;margin:0 auto}
+.skeleton-card .sk-btn{height:32px;border-radius:8px;background:var(--border);opacity:.4}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px;text-align:center;transition:.3s;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden}
 .card:hover{transform:translateY(-4px);border-color:var(--accent)}
 .card.winner{border-color:#f5c542;box-shadow:0 0 24px rgba(245,197,66,.5);transform:translateY(-4px)}
 .card.winner::after{content:"👑";position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:32px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6));z-index:2}
+
+@keyframes stampIn{0%{transform:translate(-50%,-50%) scale(2.5) rotate(-30deg);opacity:0}55%{transform:translate(-50%,-50%) scale(.85) rotate(-18deg);opacity:1}75%{transform:translate(-50%,-50%) scale(1.05) rotate(-14deg);opacity:1}100%{transform:translate(-50%,-50%) scale(1) rotate(-12deg);opacity:1}}
+.card.vote-stamp::before{content:"✓ VOTADO";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(1) rotate(-12deg);background:rgba(76,175,80,.95);color:#fff;border:3px solid #fff;border-radius:12px;padding:8px 14px;font-size:16px;font-weight:900;letter-spacing:2px;z-index:10;animation:stampIn .65s cubic-bezier(.34,1.56,.64,1) forwards;box-shadow:0 4px 20px rgba(0,0,0,.5);pointer-events:none;white-space:nowrap}
+
 @keyframes votePop{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(76,175,80,0)}30%{transform:scale(1.1);box-shadow:0 0 30px 10px rgba(76,175,80,.65)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(76,175,80,0)}}
 .card.vote-pop{animation:votePop .85s cubic-bezier(.34,1.56,.64,1);z-index:5;border-color:#4CAF50!important}
 @keyframes rescuePop{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,152,0,0)}30%{transform:scale(1.1);box-shadow:0 0 30px 10px rgba(255,152,0,.65)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,152,0,0)}}
@@ -180,17 +234,24 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .cd-card .cd-time{font-size:13px;color:#ff9800;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.3px;margin-top:2px}
 .cd-card .progress{background:rgba(255,152,0,.15);border:1px solid #ff9800;border-radius:8px;height:24px;position:relative;overflow:hidden}
 .cd-card .progress-fill{background:linear-gradient(90deg,#ff9800,#f5c542);height:100%;transition:width .5s ease}
-.cd-card .progress-text{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:800;color:#fff;letter-spacing:.4px;text-shadow:0 1px 3px rgba(0,0,0,.85),0 0 6px rgba(0,0,0,.5)}
+.cd-card .progress-text{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:800;color:#fff;letter-spacing:.4px;text-shadow:0 1px 3px rgba(0,0,0,.85)}
 .cd-card .salvar-btn{background:#ff9800;color:#1a1c30;border:none;border-radius:8px;padding:11px;font-weight:800;cursor:pointer;font-size:13.5px;transition:.2s;letter-spacing:.6px;margin-top:2px}
 .cd-card .salvar-btn:hover{filter:brightness(1.15);transform:scale(1.02)}
 .cd-card .salvar-btn.disabled{background:#444;color:#999;cursor:pointer;opacity:.7;transform:none}
 .cd-card .salvar-btn.voted{background:#4CAF50;color:#fff;cursor:default}
 
-.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:1000;align-items:center;justify-content:center;padding:20px}
 .lightbox.active{display:flex}
-.lightbox img{max-width:90vw;max-height:80vh;border-radius:12px}
-.lightbox .close{position:absolute;top:20px;right:30px;color:#fff;font-size:36px;cursor:pointer;font-weight:300}
-.lightbox .lb-name{position:absolute;bottom:30px;color:#fff;font-size:18px;text-align:center;width:100%}
+.lightbox img{max-width:90vw;max-height:80vh;border-radius:12px;user-select:none}
+.lightbox .close{position:absolute;top:20px;right:30px;color:#fff;font-size:36px;cursor:pointer;font-weight:300;line-height:1;z-index:5}
+.lightbox .close:hover{color:var(--accent)}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:40px;font-weight:300;line-height:1;width:56px;height:56px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;user-select:none;z-index:5;padding:0}
+.lb-nav:hover{background:rgba(245,197,66,.25);border-color:var(--accent);transform:translateY(-50%) scale(1.08)}
+.lb-prev{left:24px}
+.lb-next{right:24px}
+@media(max-width:600px){.lb-nav{width:44px;height:44px;font-size:32px}.lb-prev{left:8px}.lb-next{right:8px}}
+.lightbox .lb-name{position:absolute;bottom:60px;color:#fff;font-size:18px;text-align:center;width:100%}
+.lightbox .lb-counter{position:absolute;bottom:30px;color:var(--sub);font-size:13px;text-align:center;width:100%;font-variant-numeric:tabular-nums}
 
 footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding:20px;line-height:1.6;max-width:900px;margin-left:auto;margin-right:auto}
 
@@ -211,12 +272,18 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
 .modal-btn-cd{background:#ff9800;color:#1a1c30}
 .modal-btn:hover{filter:brightness(1.1)}
 
+.modal-content input[type="tel"]{width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:16px;text-align:center;outline:none;letter-spacing:4px;font-family:inherit;font-weight:700;margin-bottom:10px}
+.modal-content input[type="tel"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(245,197,66,.15)}
+.modal-content .lm-msg{min-height:18px;font-size:13px;color:#ff5c5c;text-align:center;margin:6px 0 10px;font-weight:600}
+
 #toastContainer{position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:1100;display:flex;flex-direction:column;gap:10px;align-items:center;pointer-events:none;width:calc(100% - 40px);max-width:420px}
 .toast{background:var(--card);color:var(--text);border:1px solid var(--accent);border-left:4px solid var(--accent);border-radius:12px;padding:14px 20px;font-size:14px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.4);width:100%;text-align:center;animation:toastIn .35s ease-out,toastOut .35s ease-in 3.15s forwards;pointer-events:auto}
 .toast.error{border-color:#ff5c5c;border-left-color:#ff5c5c}
 .toast.success{border-color:#4CAF50;border-left-color:#4CAF50}
 .toast.rescue{border-color:#ff9800;border-left-color:#ff9800}
 .toast.dice{border-color:#a855f7;border-left-color:#a855f7}
+.toast.oracle{border-color:#a855f7;border-left-color:#a855f7;background:linear-gradient(135deg,var(--card),rgba(168,85,247,.1))}
+.toast.badge{border-color:#f5c542;border-left-color:#f5c542;background:linear-gradient(135deg,var(--card),rgba(245,197,66,.12));font-weight:700;animation:toastIn .35s ease-out,toastOut .35s ease-in 4.15s forwards}
 .toast-icon{margin-right:8px;font-size:16px}
 @keyframes toastIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes toastOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-20px)}}
@@ -239,6 +306,76 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
 @keyframes winnerSpin{0%{transform:rotateY(0deg) scale(1)}40%{transform:rotateY(180deg) scale(1.05)}100%{transform:rotateY(360deg) scale(1)}}
 @keyframes winnerFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 
+.share-btn{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:none;border-radius:10px;padding:10px 16px;font-weight:800;cursor:pointer;font-size:13px;transition:.2s;letter-spacing:.5px;margin-top:4px}
+.share-btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.share-btn:disabled{opacity:.6;cursor:wait}
+
+.chart-container{max-width:1000px;margin:24px auto 20px;padding:24px;background:var(--card);border:2px solid var(--accent);border-radius:16px;display:none;position:relative;box-shadow:0 0 40px rgba(245,197,66,.15)}
+.chart-container.visible{display:block;animation:chartIn .7s cubic-bezier(.34,1.56,.64,1)}
+@keyframes chartIn{0%{opacity:0;transform:translateY(-40px) scale(.92)}55%{opacity:1;transform:translateY(6px) scale(1.02)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.chart-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--bg);color:var(--sub);font-size:18px;font-weight:700;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;padding:0}
+.chart-close:hover{border-color:#ff5c5c;color:#ff5c5c;transform:scale(1.1) rotate(90deg)}
+.chart-title{text-align:center;color:var(--accent);margin:0 0 20px;font-size:18px;letter-spacing:1px;font-weight:800;padding:0 40px}
+.chart-bars{display:flex;flex-direction:column;gap:6px}
+.chart-row{display:grid;grid-template-columns:minmax(120px,170px) 1fr 55px;gap:10px;align-items:center;font-size:13px;border-radius:8px;padding:5px 8px;margin:0 -8px;transition:background .2s}
+@media(max-width:600px){.chart-row{grid-template-columns:100px 1fr 40px;font-size:12px;gap:6px;padding:4px 6px}}
+.chart-name{display:flex;flex-direction:column;align-items:flex-end;gap:2px;overflow:hidden;min-width:0}
+.chart-name-text{font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;font-size:13px}
+.chart-badge{display:inline-block;font-size:9px;font-weight:900;padding:2px 7px;border-radius:8px;letter-spacing:.4px;white-space:nowrap;background:rgba(245,197,66,.2);color:var(--accent);border:1px solid rgba(245,197,66,.5)}
+.chart-badge.tie{background:rgba(168,85,247,.2);color:#a855f7;border-color:rgba(168,85,247,.5)}
+.chart-badge.resc{background:rgba(255,152,0,.2);color:#ff9800;border-color:rgba(255,152,0,.5)}
+.chart-bar-wrap{background:rgba(0,0,0,.25);border-radius:6px;height:22px;overflow:hidden;position:relative}
+body.light .chart-bar-wrap{background:rgba(0,0,0,.06)}
+.chart-bar{height:100%;background:linear-gradient(90deg,rgba(245,197,66,.5),rgba(255,152,0,.45));border-radius:6px;width:0;transition:width 1.2s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 6px rgba(245,197,66,.2)}
+body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba(200,120,0,.55));box-shadow:0 0 6px rgba(212,160,23,.25)}
+.chart-bar.winner{background:linear-gradient(90deg,#f5c542,#ff9800,#e91e63);box-shadow:0 0 15px rgba(245,197,66,.6)}
+.chart-bar.tie{background:linear-gradient(90deg,#a855f7,#7c3aed);box-shadow:0 0 12px rgba(168,85,247,.5)}
+.chart-row.is-winner{background:linear-gradient(90deg,rgba(245,197,66,.15),transparent 75%);box-shadow:inset 3px 0 0 var(--accent)}
+.chart-row.is-tie{background:linear-gradient(90deg,rgba(168,85,247,.15),transparent 75%);box-shadow:inset 3px 0 0 #a855f7}
+.chart-votes{font-weight:800;color:var(--sub);font-variant-numeric:tabular-nums;text-align:right;font-size:13px}
+.chart-row.is-winner .chart-votes{color:var(--accent);font-size:14px}
+.chart-row.is-tie .chart-votes{color:#a855f7;font-size:14px}
+
+.chart-share-row{margin-top:20px;text-align:center;padding-top:16px;border-top:1px solid var(--border)}
+.chart-share-btn{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-weight:800;cursor:pointer;font-size:14px;transition:.2s;letter-spacing:.5px;font-family:inherit;display:inline-flex;align-items:center;gap:8px}
+.chart-share-btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.chart-share-btn:disabled{opacity:.6;cursor:wait;transform:none}
+
+.chart-reopen-btn{display:none;position:fixed;bottom:24px;right:24px;z-index:40;padding:12px 20px;background:var(--accent);color:#1a1c30;border:none;border-radius:24px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 8px 24px rgba(245,197,66,.4);transition:.2s;letter-spacing:.5px;font-family:inherit;align-items:center;gap:6px}
+.chart-reopen-btn.visible{display:flex}
+.chart-reopen-btn:hover{filter:brightness(1.1);transform:translateY(-2px)}
+
+#maintenanceOverlay{display:none;position:fixed;inset:0;background:var(--bg);z-index:9999;align-items:center;justify-content:center;padding:20px;animation:fadeIn .4s ease}
+#maintenanceOverlay.active{display:flex}
+.maintenance-box{background:var(--card);border:3px solid #ff9800;border-radius:24px;padding:40px 32px;max-width:520px;width:100%;text-align:center;box-shadow:0 0 80px rgba(255,152,0,.3),0 20px 60px rgba(0,0,0,.6);animation:pop .5s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden}
+.maintenance-box::before{content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 0%,rgba(255,152,0,.15),transparent 55%);pointer-events:none;animation:diceGlow 3s ease-in-out infinite}
+.maintenance-box > *{position:relative}
+.maintenance-icon{font-size:72px;margin-bottom:16px;display:inline-block;animation:mantPulse 2s ease-in-out infinite}
+@keyframes mantPulse{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.1) rotate(-5deg)}}
+.maintenance-box h1{color:#ff9800;margin:0 0 12px;font-size:28px;letter-spacing:2px;font-weight:900;text-shadow:0 0 20px rgba(255,152,0,.4)}
+.maintenance-box .mant-message{color:var(--text);font-size:15px;line-height:1.6;margin:0 0 20px}
+.maintenance-box .mant-sub{color:var(--sub);font-size:12px;margin-top:16px;font-style:italic}
+.maintenance-box .mant-brand{color:var(--accent);font-size:14px;font-weight:800;letter-spacing:2px;margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}
+
+#devBypassAviso{position:fixed;top:0;left:0;right:0;background:linear-gradient(90deg,#ff9800,#f5c542);color:#1a1c30;text-align:center;padding:8px 12px;font-size:12px;font-weight:800;z-index:99999;letter-spacing:.5px;box-shadow:0 2px 8px rgba(0,0,0,.4);animation:fadeIn .3s ease}
+
+.hall-container{max-width:1100px;margin:40px auto 20px;padding:20px;background:var(--card);border:2px solid #f5c542;border-radius:16px;box-shadow:0 0 30px rgba(245,197,66,.15);display:none}
+.hall-container.visible{display:block}
+.hall-title{text-align:center;color:var(--accent);margin:0 0 20px;font-size:20px;letter-spacing:2px;font-weight:800;text-shadow:0 0 15px rgba(245,197,66,.4)}
+.hall-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+@media(max-width:600px){.hall-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}}
+.hall-card{background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;transition:.25s}
+.hall-card:hover{border-color:var(--accent);transform:translateY(-3px)}
+.hall-card.rank-1{border-color:#f5c542;box-shadow:0 0 20px rgba(245,197,66,.35)}
+.hall-img-wrap{aspect-ratio:1/1;border-radius:8px;overflow:hidden;background:#000}
+.hall-img-wrap img{width:100%;height:100%;object-fit:cover;object-position:top center;cursor:pointer}
+.hall-name{font-weight:800;color:var(--text);font-size:14px;text-align:center;word-break:break-word}
+.hall-stats{display:flex;flex-direction:column;gap:4px;align-items:center;font-size:12px}
+.hall-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-weight:800;font-size:11px;letter-spacing:.5px;white-space:nowrap}
+.hall-badge.wins{background:rgba(245,197,66,.15);color:var(--accent);border:1px solid rgba(245,197,66,.4)}
+.hall-badge.rescues{background:rgba(255,152,0,.15);color:#ff9800;border:1px solid rgba(255,152,0,.4)}
+.hall-subtitle{text-align:center;color:var(--sub);font-size:12px;margin:-12px 0 16px;font-style:italic}
+
 .empate-aviso{max-width:680px;margin:16px auto 0;padding:16px 22px;background:linear-gradient(135deg,rgba(168,85,247,.15),rgba(255,152,0,.12));border:2px solid #a855f7;border-radius:14px;text-align:center;font-size:14px;color:var(--text);display:none;box-shadow:0 0 30px rgba(168,85,247,.25);animation:empPulse 2s ease-in-out infinite}
 .empate-aviso.visible{display:block}
 @keyframes empPulse{0%,100%{box-shadow:0 0 30px rgba(168,85,247,.25)}50%{box-shadow:0 0 45px rgba(168,85,247,.5)}}
@@ -246,12 +383,10 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
 .empate-aviso .emp-countdown{display:inline-block;margin-top:10px;font-size:26px;font-weight:900;color:#a855f7;font-variant-numeric:tabular-nums;letter-spacing:2px;padding:6px 20px;background:rgba(0,0,0,.35);border-radius:12px;border:1px solid #a855f7}
 .empate-aviso .emp-note{font-size:12px;color:var(--sub);margin-top:8px;font-style:italic}
 
-#diceOverlay{position:fixed;inset:0;background:rgba(8,8,20,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;animation:fadeIn .3s}
+#diceOverlay{position:fixed;inset:0;background:rgba(8,8,20,.94);backdrop-filter:blur(10px);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;animation:fadeIn .3s}
 #diceOverlay.active{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .dice-modal{background:var(--card);border:3px solid #a855f7;border-radius:22px;padding:32px 24px 24px;max-width:640px;width:100%;text-align:center;box-shadow:0 0 80px rgba(168,85,247,.55),0 20px 60px rgba(0,0,0,.6);animation:pop .45s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden}
-.dice-modal::before{content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 0%,rgba(168,85,247,.15),transparent 55%);pointer-events:none;animation:diceGlow 3s ease-in-out infinite}
-@keyframes diceGlow{0%,100%{opacity:.5}50%{opacity:1}}
-.dice-modal > *{position:relative}
 .dice-modal h2{color:#a855f7;margin:0 0 8px;font-size:22px;letter-spacing:3px;font-weight:900;text-shadow:0 0 20px rgba(168,85,247,.6)}
 .dice-round-info{color:var(--sub);font-size:13px;margin-bottom:20px;text-transform:uppercase;letter-spacing:2px;font-weight:700}
 .dice-grid{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin:20px 0;min-height:150px;align-items:center}
@@ -265,9 +400,36 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
 .dice-die.winner .die-face{color:#4CAF50;text-shadow:0 0 25px rgba(76,175,80,.8)}
 .dice-status{color:var(--text);font-size:15px;margin-top:18px;min-height:24px;font-weight:700;letter-spacing:.5px}
 .dice-status.winner-text{font-size:20px;color:#4CAF50;font-weight:900;letter-spacing:1px;animation:pop .35s}
+
+#loginOverlay{position:fixed;inset:0;background:rgba(15,16,32,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:900;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .3s ease}
+#loginOverlay.hidden{display:none}
+.login-modal{background:var(--card);border:2px solid var(--accent);border-radius:20px;padding:36px 30px 28px;max-width:440px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 50px rgba(245,197,66,.15);animation:pop .45s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden}
+.login-modal::before{content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 0%,rgba(245,197,66,.12),transparent 50%);pointer-events:none}
+.login-modal > *{position:relative}
+.login-modal .login-close{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.08);color:var(--text);font-size:20px;line-height:1;cursor:pointer;z-index:5;transition:.2s;padding:0;display:flex;align-items:center;justify-content:center}
+.login-modal .login-close:hover{background:rgba(255,255,255,.2);transform:scale(1.1)}
+.login-modal .lm-crest{font-size:44px;margin-bottom:8px;filter:drop-shadow(0 4px 12px rgba(245,197,66,.4))}
+.login-modal h2{color:var(--accent);margin:0 0 6px;font-size:22px;letter-spacing:2px;font-weight:800}
+.login-modal .lm-tagline{color:var(--sub);font-size:12px;text-transform:uppercase;letter-spacing:1.5px;margin:0 0 18px}
+.login-modal .lm-desc{color:var(--text);font-size:14px;line-height:1.5;margin:0 0 20px;opacity:.9}
+.login-modal input[type="text"],
+.login-modal input[type="tel"]{width:100%;padding:14px 16px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:16px;text-align:center;outline:none;font-family:inherit;letter-spacing:.5px;transition:.2s;margin-bottom:10px}
+.login-modal input[type="tel"]{font-size:18px;letter-spacing:6px;font-weight:700}
+.login-modal input[type="text"]:focus,
+.login-modal input[type="tel"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(245,197,66,.15)}
+.login-modal .lm-msg{min-height:20px;font-size:13px;color:#ff5c5c;margin:6px 0 8px;font-weight:500}
+.login-modal .lm-msg.loading{color:var(--sub)}
+.login-modal .lm-btn{width:100%;padding:14px;border-radius:12px;border:none;background:var(--accent);color:#1a1c30;font-size:15px;font-weight:800;cursor:pointer;transition:.2s;font-family:inherit;letter-spacing:.5px}
+.login-modal .lm-btn:hover:not(:disabled){filter:brightness(1.1)}
+.login-modal .lm-btn:disabled{opacity:.6;cursor:not-allowed}
+.login-modal .lm-back{background:transparent;border:none;color:var(--sub);cursor:pointer;font-size:13px;margin-top:8px;padding:8px;font-family:inherit;transition:.2s;text-decoration:underline;display:block;width:100%}
+.login-modal .lm-back:hover{color:var(--accent)}
+.login-modal .lm-note{font-size:11px;color:var(--sub);margin:16px 0 0;opacity:.8;line-height:1.4}
 </style>
 </head>
 <body>
+<canvas id="bgParticles"></canvas>
+
 <header>
 <button class="theme-btn" onclick="toggleTheme()" aria-label="Cambiar tema" title="Cambiar tema">&#9788;</button>
 <h1>AXCEND - LATAM -</h1>
@@ -283,6 +445,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
 <div class="mensaje" id="mensaje"></div>
 <div class="countdown" id="countdown">Cargando...</div>
 <div class="votantes" id="votantes">Cargando votantes...</div>
+<button class="login-prompt-btn" id="btnAbrirLogin" style="display:none">👤 Ingresar</button>
 <div class="empate-aviso" id="empateAviso"></div>
 </header>
 
@@ -290,13 +453,60 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
 
 <div class="winner-container" id="winnerContainer"></div>
 
-<div class="layout">
+<div class="chart-container" id="chartContainer">
+  <button class="chart-close" id="chartCloseBtn" title="Ocultar resumen" onclick="cerrarChart()">×</button>
+  <h2 class="chart-title">📊 Resultados finales</h2>
+  <div class="chart-bars" id="chartBars"></div>
+  <div class="chart-share-row">
+    <button class="chart-share-btn" onclick="compartirResumenComoImagen(this)">📸 Compartir resumen completo</button>
+  </div>
+</div>
+
+<button class="chart-reopen-btn" id="chartReopenBtn" onclick="reabrirChart()">📊 Ver resumen</button>
+
+<div class="layout no-user" id="mainLayout">
+  <aside class="col-user">
+    <div class="user-panel" id="userPanel" style="display:none">
+      <div class="up-header">
+        <div class="up-avatar" id="upAvatar">?</div>
+        <div class="up-info">
+          <div class="up-label">Votando como</div>
+          <div class="up-name" id="upName">—</div>
+        </div>
+      </div>
+      <div class="up-section">
+        <div class="up-section-title">🏅 Mis medallas</div>
+        <div class="badges-row" id="badgesRow"></div>
+      </div>
+      <button class="up-change-btn" id="btnCambiarUsuario2">⇄ Cambiar usuario</button>
+      <button class="up-change-btn" id="btnCambiarPin">🔐 Cambiar PIN</button>
+    </div>
+    <div class="prediccion-row" id="prediccionRow" style="display:none">
+      <button class="prediccion-btn" id="btnPredecir" onclick="abrirModalPrediccion()">🔮 Predecir ganador</button>
+    </div>
+  </aside>
   <div class="col-main">
     <div class="controls">
       <input id="filtro" placeholder="Buscar personaje..." oninput="filtrar()">
       <div class="count" id="contador">27 personajes</div>
     </div>
-    <div class="grid" id="grid">
+
+    <div class="grid-skeleton" id="gridSkeleton">
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+      <div class="skeleton-card"><div class="sk-img"></div><div class="sk-name"></div><div class="sk-btn"></div></div>
+    </div>
+
+    <div class="grid" id="grid" style="display:none">
       <div class='card' data-name='akaoni atsushi'>
         <div class='img-wrap'><img src='Activos/Akaoni_Atsushi.webp' alt='Akaoni Atsushi' loading='lazy'></div>
         <div class='name'>Akaoni Atsushi</div>
@@ -446,14 +656,23 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
   </aside>
 </div>
 
+<div class="hall-container" id="hallContainer">
+  <h2 class="hall-title">🏆 Salón de la Fama 🏆</h2>
+  <p class="hall-subtitle" id="hallSubtitle">Los grandes del clan, para la posteridad</p>
+  <div class="hall-grid" id="hallGrid"></div>
+</div>
+
 <footer>
   Hecho con dedicación para los miembros del clan. &middot; A seguir disfrutando todos juntos de este juego bien RICO, BAROSO y SUCULENTO!
 </footer>
 
-<div class="lightbox" id="lightbox" onclick="cerrarLightbox()">
-<span class="close">&times;</span>
-<img id="lb-img" src="" alt="">
-<div class="lb-name" id="lb-name"></div>
+<div class="lightbox" id="lightbox">
+  <span class="close" onclick="event.stopPropagation();cerrarLightbox()">&times;</span>
+  <button class="lb-nav lb-prev" id="lbPrev" onclick="event.stopPropagation();navegarLightbox(-1)" aria-label="Anterior">‹</button>
+  <button class="lb-nav lb-next" id="lbNext" onclick="event.stopPropagation();navegarLightbox(1)" aria-label="Siguiente">›</button>
+  <img id="lb-img" src="" alt="">
+  <div class="lb-name" id="lb-name"></div>
+  <div class="lb-counter" id="lb-counter"></div>
 </div>
 
 <div class="modal" id="modalConfirm">
@@ -466,6 +685,46 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
 <button class="modal-btn modal-btn-confirm" id="modalConfirmBtn" onclick="confirmarVoto()">Sí, votar</button>
 </div>
 </div>
+</div>
+
+<div class="modal" id="modalCambiarUsuario">
+  <div class="modal-content">
+    <h2>⇄ Cambiar de usuario</h2>
+    <p class="modal-text" id="modalCambiarText">Actualmente estás como "—". Al cambiar, podrás ingresar con otro nombre. Tu voto y predicción (si ya hiciste) quedan registrados en el sistema. ¿Continuar?</p>
+    <div class="modal-buttons">
+      <button class="modal-btn modal-btn-cancel" onclick="cerrarModalCambiarUsuario()">Cancelar</button>
+      <button class="modal-btn modal-btn-confirm" onclick="confirmarCambiarUsuario()">Sí, cambiar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modalCambiarPin">
+  <div class="modal-content">
+    <h2 id="modalPinTitle">🔐 Cambiar PIN</h2>
+    <p class="modal-text" id="modalPinText">Ingresá tu PIN actual y elegí uno nuevo.</p>
+    <input type="tel" id="inputPinActual" placeholder="PIN actual" maxlength="8" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+    <input type="tel" id="inputPinNuevo" placeholder="Nuevo PIN (4-8 dígitos)" maxlength="8" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+    <input type="tel" id="inputPinNuevoConfirm" placeholder="Confirmá nuevo PIN" maxlength="8" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+    <div class="lm-msg" id="msgCambiarPin"></div>
+    <div class="modal-buttons">
+      <button class="modal-btn modal-btn-cancel" onclick="cerrarModalCambiarPin()">Cancelar</button>
+      <button class="modal-btn modal-btn-confirm" onclick="confirmarCambiarPin()">Guardar PIN</button>
+    </div>
+  </div>
+</div>
+
+<div id="modalPrediccion">
+  <div class="pred-modal-content">
+    <button class="pred-close" onclick="cerrarModalPrediccion()" aria-label="Cerrar">×</button>
+    <h2>🔮 Predicción del ganador</h2>
+    <p class="pred-desc">¿Quién crees que ganará esta votación?<br>Solo puedes predecir <strong>UNA VEZ por ronda</strong>. Si aciertas, ganarás un 🔮 Punto de Oráculo.</p>
+    <input type="text" id="predSearch" class="pred-search" placeholder="Buscar personaje..." oninput="filtrarPredList()">
+    <div class="pred-list" id="predList"></div>
+    <div class="pred-btns">
+      <button class="cancel" onclick="cerrarModalPrediccion()">Cancelar</button>
+      <button class="confirm" id="predConfirmBtn" onclick="confirmarPrediccion()" disabled>Confirmar predicción</button>
+    </div>
+  </div>
 </div>
 
 <div id="diceOverlay">
@@ -483,17 +742,48 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     <div class="lm-crest">🏆</div>
     <h2>AXCEND - LATAM -</h2>
     <p class="lm-tagline">Votación de mascotas del clan</p>
-    <p class="lm-desc">Antes de votar, ingresa tu <strong>nombre de jugador o perfil del clan</strong>.<br>Solo se permite <strong>un voto por integrante</strong>.</p>
-    <input type="text" id="inputUsername" placeholder="Tu nombre de jugador" maxlength="30" autocomplete="off" spellcheck="false">
-    <div class="lm-msg" id="loginMsg"></div>
-    <button id="btnEntrar" type="button">Entrar a votar</button>
-    <p class="lm-note">🔒 Tu nombre será visible para el administrador del clan.<br>Si no perteneces al clan, por favor no votes.</p>
+
+    <div id="loginStep1">
+      <p class="lm-desc">Ingresá tu <strong>nombre de jugador</strong> para votar.</p>
+      <input type="text" id="inputUsername" placeholder="Tu nombre de jugador" maxlength="30" autocomplete="off" spellcheck="false">
+      <div class="lm-msg" id="loginMsg1"></div>
+      <button class="lm-btn" id="btnContinuar" type="button">Continuar</button>
+    </div>
+
+    <div id="loginStep2Login" style="display:none">
+      <p class="lm-desc">Ingresá tu PIN para <strong id="pinLoginName">—</strong>.</p>
+      <input type="tel" id="inputPin" placeholder="• • • •" maxlength="8" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+      <div class="lm-msg" id="loginMsg2"></div>
+      <button class="lm-btn" id="btnEntrarPin" type="button">Entrar</button>
+      <button class="lm-back" id="btnVolver1" type="button">← Volver</button>
+    </div>
+
+    <div id="loginStep2Create" style="display:none">
+      <p class="lm-desc" id="createDesc">Elegí un PIN de <strong>4-8 dígitos</strong> para proteger tu cuenta.</p>
+      <input type="tel" id="inputPinNew" placeholder="Nuevo PIN (4-8 dígitos)" maxlength="8" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+      <input type="tel" id="inputPinConfirm" placeholder="Confirmá tu PIN" maxlength="8" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+      <div class="lm-msg" id="loginMsg3"></div>
+      <button class="lm-btn" id="btnCrearPin" type="button">Crear PIN y entrar</button>
+      <button class="lm-back" id="btnVolver2" type="button">← Volver</button>
+    </div>
+
+    <p class="lm-note">🔒 Tu PIN protege tu identidad. No lo compartas.<br>Si no perteneces al clan, por favor no votes.</p>
+  </div>
+</div>
+
+<div id="maintenanceOverlay">
+  <div class="maintenance-box">
+    <div class="maintenance-icon">🔧</div>
+    <h1>EN MANTENIMIENTO</h1>
+    <p class="mant-message" id="mantMessageText">Estamos haciendo unos ajustes. Volvemos en un rato.</p>
+    <p class="mant-sub">La página se actualizará automáticamente cuando esté lista.</p>
+    <div class="mant-brand">AXCEND - LATAM -</div>
   </div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, runTransaction, get, onValue, set, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  import { getDatabase, ref, runTransaction, get, onValue, set, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBaKgNmCCTdFoE2YkU1B4a8AjnwwGFeBJ4",
@@ -513,6 +803,14 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
   const RESCUE_KEY = "axcend_rescate";
   const USER_KEY = "axcend_username";
   const USER_ORIG_KEY = "axcend_username_original";
+
+  const PERSONAJES = [
+    "Akaoni Atsushi","Baade","Capt Locke","Choi Yuhee","Choi Yuhyun",
+    "Code B","Code K","Croc Nile","Dallawan","Fogue","Guala","Hakui",
+    "Kagekuni","Kantos","Kumoyama","Leo von Narcis","Mikeroo","Model AZ",
+    "Orem","Owlbert","Paul the Bear","Shibahiko","Spunk","Sylas",
+    "Tayangsuyi","Tyrantino","Yorick"
+  ];
 
   let finVotacion = 0;
   let mostrarResultados = false;
@@ -538,21 +836,69 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
   let usernameOriginalActual = "";
   let unsubscribeVotanteActual = null;
   let unsubscribeRescatadorActual = null;
-
-  // Auto-CD config
   let autoCdActivo = false;
   let cdDiasConfig = 60;
+  let appInicializada = false;
+  let historialActual = {};
+  let ultimoHistorialRegistrado = "";
+  let chartCerradoPorUsuario = false;
+  let ultimoGanadorMostrado = "";
+
+  let prediccionesActuales = {};
+  let statsUsuarios = {};
+  let rolesActuales = { lider: "", sublider: "" };
+  let primerVotanteConfig = null;
+  let prediccionesResueltasToken = "";
+  let personajeSeleccionadoPred = null;
+
+  let mantenimientoActivo = false;
+  let mantenimientoMsg = "";
+  let devBypassMantenimiento = false;
+  let mantKeyBuffer = "";
+
+  let prevBadgeStats = null;
+  let loginTemp = { original: "", normalized: "", mode: null };
+  let cambiarPinTieneActual = false;
+
+  (function initParticles() {
+    const canvas = document.getElementById('bgParticles');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [];
+    const isMobile = window.innerWidth < 700;
+    const COUNT = isMobile ? 25 : 45;
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    function crearParticulas() {
+      particles = [];
+      for (let i = 0; i < COUNT; i++) {
+        particles.push({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.8 + 0.5, vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3, alpha: Math.random() * 0.4 + 0.1 });
+      }
+    }
+    crearParticulas();
+    function colorPart() { return document.body.classList.contains('light') ? 'rgba(212,160,23,' : 'rgba(245,197,66,'; }
+    function animar() {
+      ctx.clearRect(0, 0, W, H);
+      const color = colorPart();
+      for (const p of particles) {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+        if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = color + p.alpha + ')'; ctx.fill();
+      }
+      requestAnimationFrame(animar);
+    }
+    animar();
+  })();
 
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').catch(() => {});
-    });
+    window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(() => {}); });
   }
 
   async function agregarLog(tipo, subtipo, mensaje, detalles = {}) {
-    try {
-      await push(ref(db, 'logs'), { tipo, subtipo, fecha: Date.now(), mensaje, detalles });
-    } catch (e) { console.warn('log fail', e); }
+    try { await push(ref(db, 'logs'), { tipo, subtipo, fecha: Date.now(), mensaje, detalles }); }
+    catch (e) { console.warn('log fail', e); }
   }
 
   function dispararConfeti() {
@@ -571,10 +917,32 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     const container = document.getElementById("toastContainer");
     const toast = document.createElement("div");
     toast.className = "toast " + tipo;
-    const icon = tipo === "error" ? "⚠️" : tipo === "rescue" ? "🔥" : tipo === "dice" ? "🎲" : "✅";
+    const icon = tipo === "error" ? "⚠️" : tipo === "rescue" ? "🔥" : tipo === "dice" ? "🎲" : tipo === "oracle" ? "🔮" : tipo === "badge" ? "🏅" : "✅";
     toast.innerHTML = `<span class="toast-icon">${icon}</span>${mensaje}`;
     container.appendChild(toast);
-    setTimeout(() => { toast.remove(); }, 3500);
+    setTimeout(() => { toast.remove(); }, 4200);
+  }
+
+  function levenshtein(a, b) {
+    const m = a.length, n = b.length;
+    if (m === 0) return n; if (n === 0) return m;
+    const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+    for (let i = 0; i <= m; i++) dp[i][0] = i;
+    for (let j = 0; j <= n; j++) dp[0][j] = j;
+    for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) {
+      dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+    }
+    return dp[m][n];
+  }
+  function coincideBusqueda(nombreNorm, q) {
+    if (!q) return true;
+    if (nombreNorm.includes(q)) return true;
+    if (q.length < 3) return false;
+    const palabras = nombreNorm.split(/[\s_]+/).filter(Boolean);
+    const threshold = q.length <= 4 ? 1 : q.length <= 6 ? 2 : 3;
+    if (palabras.some(p => levenshtein(p, q) <= threshold)) return true;
+    if (levenshtein(nombreNorm, q) <= Math.min(threshold, 2)) return true;
+    return false;
   }
 
   function normalizarNombre(nombre) {
@@ -586,109 +954,339 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
   function setUsername(original, normalized) {
     localStorage.setItem(USER_KEY, normalized);
     localStorage.setItem(USER_ORIG_KEY, original);
-    usernameActual = normalized;
-    usernameOriginalActual = original;
+    usernameActual = normalized; usernameOriginalActual = original;
   }
   async function verificarDisponible(normalized) {
     const snap = await get(ref(db, 'votantes/' + normalized));
     return !snap.exists();
   }
+
+  async function sha256(text) {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+    return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  async function obtenerUsuario(normalized) {
+    const snap = await get(ref(db, 'usuarios/' + normalized));
+    return snap.exists() ? snap.val() : null;
+  }
+
+  async function existeLegacy(normalized) {
+    const snapV = await get(ref(db, 'votantes/' + normalized));
+    if (snapV.exists()) return true;
+    const snapR = await get(ref(db, 'rescatadores/' + normalized));
+    return snapR.exists();
+  }
+
+  async function crearUsuario(normalized, original, pin) {
+    const pin_hash = await sha256(pin);
+    await set(ref(db, 'usuarios/' + normalized), {
+      nombreOriginal: original,
+      pin_hash,
+      creado: Date.now()
+    });
+  }
+
+  async function verificarPin(normalized, pin) {
+    const user = await obtenerUsuario(normalized);
+    if (!user || !user.pin_hash) return false;
+    const hash = await sha256(pin);
+    return hash === user.pin_hash;
+  }
+
+  async function actualizarPin(normalized, nuevoPin, nombreOriginal) {
+    const hash = await sha256(nuevoPin);
+    const user = await obtenerUsuario(normalized);
+    if (user) {
+      await set(ref(db, `usuarios/${normalized}/pin_hash`), hash);
+    } else {
+      await set(ref(db, 'usuarios/' + normalized), {
+        nombreOriginal: nombreOriginal || normalized,
+        pin_hash: hash,
+        creado: Date.now()
+      });
+    }
+  }
+
   function mostrarLoginModal() {
     const overlay = document.getElementById("loginOverlay");
     overlay.classList.remove("hidden");
-    const input = document.getElementById("inputUsername");
-    input.value = getUsernameOriginal() || "";
-    document.getElementById("loginMsg").textContent = "";
-    document.getElementById("loginMsg").className = "lm-msg";
-    document.getElementById("btnEntrar").disabled = false;
-    document.getElementById("btnEntrar").textContent = "Entrar a votar";
-    setTimeout(() => input.focus(), 100);
+    resetLoginModal();
+    setTimeout(() => document.getElementById("inputUsername").focus(), 100);
   }
+  document.getElementById('btnAbrirLogin').addEventListener('click', mostrarLoginModal);
+
   function cerrarLoginModal() { document.getElementById("loginOverlay").classList.add("hidden"); }
 
-  async function procesarLogin() {
-    const input = document.getElementById("inputUsername");
-    const msg = document.getElementById("loginMsg");
-    const btn = document.getElementById("btnEntrar");
-    const original = input.value.trim();
+  function actualizarBotonLogin() {
+    const btn = document.getElementById('btnAbrirLogin');
+    if (!btn) return;
+    btn.style.display = usernameActual ? 'none' : 'inline-flex';
+  }
+
+  function resetLoginModal() {
+    document.getElementById("loginStep1").style.display = "block";
+    document.getElementById("loginStep2Login").style.display = "none";
+    document.getElementById("loginStep2Create").style.display = "none";
+    document.getElementById("inputUsername").value = getUsernameOriginal() || "";
+    document.getElementById("inputPin").value = "";
+    document.getElementById("inputPinNew").value = "";
+    document.getElementById("inputPinConfirm").value = "";
+    document.getElementById("loginMsg1").textContent = "";
+    document.getElementById("loginMsg1").className = "lm-msg";
+    document.getElementById("loginMsg2").textContent = "";
+    document.getElementById("loginMsg2").className = "lm-msg";
+    document.getElementById("loginMsg3").textContent = "";
+    document.getElementById("loginMsg3").className = "lm-msg";
+    loginTemp = { original: "", normalized: "", mode: null };
+  }
+
+  async function continuarLogin() {
+    const original = document.getElementById("inputUsername").value.trim();
+    const msg = document.getElementById("loginMsg1");
     if (original.length < 2) { msg.textContent = "El nombre debe tener al menos 2 caracteres."; msg.className = "lm-msg"; return; }
     const normalized = normalizarNombre(original);
     if (normalized.length < 2) { msg.textContent = "El nombre contiene caracteres no válidos."; msg.className = "lm-msg"; return; }
     msg.textContent = "Verificando..."; msg.className = "lm-msg loading";
-    btn.disabled = true; btn.textContent = "Verificando...";
+
     try {
-      const yaVoto = !(await verificarDisponible(normalized));
-      setUsername(original, normalized);
-      cerrarLoginModal();
-      actualizarHeaderUsuario();
-      iniciarListenerUsuario();
-      if (yaVoto) {
-        mostrarToast(`Bienvenido, ${original}. Ya votaste — puedes ver la votación pero no votar de nuevo.`, "success");
+      const user = await obtenerUsuario(normalized);
+      if (user && user.pin_hash) {
+        loginTemp = { original, normalized, mode: "login" };
+        document.getElementById("loginStep1").style.display = "none";
+        document.getElementById("loginStep2Login").style.display = "block";
+        document.getElementById("pinLoginName").textContent = original;
+        document.getElementById("inputPin").value = "";
+        document.getElementById("loginMsg2").textContent = "";
+        document.getElementById("loginMsg2").className = "lm-msg";
+        setTimeout(() => document.getElementById("inputPin").focus(), 100);
       } else {
-        mostrarToast(`¡Bienvenido, ${original}!`, "success");
+        const legacy = await existeLegacy(normalized);
+        loginTemp = { original, normalized, mode: legacy ? "migrate" : "new" };
+        document.getElementById("loginStep1").style.display = "none";
+        document.getElementById("loginStep2Create").style.display = "block";
+        const desc = document.getElementById("createDesc");
+        if (legacy) {
+          desc.innerHTML = `Bienvenido de vuelta, <strong>${original}</strong>. Por seguridad, ahora necesitás <strong>crear un PIN</strong> (4-8 dígitos) para proteger tu cuenta.`;
+        } else {
+          desc.innerHTML = `¡Hola, <strong>${original}</strong>! Elegí un <strong>PIN de 4-8 dígitos</strong> para proteger tu cuenta y votar.`;
+        }
+        document.getElementById("inputPinNew").value = "";
+        document.getElementById("inputPinConfirm").value = "";
+        document.getElementById("loginMsg3").textContent = "";
+        document.getElementById("loginMsg3").className = "lm-msg";
+        setTimeout(() => document.getElementById("inputPinNew").focus(), 100);
       }
-      refrescarBotones(); renderCdPanel();
-      agregarLog('admin', 'login',
-        `👤 Ingresó: ${original}${yaVoto ? ' (ya había votado)' : ''}`,
-        { username: normalized, usernameOriginal: original, yaVoto });
+      msg.textContent = ""; msg.className = "lm-msg";
     } catch (e) {
       msg.textContent = "Error: " + e.message; msg.className = "lm-msg";
-      btn.disabled = false; btn.textContent = "Entrar a votar";
     }
   }
-  document.getElementById("btnEntrar").addEventListener("click", procesarLogin);
-  document.getElementById("inputUsername").addEventListener("keydown", (e) => { if (e.key === "Enter") procesarLogin(); });
-  document.getElementById("btnCerrarLogin").addEventListener("click", () => { cerrarLoginModal(); });
-  document.getElementById("loginOverlay").addEventListener("click", (e) => {
-    if (e.target.id === "loginOverlay") cerrarLoginModal();
+
+  async function procesarPinLogin() {
+    const pin = document.getElementById("inputPin").value;
+    const msg = document.getElementById("loginMsg2");
+    if (!/^\d{4,8}$/.test(pin)) { msg.textContent = "El PIN debe tener entre 4 y 8 dígitos."; msg.className = "lm-msg"; return; }
+    msg.textContent = "Verificando..."; msg.className = "lm-msg loading";
+    try {
+      const ok = await verificarPin(loginTemp.normalized, pin);
+      if (!ok) {
+        msg.textContent = "PIN incorrecto."; msg.className = "lm-msg";
+        document.getElementById("inputPin").value = "";
+        return;
+      }
+      await finalizarLogin(loginTemp.original, loginTemp.normalized);
+    } catch (e) {
+      msg.textContent = "Error: " + e.message; msg.className = "lm-msg";
+    }
+  }
+
+  async function procesarPinCreate() {
+    const pin = document.getElementById("inputPinNew").value;
+    const pin2 = document.getElementById("inputPinConfirm").value;
+    const msg = document.getElementById("loginMsg3");
+    if (!/^\d{4,8}$/.test(pin)) { msg.textContent = "El PIN debe tener entre 4 y 8 dígitos."; msg.className = "lm-msg"; return; }
+    if (pin !== pin2) { msg.textContent = "Los PINs no coinciden."; msg.className = "lm-msg"; return; }
+    msg.textContent = "Creando..."; msg.className = "lm-msg loading";
+    try {
+      await crearUsuario(loginTemp.normalized, loginTemp.original, pin);
+      await finalizarLogin(loginTemp.original, loginTemp.normalized);
+    } catch (e) {
+      msg.textContent = "Error: " + e.message; msg.className = "lm-msg";
+    }
+  }
+
+  async function finalizarLogin(original, normalized) {
+    setUsername(original, normalized);
+    resetLoginModal();
+    cerrarLoginModal();
+    actualizarHeaderUsuario();
+    iniciarListenerUsuario();
+    actualizarPrediccionRow();
+    refrescarBotones(); renderCdPanel(); renderBadges();
+
+    let yaVoto = false;
+    try {
+      const snapV = await get(ref(db, 'votantes/' + normalized));
+      const snapR = await get(ref(db, 'rescatadores/' + normalized));
+      yaVoto = snapV.exists() || snapR.exists();
+    } catch (e) {}
+
+    if (yaVoto) {
+      mostrarToast(`Bienvenido, ${original}. Ya votaste — podés ver la votación pero no votar de nuevo.`, "success");
+    } else {
+      mostrarToast(`¡Bienvenido, ${original}!`, "success");
+    }
+    agregarLog('admin', 'login', `👤 Ingresó: ${original}`, { username: normalized, usernameOriginal: original, yaVoto });
+  }
+
+  document.getElementById("btnContinuar").addEventListener("click", continuarLogin);
+  document.getElementById("inputUsername").addEventListener("keydown", (e) => { if (e.key === "Enter") continuarLogin(); });
+  document.getElementById("btnEntrarPin").addEventListener("click", procesarPinLogin);
+  document.getElementById("inputPin").addEventListener("keydown", (e) => { if (e.key === "Enter") procesarPinLogin(); });
+  document.getElementById("btnCrearPin").addEventListener("click", procesarPinCreate);
+  document.getElementById("inputPinNew").addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("inputPinConfirm").focus(); });
+  document.getElementById("inputPinConfirm").addEventListener("keydown", (e) => { if (e.key === "Enter") procesarPinCreate(); });
+
+  document.getElementById("btnVolver1").addEventListener("click", () => {
+    document.getElementById("loginStep2Login").style.display = "none";
+    document.getElementById("loginStep1").style.display = "block";
+    loginTemp = { original: "", normalized: "", mode: null };
+    setTimeout(() => document.getElementById("inputUsername").focus(), 100);
   });
+  document.getElementById("btnVolver2").addEventListener("click", () => {
+    document.getElementById("loginStep2Create").style.display = "none";
+    document.getElementById("loginStep1").style.display = "block";
+    loginTemp = { original: "", normalized: "", mode: null };
+    setTimeout(() => document.getElementById("inputUsername").focus(), 100);
+  });
+  document.getElementById("btnCerrarLogin").addEventListener("click", () => { resetLoginModal(); cerrarLoginModal(); });
+  document.getElementById("loginOverlay").addEventListener("click", (e) => {
+    if (e.target.id === "loginOverlay") { resetLoginModal(); cerrarLoginModal(); }
+  });
+
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !document.getElementById("loginOverlay").classList.contains("hidden")) {
-      cerrarLoginModal();
+    if (e.key === "Escape") {
+      if (!document.getElementById("loginOverlay").classList.contains("hidden")) { resetLoginModal(); cerrarLoginModal(); }
+      const mc = document.getElementById("modalCambiarUsuario");
+      if (mc && mc.classList.contains("active")) cerrarModalCambiarUsuario();
+      const mp = document.getElementById("modalCambiarPin");
+      if (mp && mp.classList.contains("active")) cerrarModalCambiarPin();
     }
   });
+
+  document.addEventListener("keydown", (e) => {
+    if (!mantenimientoActivo) { mantKeyBuffer = ""; return; }
+    if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+    if (e.key.length !== 1) return;
+    if (!/^\d$/.test(e.key)) return;
+    mantKeyBuffer += e.key;
+    if (mantKeyBuffer.length > 20) mantKeyBuffer = mantKeyBuffer.slice(-20);
+    if (mantKeyBuffer.endsWith("014789")) {
+      mantKeyBuffer = "";
+      devBypassMantenimiento = !devBypassMantenimiento;
+      actualizarMantenimiento();
+      mostrarToast(devBypassMantenimiento ? "🔧 Modo pruebas LOCAL activado (solo vos)" : "Modo pruebas LOCAL desactivado", "success");
+    }
+  });
+
+  window.cerrarModalCambiarUsuario = function() {
+    document.getElementById("modalCambiarUsuario").classList.remove("active");
+  };
+  window.confirmarCambiarUsuario = function() {
+    cerrarModalCambiarUsuario();
+    detenerListenersUsuario();
+    localStorage.removeItem(USER_KEY); localStorage.removeItem(USER_ORIG_KEY);
+    localStorage.removeItem(VOTE_KEY); localStorage.removeItem(RESCUE_KEY);
+    usernameActual = ""; usernameOriginalActual = "";
+    votoPendiente = ""; rescatePendiente = "";
+    prevBadgeStats = null;
+    sessionStorage.removeItem('confetti_rescate'); sessionStorage.removeItem('confetti_ganador');
+    actualizarHeaderUsuario(); refrescarBotones(); renderCdPanel(); renderBadges();
+    document.getElementById("prediccionRow").style.display = "none";
+    mostrarToast("Sesión cerrada. Ingresa el nuevo usuario.", "success");
+    setTimeout(() => mostrarLoginModal(), 300);
+  };
 
   document.getElementById("btnCambiarNombre").addEventListener("click", () => {
     const nombre = usernameOriginalActual || "usuario actual";
-    if (!confirm(
-      `⇄ CAMBIAR DE USUARIO\n\n` +
-      `Actualmente estás como "${nombre}".\n\n` +
-      `Al cambiar, podrás ingresar con otro nombre. Tu voto (si ya votaste) queda registrado en el sistema y no se pierde.\n\n` +
-      `¿Continuar?`
-    )) return;
-
-    detenerListenersUsuario();
-    localStorage.removeItem(USER_KEY);
-    localStorage.removeItem(USER_ORIG_KEY);
-    localStorage.removeItem(VOTE_KEY);
-    localStorage.removeItem(RESCUE_KEY);
-    usernameActual = "";
-    usernameOriginalActual = "";
-    votoPendiente = "";
-    rescatePendiente = "";
-    sessionStorage.removeItem('confetti_rescate');
-    sessionStorage.removeItem('confetti_ganador');
-    actualizarHeaderUsuario();
-    refrescarBotones();
-    renderCdPanel();
-    mostrarToast("Sesión cerrada. Ingresa el nuevo usuario.", "success");
-    setTimeout(() => {
-      document.getElementById("inputUsername").value = "";
-      mostrarLoginModal();
-    }, 300);
+    document.getElementById("modalCambiarText").textContent = `Actualmente estás como "${nombre}". Al cambiar, podrás ingresar con otro nombre. Tu voto y predicción (si ya hiciste) quedan registrados en el sistema. ¿Continuar?`;
+    document.getElementById("modalCambiarUsuario").classList.add("active");
   });
+
+  document.getElementById('btnCambiarUsuario2')?.addEventListener('click', () => {
+    document.getElementById('btnCambiarNombre').click();
+  });
+
+  window.cerrarModalCambiarPin = function() {
+    document.getElementById("modalCambiarPin").classList.remove("active");
+    document.getElementById("inputPinActual").value = "";
+    document.getElementById("inputPinNuevo").value = "";
+    document.getElementById("inputPinNuevoConfirm").value = "";
+    document.getElementById("msgCambiarPin").textContent = "";
+  };
+
+  document.getElementById("btnCambiarPin").addEventListener("click", async () => {
+    if (!usernameActual) return;
+    try {
+      const user = await obtenerUsuario(usernameActual);
+      cambiarPinTieneActual = !!(user && user.pin_hash);
+    } catch (e) {
+      cambiarPinTieneActual = false;
+    }
+    const titleEl = document.getElementById("modalPinTitle");
+    const textEl = document.getElementById("modalPinText");
+    const inputActual = document.getElementById("inputPinActual");
+    if (cambiarPinTieneActual) {
+      titleEl.textContent = "🔐 Cambiar PIN";
+      textEl.textContent = "Ingresá tu PIN actual y elegí uno nuevo.";
+      inputActual.style.display = "block";
+      inputActual.value = "";
+    } else {
+      titleEl.textContent = "🔐 Crear PIN";
+      textEl.textContent = "Aún no tenés PIN. Elegí uno para proteger tu cuenta.";
+      inputActual.style.display = "none";
+    }
+    document.getElementById("inputPinNuevo").value = "";
+    document.getElementById("inputPinNuevoConfirm").value = "";
+    document.getElementById("msgCambiarPin").textContent = "";
+    document.getElementById("modalCambiarPin").classList.add("active");
+    setTimeout(() => (cambiarPinTieneActual ? inputActual : document.getElementById("inputPinNuevo")).focus(), 100);
+  });
+
+  window.confirmarCambiarPin = async function() {
+    if (!usernameActual) return;
+    const nuevo = document.getElementById("inputPinNuevo").value;
+    const nuevo2 = document.getElementById("inputPinNuevoConfirm").value;
+    const msg = document.getElementById("msgCambiarPin");
+
+    if (cambiarPinTieneActual) {
+      const actual = document.getElementById("inputPinActual").value;
+      if (!/^\d{4,8}$/.test(actual)) { msg.textContent = "PIN actual inválido."; return; }
+      msg.textContent = "Verificando...";
+      const ok = await verificarPin(usernameActual, actual);
+      if (!ok) { msg.textContent = "PIN actual incorrecto."; return; }
+    }
+    if (!/^\d{4,8}$/.test(nuevo)) { msg.textContent = "El nuevo PIN debe tener 4-8 dígitos."; return; }
+    if (nuevo !== nuevo2) { msg.textContent = "Los PINs nuevos no coinciden."; return; }
+
+    msg.textContent = "Guardando...";
+    try {
+      await actualizarPin(usernameActual, nuevo, usernameOriginalActual);
+      mostrarToast(cambiarPinTieneActual ? "🔐 PIN actualizado." : "🔐 PIN creado correctamente.", "success");
+      cerrarModalCambiarPin();
+      agregarLog('admin', cambiarPinTieneActual ? 'pin_cambiado' : 'pin_creado',
+        `🔐 ${usernameOriginalActual} ${cambiarPinTieneActual ? 'cambió' : 'creó'} su PIN`,
+        { username: usernameActual });
+    } catch (e) {
+      msg.textContent = "Error: " + e.message;
+    }
+  };
 
   function actualizarHeaderUsuario() {
     const badge = document.getElementById("userBadge");
-    const txt = document.getElementById("userBadgeText");
-    const lock = document.getElementById("userBadgeLock");
-    const btn = document.getElementById("btnCambiarNombre");
-    if (!usernameActual) { badge.style.display = "none"; return; }
-    badge.style.display = "inline-flex";
-    txt.innerHTML = `Votando como: <strong>${usernameOriginalActual}</strong>`;
-    const yaVoto = !!localStorage.getItem(VOTE_KEY) || !!localStorage.getItem(RESCUE_KEY);
-    lock.style.display = yaVoto ? "inline" : "none";
-    btn.style.display = "inline-block";
+    if (badge) badge.style.display = "none";
+    actualizarBotonLogin();
   }
 
   function detenerListenersUsuario() {
@@ -700,28 +1298,22 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     if (!usernameActual) return;
     detenerListenersUsuario();
     const userAlIniciar = usernameActual;
-
     unsubscribeVotanteActual = onValue(ref(db, 'votantes/' + usernameActual), (snap) => {
       if (userAlIniciar !== usernameActual) return;
       if (snap.exists()) {
         const val = snap.val();
         const personaje = typeof val === 'string' ? val : (val.personaje || '');
         setVote(personaje);
-      } else {
-        localStorage.removeItem(VOTE_KEY);
-      }
+      } else localStorage.removeItem(VOTE_KEY);
       actualizarHeaderUsuario(); refrescarBotones();
     });
-
     unsubscribeRescatadorActual = onValue(ref(db, 'rescatadores/' + usernameActual), (snap) => {
       if (userAlIniciar !== usernameActual) return;
       if (snap.exists()) {
         const val = snap.val();
         const personaje = typeof val === 'string' ? val : (val.personaje || '');
         setRescue(personaje);
-      } else {
-        localStorage.removeItem(RESCUE_KEY);
-      }
+      } else localStorage.removeItem(RESCUE_KEY);
       actualizarHeaderUsuario(); refrescarBotones(); renderCdPanel();
     });
   }
@@ -758,27 +1350,60 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     document.body.classList.toggle("light");
     localStorage.setItem("axcend_theme", document.body.classList.contains("light") ? "light" : "dark");
   };
+
   window.filtrar = function() {
-    var q = document.getElementById("filtro").value.toLowerCase();
-    var visibles = 0;
+    const q = document.getElementById("filtro").value.toLowerCase().trim();
+    let visibles = 0;
     document.querySelectorAll("#grid .card").forEach(function(c) {
       if (c.dataset.ocultaPorCd === "1") { c.style.display = "none"; return; }
-      var ok = c.dataset.name.includes(q);
-      c.style.display = ok ? "" : "none";
-      if (ok) visibles++;
+      const coincide = coincideBusqueda(c.dataset.name, q);
+      c.style.display = coincide ? "" : "none";
+      if (coincide) visibles++;
     });
     document.getElementById("contador").textContent = visibles + " personaje" + (visibles !== 1 ? "s" : "");
   };
+
+  let lightboxImages = [];
+  let lightboxIndex = 0;
+  function recolectarImagenesLightbox() {
+    return Array.from(document.querySelectorAll('#grid .card img, #cdList .cd-card img'))
+      .filter(img => img.offsetParent !== null);
+  }
   function bindLightbox(img) {
     img.addEventListener("click", function() {
-      document.getElementById("lb-img").src = this.src;
-      document.getElementById("lb-name").textContent = this.alt;
-      document.getElementById("lightbox").classList.add("active");
+      lightboxImages = recolectarImagenesLightbox();
+      lightboxIndex = lightboxImages.indexOf(this);
+      if (lightboxIndex < 0) lightboxIndex = 0;
+      abrirLightbox();
     });
   }
+  function abrirLightbox() {
+    if (lightboxImages.length === 0) return;
+    const img = lightboxImages[lightboxIndex];
+    if (!img) return;
+    document.getElementById("lb-img").src = img.src;
+    document.getElementById("lb-name").textContent = img.alt;
+    document.getElementById("lb-counter").textContent = `${lightboxIndex + 1} / ${lightboxImages.length}`;
+    document.getElementById("lightbox").classList.add("active");
+  }
+  window.navegarLightbox = function(dir) {
+    if (lightboxImages.length === 0) return;
+    lightboxIndex = (lightboxIndex + dir + lightboxImages.length) % lightboxImages.length;
+    abrirLightbox();
+  };
   document.querySelectorAll(".card img").forEach(bindLightbox);
   window.cerrarLightbox = function() { document.getElementById("lightbox").classList.remove("active"); };
-  document.addEventListener("keydown", function(e) { if (e.key === "Escape") cerrarLightbox(); });
+  document.addEventListener("keydown", function(e) {
+    const lb = document.getElementById("lightbox");
+    if (!lb.classList.contains("active")) return;
+    if (e.key === "Escape") cerrarLightbox();
+    else if (e.key === "ArrowLeft") { e.preventDefault(); navegarLightbox(-1); }
+    else if (e.key === "ArrowRight") { e.preventDefault(); navegarLightbox(1); }
+  });
+  document.getElementById("lightbox").addEventListener("click", function(e) {
+    if (e.target.id === "lb-img") return;
+    cerrarLightbox();
+  });
 
   function votacionCerrada() { return finVotacion > 0 && Date.now() >= finVotacion; }
   function votacionFinalizada() { return votacionCerrada() || ganadorRescate !== "" || ganadorFinal !== ""; }
@@ -799,7 +1424,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
   }
 
   function aplicarVisibilidadGrid() {
-    const q = (document.getElementById("filtro").value || "").toLowerCase();
+    const q = (document.getElementById("filtro").value || "").toLowerCase().trim();
     let visibles = 0;
     document.querySelectorAll("#grid .card").forEach(card => {
       const btn = card.querySelector(".vote-btn"); if (!btn) return;
@@ -807,7 +1432,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       if (estaEnCd(nombre)) { card.style.display = "none"; card.dataset.ocultaPorCd = "1"; }
       else {
         delete card.dataset.ocultaPorCd;
-        const coincide = card.dataset.name.includes(q);
+        const coincide = coincideBusqueda(card.dataset.name, q);
         card.style.display = coincide ? "" : "none";
         if (coincide) visibles++;
       }
@@ -816,31 +1441,17 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
   }
 
   function refrescarBotones() {
-    const v = getVote();
-    const r = getRescue();
-    const finalizada = votacionFinalizada();
-    const logueado = !!usernameActual;
-
+    const v = getVote(); const r = getRescue(); const finalizada = votacionFinalizada(); const logueado = !!usernameActual;
     document.querySelectorAll("#grid .vote-btn").forEach(function(btn) {
       const nombre = btn.dataset.vote;
-      btn.classList.remove("voted", "disabled");
-      btn.disabled = false;
-
+      btn.classList.remove("voted", "disabled"); btn.disabled = false;
       if (finalizada) { btn.style.display = "none"; return; }
       btn.style.display = "";
-
-      if (!logueado) {
-        btn.classList.add("disabled");
-        btn.textContent = "Ingresa tu nombre";
-      } else if (r !== "") {
-        btn.classList.add("disabled"); btn.textContent = "Ya usaste tu voto en rescate"; btn.disabled = true;
-      } else if (v === nombre) {
-        btn.classList.add("voted"); btn.textContent = "✓ Tu voto"; btn.disabled = true;
-      } else if (v !== "") {
-        btn.classList.add("disabled"); btn.textContent = "Ya votaste por otro"; btn.disabled = true;
-      } else {
-        btn.textContent = "Votar";
-      }
+      if (!logueado) { btn.classList.add("disabled"); btn.textContent = "Ingresa tu nombre"; }
+      else if (r !== "") { btn.classList.add("disabled"); btn.textContent = "Ya usaste tu voto en rescate"; btn.disabled = true; }
+      else if (v === nombre) { btn.classList.add("voted"); btn.textContent = "✓ Tu voto"; btn.disabled = true; }
+      else if (v !== "") { btn.classList.add("disabled"); btn.textContent = "Ya votaste por otro"; btn.disabled = true; }
+      else { btn.textContent = "Votar"; }
     });
   }
 
@@ -861,14 +1472,13 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       const imgAlt = cardOriginal.querySelector("img").alt;
       const votosRescate = rescates[nombre] || 0;
       const pct = Math.min(100, Math.round((votosRescate / umbral) * 100));
-      const dias = Math.max(0, Math.ceil((cd.hasta - Date.now()) / 86400000));
       const div = document.createElement("div");
       div.className = "cd-card"; div.dataset.cardName = nombre;
       div.innerHTML = `
-        <div class="cd-badge">EN COOLDOWN · ${dias}d</div>
+        <div class="cd-badge">EN COOLDOWN</div>
         <div class="img-wrap"><img src="${imgSrc}" alt="${imgAlt}" loading="lazy"></div>
         <div class="name">${nombre}</div>
-        <div class="cd-time">⏳ ${dias} día${dias !== 1 ? "s" : ""} restantes</div>
+        <div class="cd-time" data-hasta="${cd.hasta}">⏳ calculando...</div>
         <div class="progress">
           <div class="progress-fill" style="width:${pct}%"></div>
           <div class="progress-text">${votosRescate} / ${umbral} rescates</div>
@@ -882,16 +1492,29 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       const nombre = btn.dataset.salvar;
       const imgSrc = btn.closest(".cd-card").querySelector("img").src;
       if (finalizada) { btn.classList.add("disabled"); btn.textContent = "Votación finalizada"; btn.disabled = true; }
-      else if (!logueado) {
-        btn.classList.add("disabled");
-        btn.textContent = "Ingresa tu nombre";
-      }
+      else if (!logueado) { btn.classList.add("disabled"); btn.textContent = "Ingresa tu nombre"; }
       else if (r === nombre) { btn.classList.add("voted"); btn.textContent = "✓ Tu rescate"; btn.disabled = true; }
       else if (r !== "") { btn.classList.add("disabled"); btn.textContent = "Ya usaste tu rescate"; btn.disabled = true; }
       else if (getVote() !== "") { btn.classList.add("disabled"); btn.textContent = "Ya usaste tu voto"; btn.disabled = true; }
       else { btn.addEventListener("click", () => abrirModalRescate(nombre, imgSrc)); }
     });
+    actualizarContadoresCd();
   }
+
+  function actualizarContadoresCd() {
+    document.querySelectorAll('.cd-time[data-hasta]').forEach(el => {
+      const hasta = parseInt(el.dataset.hasta);
+      if (!hasta) return;
+      const restante = hasta - Date.now();
+      if (restante <= 0) { el.textContent = '⏳ 0d 0h 0m 0s'; return; }
+      const d = Math.floor(restante / 86400000);
+      const h = Math.floor((restante % 86400000) / 3600000);
+      const m = Math.floor((restante % 3600000) / 60000);
+      const s = Math.floor((restante % 60000) / 1000);
+      el.textContent = `⏳ ${d}d ${h}h ${m}m ${s}s`;
+    });
+  }
+  setInterval(actualizarContadoresCd, 1000);
 
   function abrirModal(nombre, imgSrc) {
     accionModal = "votar"; votoPendiente = nombre;
@@ -933,7 +1556,25 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     }
     if (!card) return;
     card.classList.add(esRescate ? "vote-pop-rescue" : "vote-pop");
+    if (!esRescate) card.classList.add("vote-stamp");
     setTimeout(() => card.classList.remove("vote-pop", "vote-pop-rescue"), 900);
+    setTimeout(() => card.classList.remove("vote-stamp"), 3500);
+  }
+
+  async function registrarPrimerVotanteSiEsNecesario() {
+    if (!usernameActual || !resetToken) return;
+    try {
+      let esPrimero = false;
+      const tx = await runTransaction(ref(db, 'config/primer_votante'), (current) => {
+        if (current && current.resetToken === resetToken) return;
+        esPrimero = true;
+        return { username: usernameActual, usernameOriginal: usernameOriginalActual, resetToken, fecha: Date.now() };
+      });
+      if (tx.committed && esPrimero) {
+        await runTransaction(ref(db, `stats_usuarios/${usernameActual}/primer_voto_ronda`), (c) => (c || 0) + 1);
+        await agregarLog('admin', 'primer_votante', `🌟 ${usernameOriginalActual} fue el primer votante de la ronda`, { username: usernameActual });
+      }
+    } catch (e) { console.warn('primer votante fail:', e); }
   }
 
   async function ejecutarVoto(nombre) {
@@ -954,6 +1595,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       agregarLog('voto', 'voto_normal', `🗳 ${usernameOriginalActual} votó por "${nombre}"`,
         { personaje: nombre, username: usernameActual, usernameOriginal: usernameOriginalActual, voterId });
       mostrarToast("¡Voto registrado con éxito!", "success");
+      await registrarPrimerVotanteSiEsNecesario();
     } catch (error) {
       console.error("Error al votar:", error);
       mostrarToast("Hubo un error al registrar tu voto.", "error");
@@ -977,6 +1619,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       setRescue(nombre);
       refrescarBotones(); renderCdPanel(); actualizarHeaderUsuario();
       animarVotoEnCard(nombre, true);
+      await runTransaction(ref(db, `stats_usuarios/${usernameActual}/rescates_emitidos`), (c) => (c || 0) + 1);
       agregarLog('rescate', 'voto_rescate',
         `🔥 ${usernameOriginalActual} rescató a "${nombre}" (${nuevos}/${umbral})`,
         { personaje: nombre, votosRescate: nuevos, umbral, username: usernameActual, usernameOriginal: usernameOriginalActual, voterId });
@@ -987,22 +1630,13 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
         agregarLog('rescate', 'rescate_exitoso',
           `🔥 "${nombre}" alcanzó ${nuevos}/${umbral} rescates y es el GANADOR`,
           { personaje: nombre, votosRescate: nuevos, umbral });
-
-        // Auto-CD: resetear el CD del ganador por rescate
         if (autoCdActivo) {
-          const ahora = Date.now();
-          const hasta = ahora + cdDiasConfig * 24 * 60 * 60 * 1000;
-          set(ref(db, `cooldowns/${nombre}`), {
-            activo: true,
-            desde: ahora,
-            hasta,
-            motivo: "Auto-CD al ganar por rescate"
-          });
+          const ahora = Date.now(); const hasta = ahora + cdDiasConfig * 24 * 60 * 60 * 1000;
+          set(ref(db, `cooldowns/${nombre}`), { activo: true, desde: ahora, hasta, motivo: "Auto-CD al ganar por rescate" });
           agregarLog('cd', 'auto_aplicado',
             `⏳ Auto-CD de ${cdDiasConfig} días aplicado a "${nombre}" (ganador por rescate)`,
             { personaje: nombre, dias: cdDiasConfig, hasta });
         }
-
         setTimeout(() => { mostrarToast(`🔥 ¡${nombre} ha sido SALVADO y es el GANADOR!`, "rescue"); dispararConfeti(); }, 1500);
       }
     } catch (error) {
@@ -1059,6 +1693,41 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     }
   }
 
+  function actualizarMantenimiento() {
+    const overlay = document.getElementById('maintenanceOverlay');
+    if (!overlay) return;
+    const debeBloquear = mantenimientoActivo && !devBypassMantenimiento;
+
+    if (debeBloquear) {
+      const msg = document.getElementById('mantMessageText');
+      if (msg) {
+        msg.textContent = mantenimientoMsg && mantenimientoMsg.trim() !== ""
+          ? mantenimientoMsg
+          : "Estamos haciendo unos ajustes. Volvemos en un rato.";
+      }
+      overlay.classList.add('active');
+    } else {
+      overlay.classList.remove('active');
+    }
+
+    let aviso = document.getElementById('devBypassAviso');
+    if (mantenimientoActivo && devBypassMantenimiento) {
+      if (!aviso) {
+        aviso = document.createElement('div');
+        aviso.id = 'devBypassAviso';
+        aviso.textContent = '🔧 MODO PRUEBAS LOCAL — el mantenimiento sigue activo para los demás usuarios';
+        document.body.appendChild(aviso);
+      }
+    } else if (aviso) {
+      aviso.remove();
+    }
+
+    if (!mantenimientoActivo) {
+      devBypassMantenimiento = false;
+      mantKeyBuffer = "";
+    }
+  }
+
   function cargarConfig() {
     onValue(ref(db, 'config'), (snapshot) => {
       if (snapshot.exists()) {
@@ -1072,6 +1741,8 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
         rngTriggerAt = cfg.rng_trigger_at || 0;
         autoCdActivo = cfg.auto_cd_activo === true;
         cdDiasConfig = cfg.cd_dias || 60;
+        mantenimientoActivo = cfg.mantenimiento === true;
+        mantenimientoMsg = cfg.mantenimiento_msg || "";
 
         const nuevoToken = cfg.reset_token || "";
         const msgEl = document.getElementById('mensaje');
@@ -1090,22 +1761,33 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
         if ((mostrarResultados || cerrada || ganadorRescate || ganadorFinal) && !resultadosMostrados) {
           resultadosMostrados = true; mostrarVotosEnCartas();
         }
+        if (!appInicializada) {
+          appInicializada = true;
+          document.getElementById('gridSkeleton').style.display = 'none';
+          document.getElementById('grid').style.display = '';
+        }
       }
       actualizarCountdown(); refrescarBotones(); aplicarVisibilidadGrid(); renderCdPanel();
       actualizarAvisoEmpate(); verificarAutoRng();
       aplicarRanking();
+      renderChart();
+      registrarHistorialSiNuevo();
+      actualizarPrediccionRow();
+      verificarYResolverPredicciones();
+      renderBadges();
+      actualizarMantenimiento();
     });
 
     onValue(ref(db, 'cooldowns'), (snap) => {
       cooldowns = snap.val() || {};
-      aplicarVisibilidadGrid(); renderCdPanel(); actualizarAvisoEmpate(); verificarAutoRng();
+      aplicarVisibilidadGrid(); renderCdPanel(); actualizarAvisoEmpate(); verificarAutoRng(); renderChart();
     });
     onValue(ref(db, 'rescates'), (snap) => {
-      rescates = snap.val() || {}; renderCdPanel();
+      rescates = snap.val() || {}; renderCdPanel(); renderChart();
     });
     onValue(ref(db, 'votos'), (snap) => {
       votosActuales = snap.val() || {};
-      actualizarAvisoEmpate(); verificarAutoRng();
+      actualizarAvisoEmpate(); verificarAutoRng(); renderChart();
     });
     onValue(ref(db, 'config/rng_resultado'), (snap) => {
       if (snap.exists()) {
@@ -1118,6 +1800,39 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
         }
       }
     });
+    onValue(ref(db, 'historial'), (snap) => {
+      historialActual = snap.val() || {};
+      renderHallOfFame();
+    });
+
+    onValue(ref(db, 'predicciones'), (snap) => {
+      prediccionesActuales = snap.val() || {};
+      actualizarPrediccionRow();
+      verificarYResolverPredicciones();
+    });
+    onValue(ref(db, 'stats_usuarios'), (snap) => {
+      statsUsuarios = snap.val() || {};
+      renderBadges();
+    });
+    onValue(ref(db, 'roles'), (snap) => {
+      rolesActuales = snap.val() || { lider: "", sublider: "" };
+      renderBadges();
+    });
+    onValue(ref(db, 'config/primer_votante'), (snap) => {
+      primerVotanteConfig = snap.val() || null;
+      renderBadges();
+    });
+    onValue(ref(db, 'config/predicciones_resueltas_token'), (snap) => {
+      prediccionesResueltasToken = snap.val() || "";
+    });
+
+    setTimeout(() => {
+      if (!appInicializada) {
+        appInicializada = true;
+        document.getElementById('gridSkeleton').style.display = 'none';
+        document.getElementById('grid').style.display = '';
+      }
+    }, 5000);
 
     setInterval(() => {
       aplicarVisibilidadGrid(); renderCdPanel(); actualizarCountdown();
@@ -1134,11 +1849,682 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     });
   }
 
+  async function registrarHistorialSiNuevo() {
+    const ganadorActual = ganadorRescate || ganadorFinal;
+    if (!ganadorActual) return;
+    if (!resetToken) return;
+    const votosDelGanador = votosActuales[ganadorActual] || 0;
+    const rescatesDelGanador = rescates[ganadorActual] || 0;
+    if (votosDelGanador === 0 && rescatesDelGanador === 0) return;
+    const histKey = `${resetToken}_${ganadorActual}`;
+    if (ultimoHistorialRegistrado === histKey) return;
+    try {
+      const snap = await get(ref(db, `historial/${histKey}`));
+      if (snap.exists()) { ultimoHistorialRegistrado = histKey; return; }
+      const metodo = ganadorRescate ? 'rescate' : (ganadorMetodo || 'votos');
+      const totalVotosCast = Object.values(votosActuales || {}).reduce((a, b) => a + (b || 0), 0);
+      const totalRescatesCast = Object.values(rescates || {}).reduce((a, b) => a + (b || 0), 0);
+      await set(ref(db, `historial/${histKey}`), {
+        ganador: ganadorActual, metodo,
+        votos: votosActuales[ganadorActual] || 0,
+        fecha: Date.now(),
+        votosFinales: votosActuales || {},
+        rescatesFinales: rescates || {},
+        totalMiembros,
+        participantes: totalVotosCast + totalRescatesCast
+      });
+      ultimoHistorialRegistrado = histKey;
+      await agregarLog('admin', 'historial_registrado', `📜 Historial guardado: ${ganadorActual} (${metodo})`, { ganador: ganadorActual, metodo });
+    } catch (e) { console.warn('historial fail:', e); }
+  }
+
+  function calcularHallOfFame() {
+    const stats = {};
+    Object.values(historialActual).forEach(h => {
+      if (!h.ganador) return;
+      if (!stats[h.ganador]) stats[h.ganador] = { victorias: 0, rescates: 0, votos: 0 };
+      stats[h.ganador].victorias++;
+      if (h.metodo === 'rescate') stats[h.ganador].rescates++;
+      else stats[h.ganador].votos++;
+    });
+    return stats;
+  }
+
+  function renderHallOfFame() {
+    const stats = calcularHallOfFame();
+    const arr = Object.entries(stats).sort((a, b) => {
+      if (b[1].victorias !== a[1].victorias) return b[1].victorias - a[1].victorias;
+      return b[1].rescates - a[1].rescates;
+    });
+    const cont = document.getElementById('hallContainer');
+    const grid = document.getElementById('hallGrid');
+    const subtitle = document.getElementById('hallSubtitle');
+    if (arr.length === 0) { cont.classList.remove('visible'); return; }
+    cont.classList.add('visible');
+    subtitle.textContent = `${arr.length} campeón${arr.length !== 1 ? 'es' : ''} en la historia del clan`;
+    grid.innerHTML = arr.map(([nombre, s], idx) => {
+      const card = [...document.querySelectorAll('#grid .card')].find(c => {
+        const b = c.querySelector('.vote-btn'); return b && b.dataset.vote === nombre;
+      });
+      const imgSrc = card ? card.querySelector('img').src : '';
+      const rankClass = idx === 0 ? 'rank-1' : '';
+      const crown = idx === 0 ? '👑 ' : '';
+      return `
+        <div class="hall-card ${rankClass}">
+          <div class="hall-img-wrap"><img src="${imgSrc}" alt="${nombre}" loading="lazy"></div>
+          <div class="hall-name">${crown}${nombre}</div>
+          <div class="hall-stats">
+            <span class="hall-badge wins">🏆 ${s.victorias} victoria${s.victorias !== 1 ? 's' : ''}</span>
+            ${s.rescates > 0 ? `<span class="hall-badge rescues">🔥 ${s.rescates} rescate${s.rescates !== 1 ? 's' : ''}</span>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+    grid.querySelectorAll('img').forEach(bindLightbox);
+  }
+
+  window.cerrarChart = function() {
+    chartCerradoPorUsuario = true;
+    renderChart();
+  };
+  window.reabrirChart = function() {
+    chartCerradoPorUsuario = false;
+    renderChart();
+  };
+
+  function renderChart() {
+    const cont = document.getElementById('chartContainer');
+    const barsCont = document.getElementById('chartBars');
+    const layout = document.getElementById('mainLayout');
+    const reopenBtn = document.getElementById('chartReopenBtn');
+
+    const debeMostrar = votacionFinalizada() || votacionCerrada();
+    const hayGanador = !!(ganadorFinal || ganadorRescate);
+
+    const ganadorActualKey = ganadorRescate || ganadorFinal || "";
+    if (ganadorActualKey && ganadorActualKey !== ultimoGanadorMostrado) {
+      chartCerradoPorUsuario = false;
+      ultimoGanadorMostrado = ganadorActualKey;
+    }
+    if (!ganadorActualKey) {
+      ultimoGanadorMostrado = "";
+      chartCerradoPorUsuario = false;
+    }
+
+    if (!debeMostrar) {
+      cont.classList.remove('visible');
+      layout.classList.remove('hidden');
+      reopenBtn.classList.remove('visible');
+      return;
+    }
+    if (chartCerradoPorUsuario) {
+      cont.classList.remove('visible');
+      layout.classList.remove('hidden');
+      reopenBtn.classList.add('visible');
+      return;
+    }
+
+    const esRescate = !!ganadorRescate;
+    const ranking = Object.entries(votosActuales)
+      .filter(([n]) => n === ganadorActualKey || !estaEnCd(n))
+      .map(([n, v]) => ({ nombre: n, votos: v || 0 }))
+      .filter(x => x.votos > 0 || x.nombre === ganadorActualKey)
+      .sort((a, b) => b.votos - a.votos);
+
+    if (ranking.length === 0 && !ganadorActualKey) {
+      cont.classList.remove('visible');
+      layout.classList.remove('hidden');
+      reopenBtn.classList.remove('visible');
+      return;
+    }
+
+    let ganadores = [];
+    let esEmpate = false;
+    if (esRescate) {
+      ganadores = [ganadorActualKey];
+    } else {
+      const maxVotos = ranking.length > 0 ? Math.max(...ranking.map(r => r.votos)) : 0;
+      ganadores = ranking.filter(r => r.votos === maxVotos && maxVotos > 0).map(r => r.nombre);
+      if (ganadorFinal) { ganadores = [ganadorFinal]; } else { esEmpate = ganadores.length > 1; }
+    }
+
+    if (ganadorActualKey) {
+      const idx = ranking.findIndex(r => r.nombre === ganadorActualKey);
+      if (idx > 0) {
+        const [winner] = ranking.splice(idx, 1);
+        ranking.unshift(winner);
+      }
+    }
+
+    const maxVotos = Math.max(...ranking.map(r => r.votos), 1);
+
+    barsCont.innerHTML = ranking.map((r) => {
+      const pctBase = Math.max(5, (r.votos / maxVotos) * 100);
+      const esGanadorReal = r.nombre === ganadorActualKey;
+      const estaEnEmpate = esEmpate && ganadores.includes(r.nombre);
+      let rowClass = '', barClass = '', badgeHTML = '';
+      if (esGanadorReal) {
+        rowClass = 'is-winner'; barClass = 'winner';
+        badgeHTML = esRescate ? `<span class="chart-badge resc">🔥 GANADOR</span>` : `<span class="chart-badge">👑 GANADOR</span>`;
+      } else if (estaEnEmpate) {
+        rowClass = 'is-tie'; barClass = 'tie';
+        badgeHTML = `<span class="chart-badge tie">⚖️ EMPATE</span>`;
+      }
+      const votosLabel = (esRescate && esGanadorReal) ? `${rescates[ganadorActualKey] || 0} 🔥` : r.votos;
+      return `
+        <div class="chart-row ${rowClass}">
+          <div class="chart-name" title="${r.nombre}">
+            <div class="chart-name-text">${r.nombre}</div>
+            ${badgeHTML}
+          </div>
+          <div class="chart-bar-wrap"><div class="chart-bar ${barClass}" data-pct="${pctBase}"></div></div>
+          <div class="chart-votes">${votosLabel}</div>
+        </div>
+      `;
+    }).join('');
+
+    cont.classList.add('visible');
+    reopenBtn.classList.remove('visible');
+    if (hayGanador) layout.classList.add('hidden'); else layout.classList.remove('hidden');
+
+    requestAnimationFrame(() => {
+      barsCont.querySelectorAll('.chart-bar').forEach(bar => {
+        const pct = parseFloat(bar.dataset.pct);
+        setTimeout(() => { bar.style.width = pct + '%'; }, 50);
+      });
+    });
+  }
+
+  async function compartirOExportarCanvas(canvas, filename, title, text, boton, btnOriginal) {
+    const blob = await new Promise(res => canvas.toBlob(res, 'image/png', 1));
+    if (!blob) throw new Error('No se pudo generar la imagen');
+    
+    const file = new File([blob], filename, { type: 'image/png' });
+    
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({
+          files: [file],
+          title: title,
+          text: text
+        });
+        mostrarToast("Compartido con éxito 📸", "success");
+        return;
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.warn('Error al compartir nativo:', err);
+        } else {
+          return; // Usuario canceló
+        }
+      }
+    }
+    
+    // Fallback: Descarga
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    mostrarToast("¡Imagen descargada! 📸", "success");
+  }
+
+  async function compartirComoImagen(boton) {
+    const ganadorActual = ganadorRescate || ganadorFinal;
+    if (!ganadorActual) return;
+    const btnOriginal = boton.textContent;
+    boton.disabled = true; boton.textContent = '⏳ Generando...';
+    
+    const shareBtn = boton;
+    const originalDisplay = shareBtn.style.display;
+    shareBtn.style.display = 'none';
+
+    try {
+      const originalCard = document.querySelector('.winner-card');
+      if (!originalCard) throw new Error('Card no encontrada');
+
+      // 🌟 FIX DEFINITIVO: Convertir imagen a Base64 para evitar Tainted Canvas
+      const imgElement = originalCard.querySelector('img');
+      let base64Img = '';
+      
+      if (imgElement && imgElement.src) {
+        try {
+          const busted = imgElement.src + (imgElement.src.includes('?') ? '&' : '?') + 'nocache=' + Date.now();
+          const resp = await fetch(busted, { mode: 'cors', cache: 'no-store' });
+          const blob = await resp.blob();
+          base64Img = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          });
+        } catch (e) {
+          console.warn('No se pudo convertir a base64, intentando sin fetch', e);
+        }
+      }
+
+      const clone = originalCard.cloneNode(true);
+      clone.style.animation = 'none'; 
+      clone.style.transform = 'none';
+      clone.style.position = 'fixed';
+      clone.style.top = '-9999px';
+      clone.style.display = 'flex';
+      
+      const clonedBtn = clone.querySelector('.share-btn');
+      if (clonedBtn) clonedBtn.remove();
+      
+      if (base64Img) {
+        const cloneImg = clone.querySelector('img');
+        if (cloneImg) cloneImg.src = base64Img;
+      }
+      
+      document.body.appendChild(clone);
+
+      const canvas = await html2canvas(clone, {
+        scale: 3,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: '#1a1c30'
+      });
+
+      document.body.removeChild(clone);
+
+      const filename = `axcend-ganador-${ganadorActual.replace(/\s+/g, '_')}-${Date.now()}.png`;
+      await compartirOExportarCanvas(canvas, filename, 'Ganador AXCEND', `¡${ganadorActual} ganó la votación!`, boton, btnOriginal);
+
+    } catch (err) {
+      console.error('Share fail:', err);
+      mostrarToast("No se pudo generar la imagen: " + (err.message || 'error desconocido'), "error");
+    } finally {
+      boton.disabled = false; boton.textContent = btnOriginal;
+      shareBtn.style.display = originalDisplay;
+    }
+  }
+
+  async function compartirResumenComoImagen(boton) {
+    const btnOriginal = boton.textContent;
+    boton.disabled = true; boton.textContent = '⏳ Generando...';
+    try {
+      const ganadorActual = ganadorRescate || ganadorFinal;
+      const esRescate = !!ganadorRescate;
+      const ranking = Object.entries(votosActuales)
+        .filter(([n]) => n === ganadorActual || !estaEnCd(n))
+        .map(([n, v]) => ({ nombre: n, votos: v || 0 }))
+        .filter(x => x.votos > 0 || x.nombre === ganadorActual)
+        .sort((a, b) => b.votos - a.votos);
+
+      if (ganadorActual) {
+        const idx = ranking.findIndex(r => r.nombre === ganadorActual);
+        if (idx > 0) { const [w] = ranking.splice(idx, 1); ranking.unshift(w); }
+      }
+      if (ranking.length === 0) throw new Error('No hay datos');
+
+      const maxVotos = Math.max(...ranking.map(r => r.votos), 1);
+      const W = 1200;
+      const rowH = 68;
+      const headerH = 260;
+      const footerH = 180; 
+      const H = headerH + ranking.length * rowH + footerH;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = W; canvas.height = H;
+      const ctx = canvas.getContext('2d');
+
+      const grad = ctx.createLinearGradient(0, 0, W, H);
+      grad.addColorStop(0, '#0f1020'); grad.addColorStop(0.5, '#1a1c30'); grad.addColorStop(1, '#0f1020');
+      ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+
+      ctx.fillStyle = 'rgba(245,197,66,0.12)';
+      for (let i = 0; i < 80; i++) {
+        const x = Math.random() * W, y = Math.random() * H, r = Math.random() * 2;
+        ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+      }
+
+      ctx.strokeStyle = '#f5c542'; ctx.lineWidth = 6;
+      ctx.strokeRect(20, 20, W - 40, H - 40);
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#f5c542';
+      ctx.font = 'bold 56px "Segoe UI", Arial, sans-serif';
+      ctx.shadowColor = 'rgba(245,197,66,0.6)'; ctx.shadowBlur = 20;
+      ctx.fillText('📊 RESULTADOS FINALES', W / 2, 100);
+      ctx.shadowBlur = 0;
+
+      ctx.fillStyle = '#9aa0b5';
+      ctx.font = '32px "Segoe UI", Arial, sans-serif';
+      const subtitulo = ganadorActual
+        ? (esRescate ? `🔥 Ganador: ${ganadorActual}` : (ganadorMetodo === 'rng' ? `🎲 Ganador por dados: ${ganadorActual}` : `🏆 Ganador: ${ganadorActual}`))
+        : 'Votación cerrada';
+      ctx.fillText(subtitulo, W / 2, 175);
+
+      ctx.strokeStyle = 'rgba(245,197,66,0.25)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(80, 215);
+      ctx.lineTo(W - 80, 215);
+      ctx.stroke();
+
+      let y = headerH;
+      const barX = 380;
+      const barW = 620;
+      const barH = 46;
+
+      ranking.forEach((r) => {
+        const esGanador = r.nombre === ganadorActual;
+
+        if (esGanador) {
+          ctx.textAlign = 'left';
+          ctx.font = '32px "Segoe UI", Arial, sans-serif';
+          ctx.fillStyle = '#f5c542';
+          ctx.fillText('👑', 40, y + barH / 2 + 12);
+        }
+
+        ctx.textAlign = 'right';
+        ctx.fillStyle = esGanador ? '#f5c542' : '#eee';
+        ctx.font = esGanador ? 'bold 28px "Segoe UI", Arial, sans-serif' : '26px "Segoe UI", Arial, sans-serif';
+        let nombre = r.nombre;
+        if (nombre.length > 20) nombre = nombre.slice(0, 19) + '…';
+        ctx.fillText(nombre, barX - 24, y + barH / 2 + 10);
+
+        ctx.fillStyle = 'rgba(0,0,0,0.4)';
+        ctx.fillRect(barX, y, barW, barH);
+
+        const pct = Math.max(0.05, r.votos / maxVotos);
+        const grad2 = ctx.createLinearGradient(barX, 0, barX + barW * pct, 0);
+        if (esGanador) {
+          grad2.addColorStop(0, '#f5c542'); grad2.addColorStop(0.5, '#ff9800'); grad2.addColorStop(1, '#e91e63');
+        } else {
+          grad2.addColorStop(0, 'rgba(245,197,66,0.65)'); grad2.addColorStop(1, 'rgba(255,152,0,0.5)');
+        }
+        ctx.fillStyle = grad2;
+        ctx.fillRect(barX, y, barW * pct, barH);
+
+        ctx.textAlign = 'left';
+        ctx.fillStyle = esGanador ? '#f5c542' : '#9aa0b5';
+        ctx.font = esGanador ? 'bold 26px "Segoe UI", Arial, sans-serif' : '24px "Segoe UI", Arial, sans-serif';
+        const votosLabel = esRescate && esGanador ? `${rescates[r.nombre] || 0}🔥` : `${r.votos}`;
+        ctx.fillText(votosLabel, barX + barW + 24, y + barH / 2 + 10);
+
+        y += rowH;
+      });
+
+      ctx.strokeStyle = 'rgba(245,197,66,0.25)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(80, H - 120);
+      ctx.lineTo(W - 80, H - 120);
+      ctx.stroke();
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(154,160,181,0.85)';
+      ctx.font = 'bold 28px "Segoe UI", Arial, sans-serif';
+      ctx.fillText('AXCEND - LATAM -', W / 2, H - 75);
+      ctx.font = '22px "Segoe UI", Arial, sans-serif';
+      const totalVotos = ranking.reduce((a, b) => a + b.votos, 0);
+      ctx.fillText(`${totalVotos} voto${totalVotos !== 1 ? 's' : ''} totales`, W / 2, H - 35);
+
+      const filename = `axcend-resumen-${Date.now()}.png`;
+      await compartirOExportarCanvas(canvas, filename, 'Resultados AXCEND', 'Resumen de la votación', boton, btnOriginal);
+
+    } catch (err) {
+      console.error('Share resumen fail:', err);
+      mostrarToast("No se pudo generar el resumen: " + (err.message || 'error desconocido'), "error");
+    } finally {
+      boton.disabled = false; boton.textContent = btnOriginal;
+    }
+  }
+  window.compartirResumenComoImagen = compartirResumenComoImagen;
+
+  window.abrirModalPrediccion = function() {
+    if (!usernameActual) { mostrarLoginModal(); return; }
+    if (votacionFinalizada()) { mostrarToast("La votación ya está cerrada. No puedes predecir.", "error"); return; }
+    if (prediccionesActuales[usernameActual] && prediccionesActuales[usernameActual].resetToken === resetToken) {
+      mostrarToast("Ya predijiste en esta ronda.", "error"); return;
+    }
+    personajeSeleccionadoPred = null;
+    document.getElementById("predSearch").value = "";
+    renderPredList();
+    document.getElementById("predConfirmBtn").disabled = true;
+    document.getElementById("modalPrediccion").classList.add("active");
+  };
+  window.cerrarModalPrediccion = function() {
+    document.getElementById("modalPrediccion").classList.remove("active");
+    personajeSeleccionadoPred = null;
+  };
+  window.filtrarPredList = function() { renderPredList(); };
+  function renderPredList() {
+    const q = (document.getElementById("predSearch").value || "").toLowerCase().trim();
+    const list = document.getElementById("predList");
+    const listFiltered = PERSONAJES.filter(p => coincideBusqueda(p.toLowerCase(), q));
+    list.innerHTML = listFiltered.map(p => {
+      const enCd = estaEnCd(p);
+      const cardOrig = [...document.querySelectorAll("#grid .card")].find(c => {
+        const b = c.querySelector(".vote-btn"); return b && b.dataset.vote === p;
+      });
+      const imgSrc = cardOrig ? cardOrig.querySelector("img").src : '';
+      const sel = p === personajeSeleccionadoPred ? ' selected' : '';
+      return `
+        <div class="pred-item${enCd ? ' en-cd' : ''}${sel}" data-personaje="${p}">
+          <img src="${imgSrc}" alt="${p}" loading="lazy">
+          <div class="pred-name">${p}</div>
+        </div>
+      `;
+    }).join('');
+    list.querySelectorAll('.pred-item').forEach(el => {
+      el.addEventListener('click', () => {
+        personajeSeleccionadoPred = el.dataset.personaje;
+        list.querySelectorAll('.pred-item').forEach(i => i.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById("predConfirmBtn").disabled = false;
+      });
+    });
+  }
+  window.confirmarPrediccion = async function() {
+    if (!personajeSeleccionadoPred || !usernameActual || !resetToken) return;
+    const btn = document.getElementById("predConfirmBtn");
+    btn.disabled = true; btn.textContent = "Guardando...";
+    try {
+      const predRef = ref(db, 'predicciones/' + usernameActual);
+      const tx = await runTransaction(predRef, (current) => {
+        if (current && current.resetToken === resetToken) return;
+        return { personaje: personajeSeleccionadoPred, fecha: Date.now(), resetToken };
+      });
+      if (!tx.committed) {
+        mostrarToast("Ya habías predicho en esta ronda.", "error");
+        cerrarModalPrediccion();
+        return;
+      }
+      await runTransaction(ref(db, `stats_usuarios/${usernameActual}/predicciones_totales`), (c) => (c || 0) + 1);
+      await agregarLog('admin', 'prediccion', `🔮 ${usernameOriginalActual} predijo que ganaría "${personajeSeleccionadoPred}"`,
+        { username: usernameActual, personaje: personajeSeleccionadoPred });
+      mostrarToast(`🔮 Predicción guardada: ${personajeSeleccionadoPred}`, "oracle");
+      cerrarModalPrediccion();
+      actualizarPrediccionRow();
+    } catch (e) {
+      mostrarToast("Error: " + e.message, "error");
+    } finally {
+      btn.disabled = false; btn.textContent = "Confirmar predicción";
+    }
+  };
+
+  function actualizarPrediccionRow() {
+    const row = document.getElementById("prediccionRow");
+    const btn = document.getElementById("btnPredecir");
+    if (!usernameActual) { row.style.display = "none"; return; }
+    row.style.display = "flex";
+    const miPred = prediccionesActuales[usernameActual];
+    const tienePredEstaRonda = miPred && miPred.resetToken === resetToken;
+    btn.classList.remove("done", "acierto");
+    if (votacionFinalizada() && tienePredEstaRonda && miPred.resuelta) {
+      if (miPred.acertada) {
+        btn.classList.add("acierto");
+        btn.innerHTML = `🔮 ¡Acertaste! Predijiste: ${miPred.personaje}`;
+      } else {
+        btn.classList.add("done");
+        btn.innerHTML = `❌ No acertaste (predijiste: ${miPred.personaje})`;
+      }
+      btn.onclick = null;
+    } else if (tienePredEstaRonda) {
+      btn.classList.add("done");
+      btn.innerHTML = `🔮 Tu predicción: ${miPred.personaje}`;
+      btn.onclick = null;
+    } else if (votacionFinalizada()) {
+      row.style.display = "none";
+    } else {
+      btn.innerHTML = `🔮 Predecir ganador`;
+      btn.onclick = () => abrirModalPrediccion();
+    }
+  }
+
+  async function verificarYResolverPredicciones() {
+    const ganador = ganadorRescate || ganadorFinal;
+    if (!ganador || !resetToken) return;
+    try {
+      const snap = await get(ref(db, 'predicciones'));
+      const preds = snap.val() || {};
+      const promises = [];
+      let procesadas = 0;
+      Object.entries(preds).forEach(([u, p]) => {
+        if (!p || p.resetToken !== resetToken) return;
+        if (p.resuelta === true) return;
+        procesadas++;
+        const acertada = p.personaje === ganador;
+        promises.push((async () => {
+          try {
+            const tx = await runTransaction(ref(db, `predicciones/${u}`), (cur) => {
+              if (!cur) return;
+              if (cur.resuelta === true) return;
+              return { ...cur, resuelta: true, acertada };
+            });
+            if (!tx.committed) return;
+            if (acertada) {
+              await runTransaction(ref(db, `stats_usuarios/${u}/predicciones_acertadas`), (c) => (c || 0) + 1);
+              const streakTx = await runTransaction(ref(db, `stats_usuarios/${u}/streak_actual`), (c) => (c || 0) + 1);
+              const nuevoStreak = streakTx.snapshot.val() || 1;
+              await runTransaction(ref(db, `stats_usuarios/${u}/streak_maximo`), (c) => Math.max(c || 0, nuevoStreak));
+            } else {
+              await set(ref(db, `stats_usuarios/${u}/streak_actual`), 0);
+            }
+          } catch (e) { console.warn('resolver pred fail:', u, e); }
+        })());
+      });
+      if (promises.length === 0) return;
+      await Promise.all(promises);
+      await set(ref(db, 'config/predicciones_resueltas_token'), resetToken);
+      await agregarLog('admin', 'predicciones_resueltas',
+        `🔮 Predicciones resueltas (ganador: ${ganador}, ${procesadas} procesadas)`,
+        { ganador, resetToken, procesadas });
+      renderBadges();
+      actualizarPrediccionRow();
+    } catch (e) { console.warn('resolver preds fail:', e); }
+  }
+
+  function calcularRescatistaTop() {
+    const arr = Object.entries(statsUsuarios).map(([u, s]) => ({ u, r: (s && s.rescates_emitidos) || 0 })).filter(x => x.r > 0);
+    if (arr.length === 0) return [];
+    const max = Math.max(...arr.map(x => x.r));
+    return arr.filter(x => x.r === max).map(x => x.u);
+  }
+
+  function esSubLider(roles, username) {
+    if (!roles || !roles.sublider || !username) return false;
+    const s = roles.sublider;
+    if (typeof s === 'string') return s === username;
+    if (typeof s === 'object') return !!s[username];
+    return false;
+  }
+
+  function calcularBadgesUsuario() {
+    if (!usernameActual) return [];
+    const badges = [];
+    const miStats = statsUsuarios[usernameActual] || {};
+    if (rolesActuales.lider === usernameActual) badges.push({ cls: 'lider', html: '👑 Líder', title: 'Líder del clan' });
+    if (esSubLider(rolesActuales, usernameActual)) badges.push({ cls: 'sublider', html: '⭐ Sublíder', title: 'Sublíder del clan' });
+
+    const primerVotoCount = miStats.primer_voto_ronda || 0;
+    if (primerVotoCount > 0) {
+      const esEstaRonda = primerVotanteConfig && primerVotanteConfig.resetToken === resetToken && primerVotanteConfig.username === usernameActual;
+      const titulo = esEstaRonda
+        ? `¡Eres el primero de esta ronda! (${primerVotoCount} en total)`
+        : `Has sido el primero en votar ${primerVotoCount} ${primerVotoCount === 1 ? 'vez' : 'veces'}`;
+      badges.push({ cls: 'primer-voto', html: `🌟 Primer voto${primerVotoCount > 1 ? ' x' + primerVotoCount : ''}`, title: titulo });
+    }
+
+    const topRescatistas = calcularRescatistaTop();
+    if (topRescatistas.includes(usernameActual) && (miStats.rescates_emitidos || 0) > 0) {
+      badges.push({ cls: 'rescatista', html: `🔥 Rescatista (${miStats.rescates_emitidos})`, title: 'El que más rescates ha emitido' });
+    }
+    if ((miStats.streak_actual || 0) >= 3) {
+      badges.push({ cls: 'racha', html: `🎯 Racha x${miStats.streak_actual}`, title: `¡${miStats.streak_actual} predicciones seguidas acertadas!` });
+    }
+    if ((miStats.predicciones_acertadas || 0) > 0) {
+      const n = miStats.predicciones_acertadas;
+      badges.push({ cls: 'oraculo', html: `🔮 Oráculo x${n}`, title: `${n} predicci${n === 1 ? 'ón acertada' : 'ones acertadas'}` });
+      badges.push({ cls: 'aciertos', html: `✅ Aciertos: ${n}`, title: `${n} acierto${n !== 1 ? 's' : ''} en total` });
+    }
+    return badges;
+  }
+
+  function checkNewBadges() {
+    if (!usernameActual) { prevBadgeStats = null; return; }
+    const stats = statsUsuarios[usernameActual] || {};
+    const current = {
+      oraculo: stats.predicciones_acertadas || 0,
+      racha: stats.streak_actual || 0,
+      primerVoto: stats.primer_voto_ronda || 0,
+      rescatista: stats.rescates_emitidos || 0
+    };
+    if (prevBadgeStats === null) { prevBadgeStats = current; return; }
+    if (current.oraculo > prevBadgeStats.oraculo) {
+      mostrarToast(`🔮 ¡Nueva medalla de Oráculo! Total: ${current.oraculo} acierto${current.oraculo !== 1 ? 's' : ''}`, 'oracle');
+    }
+    if (current.primerVoto > prevBadgeStats.primerVoto) {
+      mostrarToast(`🌟 ¡Eres el primer votante de la ronda! (${current.primerVoto} ${current.primerVoto === 1 ? 'vez' : 'veces'})`, 'badge');
+    }
+    if (current.racha >= 3 && current.racha > prevBadgeStats.racha) {
+      mostrarToast(`🎯 ¡Racha de ${current.racha} aciertos seguidos!`, 'oracle');
+    }
+    prevBadgeStats = current;
+  }
+
+  function renderBadges() {
+    const panel = document.getElementById('userPanel');
+    const avatar = document.getElementById('upAvatar');
+    const nameEl = document.getElementById('upName');
+    const badgesRow = document.getElementById('badgesRow');
+    const layout = document.getElementById('mainLayout');
+    if (!panel) return;
+
+    if (!usernameActual) {
+      panel.style.display = 'none';
+      if (layout) layout.classList.add('no-user');
+      prevBadgeStats = null;
+      return;
+    }
+    panel.style.display = 'flex';
+    if (layout) layout.classList.remove('no-user');
+
+    const nombreMostrar = usernameOriginalActual || usernameActual;
+    if (avatar) avatar.textContent = (nombreMostrar.charAt(0) || '?').toUpperCase();
+    if (nameEl) nameEl.textContent = nombreMostrar;
+
+    const badges = calcularBadgesUsuario();
+    if (badgesRow) {
+      if (badges.length > 0) {
+        badgesRow.style.display = 'flex';
+        badgesRow.innerHTML = badges.map(b => `<span class="badge-chip ${b.cls}" title="${b.title}">${b.html}</span>`).join('');
+      } else {
+        badgesRow.style.display = 'none';
+        badgesRow.innerHTML = '';
+      }
+    }
+
+    checkNewBadges();
+  }
+
   function actualizarAvisoEmpate() {
     const el = document.getElementById('empateAviso');
-    if (ganadorRescate || ganadorFinal || !votacionCerrada() || rngResultado) {
-      ocultarBannerEmpate(); return;
-    }
+    if (ganadorRescate || ganadorFinal || !votacionCerrada() || rngResultado) { ocultarBannerEmpate(); return; }
     const emp = obtenerEmpateLocal();
     if (!emp) { ocultarBannerEmpate(); return; }
     if (rngTriggerAt > 0) {
@@ -1165,9 +2551,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       el.classList.add('visible');
     }
   }
-  function ocultarBannerEmpate() {
-    document.getElementById('empateAviso').classList.remove('visible');
-  }
+  function ocultarBannerEmpate() { document.getElementById('empateAviso').classList.remove('visible'); }
 
   async function verificarAutoRng() {
     if (!votacionCerrada()) return;
@@ -1176,30 +2560,25 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     const emp = obtenerEmpateLocal();
     if (!emp) return;
     if (rngTriggerAt > 0) return;
-
     try {
       const tx = await runTransaction(ref(db, 'config/rng_trigger_at'), (current) => {
         if (current && current > 0) return;
         return Date.now() + 60000;
       });
       if (tx.committed) {
-        agregarLog('rng', 'programado',
-          `⏱ Desempate programado automáticamente (+60s) — Empate: ${emp.empatados.map(e => e.nombre).join(', ')}`,
+        agregarLog('rng', 'programado', `⏱ Desempate programado automáticamente (+60s) — Empate: ${emp.empatados.map(e => e.nombre).join(', ')}`,
           { empatados: emp.empatados.map(e => e.nombre), maxVotos: emp.maxVotos, triggerAt: tx.snapshot.val() });
         mostrarToast("⚖️ Empate detectado. Desempate por dados en 60 segundos.", "dice");
       }
-    } catch (e) { /* otro cliente se encargó */ }
+    } catch (e) {}
   }
 
   async function ejecutarRollRng() {
     const emp = obtenerEmpateLocal();
     if (!emp) { rngYaIntentado = false; return; }
-
     const rondas = [];
     let candidatos = emp.empatados.map(e => e.nombre);
-    let rondaNum = 0;
-    let ganador = null;
-
+    let rondaNum = 0; let ganador = null;
     while (candidatos.length > 1 && rondaNum < 10) {
       rondaNum++;
       const tiradas = {};
@@ -1211,15 +2590,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       candidatos = nuevosCandidatos;
     }
     ganador = candidatos[0] || emp.empatados[0].nombre;
-
-    const resultado = {
-      rondas, ganador,
-      empate: emp.empatados.map(e => e.nombre),
-      votosMax: emp.maxVotos,
-      fecha: Date.now(),
-      totalRondas: rondaNum
-    };
-
+    const resultado = { rondas, ganador, empate: emp.empatados.map(e => e.nombre), votosMax: emp.maxVotos, fecha: Date.now(), totalRondas: rondaNum };
     try {
       const tx = await runTransaction(ref(db, 'config/rng_resultado'), (current) => {
         if (current) return;
@@ -1228,32 +2599,17 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
       if (tx.committed) {
         await set(ref(db, 'config/ganador_final'), ganador);
         await set(ref(db, 'config/ganador_metodo'), 'rng');
-        await agregarLog('rng', 'resuelto',
-          `🎲 Desempate por dados: ganador "${ganador}" tras ${rondaNum} ronda(s)`,
+        await agregarLog('rng', 'resuelto', `🎲 Desempate por dados: ganador "${ganador}" tras ${rondaNum} ronda(s)`,
           { rondas, ganador, empatados: emp.empatados.map(e => e.nombre), votosMax: emp.maxVotos });
         if (!votacionCerrada()) await set(ref(db, 'config/fin_votacion'), Date.now() - 1);
-
-        // Auto-CD del ganador por RNG (si aplica)
         if (autoCdActivo) {
-          const ahora = Date.now();
-          const hasta = ahora + cdDiasConfig * 24 * 60 * 60 * 1000;
-          await set(ref(db, `cooldowns/${ganador}`), {
-            activo: true,
-            desde: ahora,
-            hasta,
-            motivo: "Auto-CD al ganar por RNG"
-          });
-          await agregarLog('cd', 'auto_aplicado',
-            `⏳ Auto-CD de ${cdDiasConfig} días aplicado a "${ganador}" (ganador por RNG)`,
+          const ahora = Date.now(); const hasta = ahora + cdDiasConfig * 24 * 60 * 60 * 1000;
+          await set(ref(db, `cooldowns/${ganador}`), { activo: true, desde: ahora, hasta, motivo: "Auto-CD al ganar por RNG" });
+          await agregarLog('cd', 'auto_aplicado', `⏳ Auto-CD de ${cdDiasConfig} días aplicado a "${ganador}" (ganador por RNG)`,
             { personaje: ganador, dias: cdDiasConfig, hasta });
         }
-      } else {
-        rngYaIntentado = false;
-      }
-    } catch (e) {
-      console.error("Error al ejecutar RNG:", e);
-      rngYaIntentado = false;
-    }
+      } else { rngYaIntentado = false; }
+    } catch (e) { rngYaIntentado = false; }
   }
 
   setInterval(() => {
@@ -1272,24 +2628,19 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
   async function animarDados(resultado) {
     if (rngAnimacionEnCurso) return;
     rngAnimacionEnCurso = true;
-
     const overlay = document.getElementById('diceOverlay');
     const grid = document.getElementById('diceGrid');
     const roundInfo = document.getElementById('diceRoundInfo');
     const status = document.getElementById('diceStatus');
-
     overlay.classList.add('active');
     status.className = "dice-status";
-
     const totalRondas = resultado.rondas.length;
-
     for (let i = 0; i < totalRondas; i++) {
       const ronda = resultado.rondas[i];
       roundInfo.textContent = `Ronda ${ronda.ronda} / ${totalRondas}`;
       status.textContent = `Tirando dados...`;
       status.className = "dice-status";
       grid.innerHTML = '';
-
       const diceElements = {};
       ronda.candidatos.forEach(c => {
         const die = document.createElement('div');
@@ -1298,7 +2649,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
         grid.appendChild(die);
         diceElements[c] = die;
       });
-
       const rollDuration = 1800;
       const startTime = Date.now();
       await new Promise(resolve => {
@@ -1309,33 +2659,23 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
           });
         }, 70);
       });
-
       ronda.candidatos.forEach(c => {
         diceElements[c].classList.remove('rolling');
         diceElements[c].querySelector('.die-face').textContent = ronda.tiradas[c];
       });
-
       const maxRoll = Math.max(...Object.values(ronda.tiradas));
       const winnersThisRound = ronda.candidatos.filter(c => ronda.tiradas[c] === maxRoll);
       const losers = ronda.candidatos.filter(c => ronda.tiradas[c] !== maxRoll);
-
       losers.forEach(c => diceElements[c].classList.add('eliminated'));
       winnersThisRound.forEach(c => diceElements[c].classList.add('winner'));
-
-      if (winnersThisRound.length === 1) {
-        status.textContent = `🏆 ¡${winnersThisRound[0]} gana la ronda!`;
-      } else {
-        status.textContent = `Empate en tirada: ${winnersThisRound.join(', ')}. Nueva ronda...`;
-      }
-
+      if (winnersThisRound.length === 1) status.textContent = `🏆 ¡${winnersThisRound[0]} gana la ronda!`;
+      else status.textContent = `Empate en tirada: ${winnersThisRound.join(', ')}. Nueva ronda...`;
       await new Promise(r => setTimeout(r, winnersThisRound.length === 1 ? 1700 : 1200));
     }
-
     roundInfo.textContent = `🎲 RESULTADO FINAL 🎲`;
     status.className = "dice-status winner-text";
     status.innerHTML = `🏆 ¡Ganador: ${resultado.ganador}! 🏆`;
     dispararConfeti();
-
     await new Promise(r => setTimeout(r, 3500));
     overlay.classList.remove('active');
     rngAnimacionEnCurso = false;
@@ -1354,7 +2694,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
         if (!badge) { badge = document.createElement('div'); badge.className = 'votos-badge'; card.insertBefore(badge, btn); }
         badge.textContent = '🗳 ' + cantidad + ' voto' + (cantidad !== 1 ? 's' : '');
       });
-      aplicarRanking(); actualizarAvisoEmpate();
+      aplicarRanking(); actualizarAvisoEmpate(); renderChart();
     });
     onValue(ref(db, 'votantes'), () => actualizarContadorVotantes());
   }
@@ -1362,17 +2702,23 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
   function construirWinnerCard(card, variante, badgeTexto) {
     const clone = card.cloneNode(true);
     clone.className = "winner-card" + (variante ? " " + variante : "");
-    // FIX: forzar visible aunque la tarjeta original esté oculta por CD
     clone.style.removeProperty('display');
     delete clone.dataset.ocultaPorCd;
+    clone.classList.remove('vote-stamp', 'vote-pop', 'vote-pop-rescue');
+    
+    const oldBadge = clone.querySelector('.votos-badge');
+    if (oldBadge) oldBadge.remove();
+
     if (badgeTexto) {
       const badge = document.createElement("div");
       badge.className = "votos-badge"; badge.textContent = badgeTexto; clone.appendChild(badge);
     }
+    const shareBtn = document.createElement("button");
+    shareBtn.className = "share-btn"; shareBtn.textContent = "📸 Compartir";
+    shareBtn.addEventListener("click", function(e) { e.stopPropagation(); compartirComoImagen(this); });
+    clone.appendChild(shareBtn);
     clone.querySelector("img").addEventListener("click", function() {
-      document.getElementById("lb-img").src = this.src;
-      document.getElementById("lb-name").textContent = this.alt;
-      document.getElementById("lightbox").classList.add("active");
+      lightboxImages = [this]; lightboxIndex = 0; abrirLightbox();
     });
     return clone;
   }
@@ -1387,7 +2733,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
     cards.forEach(c => c.classList.remove("winner"));
     winnerContainer.innerHTML = "";
     winnerContainer.classList.remove("visible");
-
     if (ganadorRescate) {
       const card = encontrarCardPorNombre(cards, ganadorRescate);
       if (card) {
@@ -1396,8 +2741,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
         const clone = construirWinnerCard(card, "rescue-winner", `🔥 ${r} / ${umbral} rescates`);
         winnerContainer.appendChild(clone); winnerContainer.classList.add("visible");
         if (!sessionStorage.getItem('confetti_rescate')) {
-          sessionStorage.setItem('confetti_rescate', '1');
-          setTimeout(dispararConfeti, 500);
+          sessionStorage.setItem('confetti_rescate', '1'); setTimeout(dispararConfeti, 500);
         }
       }
       return;
@@ -1427,8 +2771,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
           const clone = construirWinnerCard(card, "", `🗳 ${top.votos} voto${top.votos !== 1 ? 's' : ''}`);
           winnerContainer.appendChild(clone); winnerContainer.classList.add("visible");
           if (!sessionStorage.getItem('confetti_ganador')) {
-            sessionStorage.setItem('confetti_ganador', '1');
-            setTimeout(dispararConfeti, 500);
+            sessionStorage.setItem('confetti_ganador', '1'); setTimeout(dispararConfeti, 500);
           }
         }
       }
@@ -1448,7 +2791,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
 
   usernameActual = getUsername();
   usernameOriginalActual = getUsernameOriginal();
-  if (!usernameActual) mostrarLoginModal();
+  if (!usernameActual) { actualizarBotonLogin(); mostrarLoginModal(); }
   else { iniciarListenerUsuario(); actualizarHeaderUsuario(); }
 
   cargarConfig();
