@@ -17,14 +17,16 @@
 :root{--bg:#0f1020;--card:#1a1c30;--text:#eee;--accent:#f5c542;--sub:#9aa0b5;--border:#2a2d45}
 body.light{--bg:#f2f3f7;--card:#ffffff;--text:#1a1c30;--accent:#d4a017;--sub:#555;--border:#e0e0e8}
 *{box-sizing:border-box}
-body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;transition:.3s}
+html,body{margin:0;padding:0}
+body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:20px;transition:.3s}
 
 .theme-toggle{position:fixed;top:14px;right:14px;width:42px;height:42px;border-radius:50%;background:var(--card);color:var(--text);border:1px solid var(--border);cursor:pointer;font-size:20px;z-index:50;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.35);transition:.2s;padding:0;line-height:1}
 .theme-toggle:hover{transform:scale(1.08);filter:brightness(1.15);border-color:var(--accent)}
 .theme-toggle:active{transform:scale(.95)}
 @media(max-width:600px){.theme-toggle{width:36px;height:36px;font-size:17px;top:8px;right:8px}}
 
-#login{display:flex;flex-direction:column;gap:16px;max-width:400px;width:100%;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center}
+/* LOGIN */
+#login{display:flex;flex-direction:column;gap:16px;max-width:400px;width:100%;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center;margin:60px auto}
 #login.hidden{display:none}
 #login h1{margin:0;color:var(--accent);font-size:22px}
 #login p{color:var(--sub);font-size:14px;margin:0}
@@ -33,18 +35,50 @@ body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:v
 #login button{padding:14px;border-radius:10px;border:none;background:var(--accent);color:#1a1c30;font-weight:700;font-size:15px;cursor:pointer;transition:.2s}
 #login button:hover{filter:brightness(1.1)}
 #loginMsg{color:#ff5c5c;font-size:13px;min-height:18px}
-#admin{display:none;width:100%;max-width:760px}
+
+/* ADMIN LAYOUT (3 columnas) */
+#admin{display:none;width:100%;max-width:1720px;margin:0 auto}
 #admin.visible{display:block}
-.panel{background:var(--card);border:2px solid var(--accent);border-radius:16px;padding:24px;max-height:92vh;overflow-y:auto}
-.panel h2{margin:0 0 8px;color:var(--accent);text-align:center;font-size:22px}
-.panel .sub{text-align:center;color:var(--sub);font-size:12px;margin:0 0 20px}
-.section{margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.admin-topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 22px;background:var(--card);border:2px solid var(--accent);border-radius:16px;margin-bottom:16px;flex-wrap:wrap;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.admin-topbar h1{margin:0;color:var(--accent);font-size:20px;letter-spacing:1.5px;font-weight:800}
+.admin-topbar-status{font-size:12px;color:#4CAF50;font-weight:700;letter-spacing:.5px}
+.admin-topbar-status::before{content:"● ";color:#4CAF50;animation:pulseDot 1.5s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.35}}
+
+.admin-layout{display:grid;grid-template-columns:340px 1fr 380px;gap:16px;align-items:start}
+@media(max-width:1600px){.admin-layout{grid-template-columns:320px 1fr 340px}}
+@media(max-width:1400px){
+  .admin-layout{grid-template-columns:1fr 1fr}
+  .panel-centro{grid-column:1/-1;order:-1}
+}
+@media(max-width:900px){
+  .admin-layout{grid-template-columns:1fr}
+  .panel-centro{grid-column:auto;order:0}
+}
+
+.panel{background:var(--card);border:2px solid var(--accent);border-radius:16px;padding:20px;max-height:calc(100vh - 140px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.panel::-webkit-scrollbar{width:8px}
+.panel::-webkit-scrollbar-track{background:transparent}
+.panel::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.panel::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+.panel h2{margin:0 0 8px;color:var(--accent);text-align:center;font-size:18px;letter-spacing:1px}
+.panel .sub{text-align:center;color:var(--sub);font-size:12px;margin:0 0 16px}
+
+.panel-izq{border-color:var(--accent)}
+.panel-centro{border-color:#ff9800}
+.panel-der{border-color:#a855f7}
+
+.panel-izq h2{color:var(--accent)}
+.panel-centro h2{color:#ff9800}
+.panel-der h2{color:#a855f7}
+
+.section{margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border)}
 .section:last-child{border-bottom:none;padding-bottom:0;margin-bottom:0}
-.section h3{font-size:13px;color:var(--sub);text-transform:uppercase;letter-spacing:1px;margin:0 0 12px}
-.section h4{font-size:12px;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;margin:14px 0 8px}
-.section p{margin:6px 0;font-size:14px}
+.section h3{font-size:12px;color:var(--sub);text-transform:uppercase;letter-spacing:1px;margin:0 0 10px}
+.section h4{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;margin:14px 0 8px}
+.section p{margin:6px 0;font-size:13px}
 .section p span{color:var(--accent);font-weight:700}
-.btn{display:block;width:100%;padding:12px;border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:10px;font-weight:600;cursor:pointer;font-size:14px;margin-bottom:8px;transition:.2s;text-align:left;font-family:inherit}
+.btn{display:block;width:100%;padding:11px;border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:10px;font-weight:600;cursor:pointer;font-size:13px;margin-bottom:8px;transition:.2s;text-align:left;font-family:inherit}
 .btn:hover{border-color:var(--accent);background:var(--card)}
 .btn-danger{border-color:#ff5c5c;color:#ff5c5c}
 .btn-danger:hover{background:#3a1a1a}
@@ -52,69 +86,156 @@ body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:v
 .btn-warn:hover{background:#3a2410}
 .btn-purple{border-color:#a855f7;color:#a855f7}
 .btn-purple:hover{background:#2a1a3a}
-label{display:block;font-size:13px;color:var(--sub);margin:10px 0 6px}
-input[type="text"],input[type="number"],input[type="datetime-local"]{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;margin-bottom:8px;outline:none;color-scheme:dark;font-family:inherit}
+.btn-success{border-color:#4CAF50;color:#4CAF50}
+.btn-success:hover{background:rgba(76,175,80,.15)}
+label{display:block;font-size:12px;color:var(--sub);margin:10px 0 6px}
+input[type="text"],input[type="number"],input[type="datetime-local"]{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;margin-bottom:8px;outline:none;color-scheme:dark;font-family:inherit}
 body.light input{color-scheme:light}
 input:focus{border-color:var(--accent)}
 .status-ok{color:#4CAF50}
 .status-no{color:#ff5c5c}
 .status-purple{color:#a855f7}
+.status-warn{color:#ff9800}
 
 .toggle-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;margin:8px 0 12px;transition:.2s;user-select:none}
 .toggle-row:hover{border-color:var(--accent)}
 .toggle-row input[type="checkbox"]{accent-color:#ff9800;width:16px;height:16px;cursor:pointer;flex-shrink:0;margin:0}
 .toggle-row span{color:var(--text);font-weight:600}
 
-.cd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
-.cd-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;transition:.2s;user-select:none}
+.toggle-mant{display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(255,152,0,.08);border:2px solid #ff9800;border-radius:10px;cursor:pointer;font-size:13px;margin:8px 0 12px;transition:.2s;user-select:none}
+.toggle-mant:hover{background:rgba(255,152,0,.15)}
+.toggle-mant input[type="checkbox"]{accent-color:#ff9800;width:20px;height:20px;cursor:pointer;flex-shrink:0;margin:0}
+.toggle-mant span{color:var(--text);font-weight:700;flex:1}
+.toggle-mant .mant-status{font-size:11px;padding:3px 10px;border-radius:10px;font-weight:800;white-space:nowrap}
+.toggle-mant .mant-status.on{background:#ff9800;color:#1a1c30}
+.toggle-mant .mant-status.off{background:var(--border);color:var(--sub)}
+
+.cd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px}
+.cd-item{display:flex;align-items:center;gap:8px;padding:7px 9px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:12px;cursor:pointer;transition:.2s;user-select:none}
 .cd-item:hover{border-color:var(--accent)}
-.cd-item input[type="checkbox"]{accent-color:#ff9800;width:16px;height:16px;cursor:pointer;flex-shrink:0}
+.cd-item input[type="checkbox"]{accent-color:#ff9800;width:14px;height:14px;cursor:pointer;flex-shrink:0;margin:0}
 .cd-item .nombre{flex:1;word-break:break-word}
 
 .cd-activos-list{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg);padding:6px}
-.cd-activo-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:var(--card);border-left:3px solid #ff9800;border-radius:6px;padding:9px 11px;font-size:13px}
+.cd-activo-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:var(--card);border-left:3px solid #ff9800;border-radius:6px;padding:9px 11px;font-size:12px}
 .cd-activo-item .cda-info{display:flex;flex-direction:column;gap:3px;min-width:0}
-.cd-activo-item .cda-name{font-weight:700;color:var(--text);font-size:13px;word-break:break-word}
+.cd-activo-item .cda-name{font-weight:700;color:var(--text);font-size:12px;word-break:break-word}
 .cd-activo-item .cda-meta{font-size:11px;color:#ff9800;font-variant-numeric:tabular-nums;font-weight:600}
 .cd-activo-item .cda-progress{font-size:11px;color:var(--sub)}
 .cd-activo-item .cda-progress b{color:#ff9800}
-.cd-activo-item .cda-liberar{background:transparent;border:1px solid #4CAF50;color:#4CAF50;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px;font-family:inherit;font-weight:700;transition:.2s;white-space:nowrap;align-self:center;line-height:1}
+.cd-activo-item .cda-liberar{background:transparent;border:1px solid #4CAF50;color:#4CAF50;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:11px;font-family:inherit;font-weight:700;transition:.2s;white-space:nowrap;align-self:center;line-height:1}
 .cd-activo-item .cda-liberar:hover{background:rgba(76,175,80,.15)}
 
-.rescate-info{font-size:12px;color:var(--sub);margin-top:8px;padding:8px;background:var(--bg);border-radius:6px;border-left:3px solid #ff9800}
+.backups-list{display:flex;flex-direction:column;gap:6px;max-height:340px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg);padding:6px}
+.backup-item{background:var(--card);border-left:3px solid #4CAF50;border-radius:6px;padding:9px 11px;font-size:11px;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+.backup-item .bi-info{display:flex;flex-direction:column;gap:3px;min-width:0}
+.backup-item .bi-titulo{font-weight:700;color:var(--text);font-size:12px;word-break:break-word;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.backup-item .bi-tipo{padding:2px 8px;border-radius:8px;font-size:10px;font-weight:800;letter-spacing:.3px}
+.backup-item .bi-tipo.reset{background:rgba(255,92,92,.15);color:#ff5c5c;border:1px solid rgba(255,92,92,.4)}
+.backup-item .bi-tipo.reiniciar{background:rgba(255,152,0,.15);color:#ff9800;border:1px solid rgba(255,152,0,.4)}
+.backup-item .bi-meta{font-size:10px;color:var(--sub);font-variant-numeric:tabular-nums}
+.backup-item .bi-actions{display:flex;gap:6px;flex-shrink:0}
+.backup-item .bi-btn{padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;transition:.2s;white-space:nowrap;font-family:inherit;border:1px solid}
+.backup-item .bi-btn.restore{border-color:#4CAF50;color:#4CAF50;background:transparent}
+.backup-item .bi-btn.restore:hover{background:rgba(76,175,80,.15)}
+.backup-item .bi-btn.delete{border-color:#ff5c5c;color:#ff5c5c;background:transparent}
+.backup-item .bi-btn.delete:hover{background:#3a1a1a}
+.backups-empty{text-align:center;color:var(--sub);padding:20px;font-style:italic;font-size:12px}
+
+.badge-mini{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:800;margin-left:6px;letter-spacing:.3px;vertical-align:middle}
+.badge-mini.lider{background:linear-gradient(135deg,rgba(245,197,66,.25),rgba(255,152,0,.15));color:var(--accent);border:1px solid rgba(245,197,66,.5)}
+.badge-mini.sublider{background:rgba(154,160,181,.15);color:#c0c0d0;border:1px solid rgba(154,160,181,.5)}
+.badge-mini.rescatista{background:rgba(255,152,0,.15);color:#ff9800;border:1px solid rgba(255,152,0,.5)}
+.badge-mini.oraculo{background:rgba(168,85,247,.15);color:#a855f7;border:1px solid rgba(168,85,247,.5)}
+.badge-mini.racha{background:rgba(76,175,80,.15);color:#4CAF50;border:1px solid rgba(76,175,80,.5)}
+.badge-mini.primer-voto{background:rgba(245,197,66,.12);color:#f5c542;border:1px solid rgba(245,197,66,.4)}
+.badge-mini.pin{background:rgba(6,182,212,.15);color:#06b6d4;border:1px solid rgba(6,182,212,.5)}
+
+.rol-row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;margin-bottom:8px}
+.rol-row input{margin-bottom:0}
+.rol-row button{padding:10px 14px;background:var(--accent);color:#1a1c30;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:12px;white-space:nowrap;font-family:inherit;transition:.2s}
+.rol-row button:hover{filter:brightness(1.1)}
+.btn-quitar-rol{background:transparent!important;border:1px solid #ff5c5c!important;color:#ff5c5c!important;padding:10px 12px!important;font-size:14px!important;line-height:1;flex-shrink:0;min-width:40px}
+.btn-quitar-rol:hover{background:#3a1a1a!important;filter:none!important}
+.btn-quitar-rol:disabled{opacity:.35;cursor:not-allowed}
+.btn-quitar-rol:disabled:hover{background:transparent!important}
+.rol-info{font-size:11px;color:var(--sub);margin-bottom:14px;padding:8px 10px;background:var(--bg);border-radius:6px;border-left:3px solid var(--accent)}
+.rol-info.activo{border-left-color:#4CAF50;color:var(--text)}
+.rol-info.activo strong{color:var(--accent)}
+.rol-info.vacio{border-left-color:var(--border);font-style:italic}
+
+.sublideres-list{display:flex;flex-direction:column;gap:6px;margin-top:6px;max-height:240px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg);padding:6px}
+.sublider-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:var(--card);border-left:3px solid #c0c0d0;border-radius:6px;padding:9px 11px;font-size:12px}
+.sublider-item .si-name{font-weight:700;color:var(--text);word-break:break-word;font-size:12px}
+.sublider-item .si-name .si-meta{font-weight:400;color:var(--sub);font-size:11px;margin-left:6px}
+.sublider-item .si-del{background:transparent;border:1px solid #ff5c5c;color:#ff5c5c;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:11px;font-family:inherit;font-weight:700;transition:.2s;white-space:nowrap;align-self:center;line-height:1}
+.sublider-item .si-del:hover{background:#3a1a1a}
+.sublideres-empty{font-size:11px;color:var(--sub);text-align:center;padding:16px 10px;font-style:italic}
+
+.usuarios-pin-list{display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg);padding:6px}
+.usuario-pin-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:var(--card);border-left:3px solid #06b6d4;border-radius:6px;padding:9px 11px;font-size:12px}
+.usuario-pin-item .upi-info{display:flex;flex-direction:column;gap:3px;min-width:0}
+.usuario-pin-item .upi-name{font-weight:700;color:var(--text);word-break:break-word;font-size:12px}
+.usuario-pin-item .upi-name .upi-meta{font-weight:400;color:var(--sub);font-size:11px;margin-left:6px}
+.usuario-pin-item .upi-fecha{font-size:10px;color:var(--sub);font-variant-numeric:tabular-nums;opacity:.75}
+.usuario-pin-item .upi-btn-reset{background:transparent;border:1px solid #ff5c5c;color:#ff5c5c;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:11px;font-family:inherit;font-weight:700;transition:.2s;white-space:nowrap;align-self:center;line-height:1}
+.usuario-pin-item .upi-btn-reset:hover{background:#3a1a1a}
+.usuarios-pin-empty{font-size:12px;color:var(--sub);text-align:center;padding:20px 10px;font-style:italic}
+.usuarios-pin-counter{font-size:11px;color:var(--sub);text-align:center;margin-top:6px;font-weight:600}
+.usuarios-pin-counter b{color:#06b6d4}
+
+.pred-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.pred-stat-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
+.pred-stat-box .psb-value{font-size:22px;font-weight:800;color:#a855f7;line-height:1.1;font-variant-numeric:tabular-nums}
+.pred-stat-box .psb-label{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-top:2px}
+
+.predicciones-list{max-height:340px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg);padding:6px}
+.pred-item-admin{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:var(--card);border-left:3px solid #a855f7;border-radius:6px;padding:8px 10px;margin-bottom:6px;font-size:11px}
+.pred-item-admin:last-child{margin-bottom:0}
+.pred-item-admin.acertada{border-left-color:#4CAF50;background:linear-gradient(90deg,rgba(76,175,80,.08),var(--card))}
+.pred-item-admin.fallada{border-left-color:#ff5c5c}
+.pred-item-admin .pa-info{display:flex;flex-direction:column;gap:3px;min-width:0}
+.pred-item-admin .pa-name{font-weight:700;color:var(--text);font-size:12px;word-break:break-word}
+.pred-item-admin .pa-pred{font-size:11px;color:var(--sub)}
+.pred-item-admin .pa-pred b{color:#a855f7;font-weight:800}
+.pred-item-admin.acertada .pa-pred b{color:#4CAF50}
+.pred-item-admin .pa-fecha{font-size:10px;color:var(--sub);font-variant-numeric:tabular-nums;opacity:.7}
+.pred-item-admin .pa-result{font-size:11px;font-weight:800;padding:4px 10px;border-radius:10px;white-space:nowrap;align-self:center}
+.pa-result.acierto{background:rgba(76,175,80,.15);color:#4CAF50;border:1px solid rgba(76,175,80,.4)}
+.pa-result.fallo{background:rgba(255,92,92,.15);color:#ff5c5c;border:1px solid rgba(255,92,92,.4)}
+.pa-result.pendiente{background:rgba(168,85,247,.15);color:#a855f7;border:1px solid rgba(168,85,247,.4)}
 
 .personas-list{max-height:340px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg);padding:6px}
-.persona-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:var(--card);border-left:3px solid var(--accent);border-radius:6px;padding:9px 11px;margin-bottom:6px;font-size:13px}
+.persona-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:var(--card);border-left:3px solid var(--accent);border-radius:6px;padding:9px 11px;margin-bottom:6px;font-size:12px}
 .persona-item.rescate-item{border-left-color:#ff9800}
 .persona-item:last-child{margin-bottom:0}
 .persona-item .p-info{display:flex;flex-direction:column;gap:3px;min-width:0}
-.persona-item .p-name{font-weight:700;color:var(--text);word-break:break-word;font-size:13px}
+.persona-item .p-name{font-weight:700;color:var(--text);word-break:break-word;font-size:12px}
 .persona-item .p-name .p-meta{font-weight:400;color:var(--sub);font-size:11px;margin-left:6px}
-
-.p-vote{font-size:12px;color:var(--sub);display:inline-block;padding:2px 6px;margin-left:-6px;border-radius:6px;cursor:pointer;transition:background .2s;user-select:none;max-width:100%;line-height:1.4;word-break:break-word}
+.p-vote{font-size:11px;color:var(--sub);display:inline-block;padding:2px 6px;margin-left:-6px;border-radius:6px;cursor:pointer;transition:background .2s;user-select:none;max-width:100%;line-height:1.4;word-break:break-word}
 .p-vote:hover{background:rgba(245,197,66,.08)}
 .persona-item.rescate-item .p-vote:hover{background:rgba(255,152,0,.08)}
-.p-vote .p-vote-blurred{display:inline;color:var(--accent);font-weight:700;filter:blur(6px);user-select:none;transition:filter .3s ease;vertical-align:middle;word-break:break-word}
+.p-vote .p-vote-blurred{display:inline-block;color:var(--accent);font-weight:700;vertical-align:middle;word-break:break-word;user-select:none;transition:.3s;letter-spacing:2px;opacity:.6}
+.p-vote .p-vote-blurred::before{content:"████████████"}
 .persona-item.rescate-item .p-vote .p-vote-blurred{color:#ff9800}
-.p-vote.revealed .p-vote-blurred{filter:none;user-select:text}
-
+.p-vote.revealed .p-vote-blurred{user-select:text;opacity:1;letter-spacing:normal;font-weight:800}
+.p-vote.revealed .p-vote-blurred::before{content:attr(data-real);word-break:break-word;letter-spacing:normal}
 .persona-item .p-fecha{font-size:10px;color:var(--sub);font-variant-numeric:tabular-nums;opacity:.75}
-.persona-item .p-del{background:transparent;border:1px solid #ff5c5c;color:#ff5c5c;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px;font-family:inherit;font-weight:700;transition:.2s;white-space:nowrap;align-self:center;line-height:1}
+.persona-item .p-del{background:transparent;border:1px solid #ff5c5c;color:#ff5c5c;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:11px;font-family:inherit;font-weight:700;transition:.2s;white-space:nowrap;align-self:center;line-height:1}
 .persona-item .p-del:hover{background:#3a1a1a}
 .personas-empty{font-size:12px;color:var(--sub);text-align:center;padding:20px 10px;font-style:italic}
-.personas-counter{font-size:12px;color:var(--sub);text-align:center;margin-top:6px;font-weight:600}
+.personas-counter{font-size:11px;color:var(--sub);text-align:center;margin-top:6px;font-weight:600}
 .personas-counter b{color:var(--accent)}
 .personas-counter b.resc{color:#ff9800}
 
-#sectionEmpate{border:2px solid #a855f7;border-radius:12px;padding:16px;background:rgba(168,85,247,.06);margin-bottom:20px;box-shadow:0 0 20px rgba(168,85,247,.15)}
+#sectionEmpate{border:2px solid #a855f7;border-radius:12px;padding:14px;background:rgba(168,85,247,.06);margin-bottom:18px;box-shadow:0 0 20px rgba(168,85,247,.15)}
 #sectionEmpate h3{color:#a855f7;margin-top:0}
 #sectionEmpate p{color:var(--text)}
-.empate-lista{margin:8px 0;padding:10px;background:var(--bg);border-radius:8px;font-size:13px}
+.empate-lista{margin:8px 0;padding:10px;background:var(--bg);border-radius:8px;font-size:12px}
 .empate-lista .emp-nombre{color:#a855f7;font-weight:800}
 .empate-lista .emp-votos{color:var(--sub);font-size:11px;margin-left:6px}
-.empate-estado{font-size:12px;color:var(--sub);margin:8px 0;padding:8px;background:rgba(0,0,0,.2);border-radius:6px;text-align:center;font-weight:600}
+.empate-estado{font-size:11px;color:var(--sub);margin:8px 0;padding:8px;background:rgba(0,0,0,.2);border-radius:6px;text-align:center;font-weight:600}
 
-/* --- ESTADÍSTICAS --- */
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
 @media(max-width:600px){.stats-grid{grid-template-columns:1fr 1fr}}
 .stat-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center}
@@ -122,20 +243,13 @@ input:focus{border-color:var(--accent)}
 .stat-value{font-size:24px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.1}
 .stat-value small{font-size:13px;color:var(--sub);font-weight:600}
 .stat-label{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-top:2px}
-
 .stat-winner{background:linear-gradient(135deg,rgba(245,197,66,.1),rgba(255,152,0,.05));border:1px solid var(--accent);border-radius:8px;padding:12px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .stat-winner.resc{border-color:#ff9800;background:linear-gradient(135deg,rgba(255,152,0,.1),rgba(245,197,66,.05))}
 .stat-winner-name{font-weight:800;color:var(--text);font-size:14px;word-break:break-word}
 .stat-winner-count{font-weight:800;color:var(--accent);font-size:12px;background:rgba(245,197,66,.15);padding:4px 10px;border-radius:12px;white-space:nowrap;border:1px solid rgba(245,197,66,.3)}
 .stat-winner.resc .stat-winner-count{color:#ff9800;background:rgba(255,152,0,.15);border-color:rgba(255,152,0,.3)}
 
-.stat-metodos{display:flex;flex-direction:column;gap:4px;margin-bottom:14px}
-.stat-metodo{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:12px}
-.stat-metodo-icon{font-size:16px;flex-shrink:0}
-.stat-metodo-label{flex:1;color:var(--sub);font-weight:600}
-.stat-metodo-count{font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}
-
-.historial-list{display:flex;flex-direction:column;gap:4px;max-height:320px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg);padding:6px}
+.historial-list{display:flex;flex-direction:column;gap:4px;max-height:400px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg);padding:6px}
 .historial-item{display:grid;grid-template-columns:72px 1fr auto;gap:8px;align-items:center;background:var(--card);border-radius:6px;padding:8px 10px;font-size:12px}
 @media(max-width:600px){.historial-item{grid-template-columns:60px 1fr;font-size:11px}.historial-item .hi-metodo{grid-column:1/-1;justify-self:flex-start;margin-top:2px;font-size:10px}}
 .hi-fecha{font-size:10px;color:var(--sub);font-variant-numeric:tabular-nums;font-weight:600}
@@ -181,133 +295,239 @@ input:focus{border-color:var(--accent)}
 </div>
 
 <div id="admin">
-  <div class="panel">
-    <h2>🔧 Panel de Admin</h2>
-    <p class="sub">Sesión activa</p>
+  <div class="admin-topbar">
+    <h1>🔧 AXCEND · Panel de Admin</h1>
+    <span class="admin-topbar-status">Sesión activa</span>
+  </div>
 
-    <div class="section">
-      <h3>Estado</h3>
-      <p>Votos emitidos: <span id="aVotantes">-</span> / <span id="aMiembros">-</span></p>
-      <p>Votación cerrada: <span id="aCerrada">-</span></p>
-      <p>Fecha límite: <span id="aFechaActual">-</span></p>
-      <p>Ganador por rescate: <span id="aGanadorRescate">-</span></p>
-      <p>Ganador final: <span id="aGanadorFinal">-</span></p>
-      <p>Desempate programado: <span id="aRngTrigger">—</span></p>
-    </div>
+  <div class="admin-layout">
 
-    <div class="section">
-      <h3>👥 Votantes</h3>
-      <p style="font-size:12px;color:var(--sub);margin:0 0 8px">
-        Integrantes que participaron. El personaje está <strong>oculto</strong> por defecto — <strong>haz clic para revelarlo</strong>. Los rescates se marcan con <span style="color:#ff9800;font-weight:700">borde naranja</span>.
-      </p>
-      <div class="personas-list" id="personasList">
-        <div class="personas-empty">Cargando...</div>
-      </div>
-      <div class="personas-counter" id="personasCounter">—</div>
-    </div>
+    <!-- ============================================================ -->
+    <!-- PANEL IZQUIERDA: Control                                      -->
+    <!-- ============================================================ -->
+    <div class="panel panel-izq">
+      <h2>⚙️ Control</h2>
+      <p class="sub">Estado · Acciones · Configuración de votación</p>
 
-    <div class="section">
-      <h3>Acciones</h3>
-      <button class="btn" id="btnCerrarAhora">⛔ Cerrar votación ahora</button>
-      <button class="btn" id="btnReabrir">🔓 Reabrir votación (sin límite)</button>
-      <button class="btn btn-warn" id="btnReiniciarVotos">🔄 Reiniciar Votos (votos y votantes a 0, mantiene CDs y rescates)</button>
-      <button class="btn btn-danger" id="btnResetTotal">💥 Reset TOTAL (borra absolutamente todo)</button>
-    </div>
-
-    <div id="sectionEmpate" style="display:none">
-      <h3>⚖️ Empate detectado</h3>
-      <p style="font-size:13px;margin:0 0 8px">Hay varios personajes con la misma cantidad de votos. Se requiere resolución por dados (RNG).</p>
-      <div class="empate-lista" id="empateLista"></div>
-      <div class="empate-estado" id="empateEstado">—</div>
-      <button class="btn btn-purple" id="btnResolverRng" style="margin-top:4px">🎲 Forzar desempate AHORA (saltar espera)</button>
-    </div>
-
-    <div class="section">
-      <h3>Fecha límite</h3>
-      <label for="inputFecha">Fecha y hora de cierre:</label>
-      <input type="datetime-local" id="inputFecha">
-      <button class="btn" id="btnGuardarFecha">💾 Guardar fecha límite</button>
-      <button class="btn btn-danger" id="btnQuitarFecha">🗑 Quitar fecha límite</button>
-    </div>
-
-    <div class="section">
-      <h3>Configuración</h3>
-      <label for="inputMiembros">Total de miembros del clan:</label>
-      <input type="number" id="inputMiembros" min="1" placeholder="41">
-      <button class="btn" id="btnGuardarMiembros">Guardar miembros</button>
-
-      <label for="inputMensaje">Mensaje de la cabecera (vacío = oculto):</label>
-      <input type="text" id="inputMensaje" maxlength="200" placeholder="Ej: Votación abierta hasta el 31/12">
-      <button class="btn" id="btnGuardarMensaje">Guardar mensaje</button>
-    </div>
-
-    <div class="section">
-      <h3>⏳ Cooldown de personajes</h3>
-      <p style="font-size:12px;color:var(--sub);margin:0 0 8px">
-        Marca los personajes disponibles para enviarlos a la Sala de Espera. Los que ya están en CD aparecen abajo con su contador — pulsa <strong>Liberar</strong> para sacarlos manualmente.
-      </p>
-
-      <label for="inputCdDias">Duración del CD (días):</label>
-      <input type="number" id="inputCdDias" min="1" max="365" placeholder="60">
-
-      <label class="toggle-row" for="inputAutoCd">
-        <input type="checkbox" id="inputAutoCd">
-        <span>Aplicar CD automático al ganador al cerrar votación</span>
-      </label>
-
-      <h4>✅ Disponibles</h4>
-      <div class="cd-grid" id="cdDisponibles"></div>
-      <button class="btn btn-warn" id="btnAplicarCd" style="margin-top:12px">⏳ Aplicar CD a marcados</button>
-
-      <h4>🔒 En CD actual</h4>
-      <div class="cd-activos-list" id="cdActivos">
-        <div class="personas-empty">Cargando...</div>
+      <div class="section">
+        <h3>📋 Estado</h3>
+        <p>Votos emitidos: <span id="aVotantes">-</span> / <span id="aMiembros">-</span></p>
+        <p>Votación cerrada: <span id="aCerrada">-</span></p>
+        <p>Fecha límite: <span id="aFechaActual">-</span></p>
+        <p>Ganador por rescate: <span id="aGanadorRescate">-</span></p>
+        <p>Ganador final: <span id="aGanadorFinal">-</span></p>
+        <p>Desempate programado: <span id="aRngTrigger">—</span></p>
+        <p>Primer votante: <span id="aPrimerVotante">—</span></p>
       </div>
 
-      <button class="btn btn-danger" id="btnResetRescates" style="margin-top:12px">🗑 Resetear votos de rescate</button>
+      <div class="section">
+        <h3>⚡ Acciones</h3>
+        <button class="btn" id="btnCerrarAhora">⛔ Cerrar votación ahora</button>
+        <button class="btn" id="btnReabrir">🔓 Reabrir votación (sin límite)</button>
+        <button class="btn btn-warn" id="btnReiniciarVotos">🔄 Reiniciar Votos (mantiene CDs y rescates)</button>
+        <button class="btn btn-danger" id="btnResetTotal">💥 Reset TOTAL (borra absolutamente todo)</button>
+      </div>
 
-      <div class="rescate-info" id="rescateInfo">-</div>
-    </div>
+      <div id="sectionEmpate" style="display:none">
+        <h3>⚖️ Empate detectado</h3>
+        <p style="font-size:12px;margin:0 0 8px">Hay varios personajes con la misma cantidad de votos. Se requiere resolución por dados (RNG).</p>
+        <div class="empate-lista" id="empateLista"></div>
+        <div class="empate-estado" id="empateEstado">—</div>
+        <button class="btn btn-purple" id="btnResolverRng" style="margin-top:4px">🎲 Forzar desempate AHORA</button>
+      </div>
 
-    <div class="section">
-      <h3>📊 Estadísticas del clan</h3>
-      <div id="statsContent">
-        <div class="personas-empty">Sin votaciones en el historial todavía.</div>
+      <div class="section">
+        <h3>📅 Fecha límite</h3>
+        <label for="inputFecha">Fecha y hora de cierre:</label>
+        <input type="datetime-local" id="inputFecha">
+        <button class="btn" id="btnGuardarFecha">💾 Guardar fecha límite</button>
+        <button class="btn btn-danger" id="btnQuitarFecha">🗑 Quitar fecha límite</button>
+      </div>
+
+      <div class="section">
+        <h3>⏳ Cooldown de personajes</h3>
+        <p style="font-size:12px;color:var(--sub);margin:0 0 8px">
+          Marca los disponibles para enviarlos a la Sala de Espera. Los que ya están en CD aparecen abajo con su contador.
+        </p>
+
+        <label for="inputCdDias">Duración del CD (días):</label>
+        <input type="number" id="inputCdDias" min="1" max="365" placeholder="60">
+
+        <label class="toggle-row" for="inputAutoCd">
+          <input type="checkbox" id="inputAutoCd">
+          <span>Aplicar CD automático al ganador</span>
+        </label>
+
+        <h4>✅ Disponibles</h4>
+        <div class="cd-grid" id="cdDisponibles"></div>
+        <button class="btn btn-warn" id="btnAplicarCd" style="margin-top:12px">⏳ Aplicar CD a marcados</button>
+
+        <button class="btn btn-danger" id="btnResetRescates" style="margin-top:12px">🗑 Resetear votos de rescate</button>
+
+        <div class="rescate-info" id="rescateInfo" style="font-size:11px;color:var(--sub);margin-top:10px;line-height:1.6">-</div>
+      </div>
+
+      <div class="section">
+        <h3>🔒 En CD actual</h3>
+        <div class="cd-activos-list" id="cdActivos">
+          <div class="personas-empty">Cargando...</div>
+        </div>
       </div>
     </div>
 
-    <div class="section">
-      <h3>📜 Logs / Auditoría</h3>
-      <p style="font-size:12px;color:var(--sub);margin:0 0 8px">
-        Registro de los últimos sucesos. Útil para auditar votos, CDs, RNG y acciones de admin.
-      </p>
+    <!-- ============================================================ -->
+    <!-- PANEL CENTRO: Datos                                           -->
+    <!-- ============================================================ -->
+    <div class="panel panel-centro">
+      <h2>📊 Datos</h2>
+      <p class="sub">Estadísticas · Predicciones · Participación · Historial</p>
 
-      <div class="logs-filters">
-        <button class="btn-mini active" data-filtro="all">Todos</button>
-        <button class="btn-mini" data-filtro="rng">🎲 RNG</button>
-        <button class="btn-mini" data-filtro="voto">🗳 Votos</button>
-        <button class="btn-mini" data-filtro="rescate">🔥 Rescates</button>
-        <button class="btn-mini" data-filtro="cd">⏳ CD</button>
-        <button class="btn-mini" data-filtro="admin">🔧 Admin</button>
+      <div class="section">
+        <h3>📈 Estadísticas del clan</h3>
+        <div id="statsContent">
+          <div class="personas-empty">Sin votaciones en el historial todavía.</div>
+        </div>
       </div>
 
-      <div class="logs-list" id="logsList">
-        <div class="log-empty">Cargando logs...</div>
+      <div class="section">
+        <h3>🔮 Predicciones de la ronda</h3>
+        <p style="font-size:12px;color:var(--sub);margin:0 0 8px">
+          Quién predijo a quién en la ronda actual. Se resuelven automáticamente cuando hay un ganador.
+        </p>
+        <div id="predStatsInfo">
+          <div class="personas-empty">Cargando...</div>
+        </div>
+        <div class="predicciones-list" id="prediccionesList"></div>
       </div>
 
-      <button class="btn btn-danger" id="btnLimpiarLogs" style="margin-top:8px">🗑 Limpiar todos los logs</button>
+      <div class="section">
+        <h3>👥 Votantes</h3>
+        <p style="font-size:12px;color:var(--sub);margin:0 0 8px">
+          Integrantes que participaron. El personaje está <strong>oculto</strong> por defecto — <strong>clic para revelarlo</strong>.
+        </p>
+        <div class="personas-list" id="personasList">
+          <div class="personas-empty">Cargando...</div>
+        </div>
+        <div class="personas-counter" id="personasCounter">—</div>
+      </div>
+
+      <div class="section">
+        <h3>📜 Historial de Votaciones</h3>
+        <div id="historialVotacionesContent">
+          <div class="personas-empty">Sin votaciones en el historial todavía.</div>
+        </div>
+      </div>
     </div>
 
-    <div class="section">
-      <h3>Sesión</h3>
-      <button class="btn" id="btnCerrarSesion">🚪 Cerrar sesión de admin</button>
+    <!-- ============================================================ -->
+    <!-- PANEL DERECHA: Sistema                                        -->
+    <!-- ============================================================ -->
+    <div class="panel panel-der">
+      <h2>🛡️ Sistema</h2>
+      <p class="sub">Mantenimiento · Backups · Roles · Seguridad</p>
+
+      <div class="section">
+        <h3>🔧 Modo mantenimiento</h3>
+        <p style="font-size:12px;color:var(--sub);margin:0 0 8px">
+          Bloquea el acceso a votar mientras está activo.
+        </p>
+
+        <label class="toggle-mant" for="inputMantenimiento">
+          <input type="checkbox" id="inputMantenimiento">
+          <span>Modo mantenimiento</span>
+          <span class="mant-status off" id="mantStatusLabel">DESACTIVADO</span>
+        </label>
+
+        <label for="inputMantMsg">Mensaje a mostrar (opcional):</label>
+        <input type="text" id="inputMantMsg" maxlength="180" placeholder="Ej: Actualizando la votación...">
+        <button class="btn btn-warn" id="btnGuardarMantMsg">💾 Guardar mensaje</button>
+      </div>
+
+      <div class="section">
+        <h3>💾 Backups automáticos</h3>
+        <p style="font-size:12px;color:var(--sub);margin:0 0 8px">
+          Se crea uno <strong>antes de cada Reset o Reinicio</strong>. Solo los últimos 5.
+        </p>
+        <div class="backups-list" id="backupsList">
+          <div class="backups-empty">Cargando backups...</div>
+        </div>
+        <button class="btn" id="btnCrearBackupManual" style="margin-top:10px">📸 Crear backup manual</button>
+      </div>
+
+      <div class="section">
+        <h3>⚙️ Configuración</h3>
+        <label for="inputMiembros">Total de miembros del clan:</label>
+        <input type="number" id="inputMiembros" min="1" placeholder="41">
+        <button class="btn" id="btnGuardarMiembros">Guardar miembros</button>
+
+        <label for="inputMensaje">Mensaje de la cabecera (vacío = oculto):</label>
+        <input type="text" id="inputMensaje" maxlength="200" placeholder="Ej: Votación abierta hasta el 31/12">
+        <button class="btn" id="btnGuardarMensaje">Guardar mensaje</button>
+      </div>
+
+      <div class="section">
+        <h3>👑 Roles del clan</h3>
+        <p style="font-size:12px;color:var(--sub);margin:0 0 8px">
+          Líder (uno solo) y Sublíderes (múltiples). Se valida que el usuario exista.
+        </p>
+
+        <label>👑 Líder</label>
+        <div class="rol-row">
+          <input type="text" id="inputLider" placeholder="username del líder" autocomplete="off">
+          <button id="btnGuardarLider">Guardar</button>
+          <button class="btn-quitar-rol" id="btnQuitarLider" title="Quitar líder">🗑</button>
+        </div>
+        <div class="rol-info vacio" id="liderActualInfo">Sin líder asignado</div>
+
+        <label>⭐ Sublíderes</label>
+        <div class="rol-row" style="grid-template-columns:1fr auto">
+          <input type="text" id="inputSublider" placeholder="username del sublider" autocomplete="off">
+          <button id="btnGuardarSublider">Agregar</button>
+        </div>
+        <div class="sublideres-list" id="sublideresList">
+          <div class="sublideres-empty">Sin sublíderes asignados</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>🔐 Usuarios con PIN</h3>
+        <p style="font-size:12px;color:var(--sub);margin:0 0 8px">
+          Resetear el PIN <strong>solo borra el PIN</strong> — votos, medallas y stats se conservan. En su próximo login deberá crear uno nuevo.
+        </p>
+        <div class="usuarios-pin-list" id="usuariosPinList">
+          <div class="usuarios-pin-empty">Cargando...</div>
+        </div>
+        <div class="usuarios-pin-counter" id="usuariosPinCounter">—</div>
+      </div>
+
+      <div class="section">
+        <h3>📜 Logs / Auditoría</h3>
+        <div class="logs-filters">
+          <button class="btn-mini active" data-filtro="all">Todos</button>
+          <button class="btn-mini" data-filtro="rng">🎲</button>
+          <button class="btn-mini" data-filtro="voto">🗳</button>
+          <button class="btn-mini" data-filtro="rescate">🔥</button>
+          <button class="btn-mini" data-filtro="cd">⏳</button>
+          <button class="btn-mini" data-filtro="admin">🔧</button>
+        </div>
+        <div class="logs-list" id="logsList">
+          <div class="log-empty">Cargando logs...</div>
+        </div>
+        <button class="btn btn-danger" id="btnLimpiarLogs" style="margin-top:8px">🗑 Limpiar todos los logs</button>
+      </div>
+
+      <div class="section">
+        <h3>🚪 Sesión</h3>
+        <button class="btn" id="btnCerrarSesion">🚪 Cerrar sesión de admin</button>
+      </div>
     </div>
+
   </div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getDatabase, ref, get, set, remove, onValue, push, runTransaction, query, orderByKey, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+  import { getDatabase, ref, get, set, remove, onValue, push, runTransaction, query, orderByKey, limitToLast, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBaKgNmCCTdFoE2YkU1B4a8AjnwwGFeBJ4",
@@ -333,6 +553,7 @@ input:focus{border-color:var(--accent)}
   let isAdmin = false;
   let finVotacion = 0;
   let totalMiembros = 41;
+  let resetTokenActual = "";
   let cooldownsActuales = {};
   let rescatesActuales = {};
   let votosActuales = {};
@@ -346,6 +567,14 @@ input:focus{border-color:var(--accent)}
   let logsCache = [];
   let filtroLogs = "all";
   let rngYaIntentadoAdmin = false;
+
+  let rolesActuales = { lider: "", sublider: "" };
+  let prediccionesActuales = {};
+  let statsUsuarios = {};
+  let primerVotanteConfig = null;
+  let backupsCache = {};
+  let mantenimientoActivo = false;
+  let usuariosCache = {};
 
   const votosRevelados = new Set();
   const rescatesRevelados = new Set();
@@ -401,6 +630,10 @@ input:focus{border-color:var(--accent)}
 
   function iconoLog(tipo) {
     return { rng:'🎲', voto:'🗳', rescate:'🔥', cd:'⏳', admin:'🔧' }[tipo] || '📌';
+  }
+
+  function normalizarUsername(input) {
+    return input.toLowerCase().trim().replace(/\s+/g, '_').replace(/[^a-z0-9_\-]/g, '');
   }
 
   function cargarLogs() {
@@ -494,6 +727,33 @@ input:focus{border-color:var(--accent)}
     return { empatados: emp, maxVotos: max };
   }
 
+  function getSublideresList(roles) {
+    if (!roles || !roles.sublider) return [];
+    const s = roles.sublider;
+    if (typeof s === 'string') return s ? [s] : [];
+    if (typeof s === 'object') return Object.keys(s).filter(k => s[k]);
+    return [];
+  }
+
+  function tienePin(username) {
+    return !!(usuariosCache[username] && usuariosCache[username].pin_hash);
+  }
+
+  async function verificarUsuarioExiste(username) {
+    try {
+      const snapV = await get(ref(db, `votantes/${username}`));
+      if (snapV.exists()) return { ok: true, tipo: 'votante' };
+      const snapR = await get(ref(db, `rescatadores/${username}`));
+      if (snapR.exists()) return { ok: true, tipo: 'rescatador' };
+      const snapU = await get(ref(db, `usuarios/${username}`));
+      if (snapU.exists()) return { ok: true, tipo: 'usuario registrado' };
+      return { ok: false, tipo: null };
+    } catch (e) {
+      console.warn('Error verificando usuario:', e);
+      return { ok: null, tipo: null };
+    }
+  }
+
   async function aplicarCdAutomatico(nombre) {
     const autoSnap = await get(ref(db, "config/auto_cd_activo"));
     if (!autoSnap.exists() || autoSnap.val() !== true) return null;
@@ -504,6 +764,197 @@ input:focus{border-color:var(--accent)}
     await set(ref(db, `cooldowns/${nombre}`), { activo: true, desde: ahora, hasta, motivo: "Auto-CD al ganar" });
     return { dias, hasta };
   }
+
+  const BACKUP_KEYS = ['votos', 'votantes', 'cooldowns', 'rescates', 'rescatadores', 'predicciones', 'stats_usuarios', 'historial', 'roles', 'config', 'usuarios'];
+
+  async function crearBackup(tipo) {
+    const ts = Date.now();
+    const backupKey = `${ts}_${tipo}`;
+    try {
+      const snapshot = await get(ref(db));
+      const datos = snapshot.val() || {};
+      const backup = {};
+      BACKUP_KEYS.forEach(k => {
+        if (datos[k]) backup[k] = datos[k];
+      });
+      backup._meta = { fecha: ts, tipo, resumen: resumenBackup(datos) };
+      await set(ref(db, `backups/${backupKey}`), backup);
+      await limpiarBackupsViejos();
+      await agregarLog('admin', 'backup_creado',
+        `💾 Backup creado antes de ${tipo === 'reset_total' ? 'Reset TOTAL' : tipo === 'reiniciar_votos' ? 'Reiniciar Votos' : 'acción manual'}`,
+        { backupKey, tipo });
+      return backupKey;
+    } catch (e) {
+      console.error('Backup fail:', e);
+      throw new Error('No se pudo crear el backup. Se cancela la operación.');
+    }
+  }
+
+  function resumenBackup(datos) {
+    const votos = datos.votos || {};
+    const votantes = datos.votantes || {};
+    const cooldowns = datos.cooldowns || {};
+    const usuarios = datos.usuarios || {};
+    const nVotantes = Object.keys(votantes).length;
+    const nCooldowns = Object.entries(cooldowns).filter(([_, cd]) => cd && cd.activo && cd.hasta > Date.now()).length;
+    const totalVotos = Object.values(votos).reduce((a, b) => a + (b || 0), 0);
+    const nUsuarios = Object.values(usuarios).filter(u => u && u.pin_hash).length;
+    return { nVotantes, nCooldowns, totalVotos, nUsuarios };
+  }
+
+  async function limpiarBackupsViejos() {
+    try {
+      const snap = await get(ref(db, 'backups'));
+      const obj = snap.val() || {};
+      const keys = Object.keys(obj).sort().reverse();
+      const sobrantes = keys.slice(5);
+      if (sobrantes.length > 0) {
+        await Promise.all(sobrantes.map(k => remove(ref(db, `backups/${k}`))));
+      }
+    } catch (e) { console.warn('limpiar backups fail:', e); }
+  }
+
+  async function restaurarBackup(backupKey) {
+    if (!isAdmin) return;
+    const backup = backupsCache[backupKey];
+    if (!backup) { alert("Backup no encontrado."); return; }
+
+    const meta = backup._meta || {};
+    const resumen = meta.resumen || {};
+    if (!confirm(`⚠️ RESTAURAR BACKUP\n\nFecha: ${formatearFechaBonita(meta.fecha || 0)}\nTipo: ${meta.tipo || 'manual'}\n\nVotantes: ${resumen.nVotantes || 0}\nVotos totales: ${resumen.totalVotos || 0}\nCooldowns activos: ${resumen.nCooldowns || 0}\nPINs guardados: ${resumen.nUsuarios || 0}\n\nEsto REEMPLAZARÁ todo el estado actual con el del backup. Se perderán los votos/rescates/cambios hechos después de ese backup.\n\n¿Continuar?`)) return;
+    if (!confirm("¿Estás TOTALMENTE seguro? Esta acción no se puede deshacer automáticamente (pero puedes crear otro backup antes).")) return;
+
+    try {
+      await crearBackup('antes_restore');
+
+      const promises = [];
+      BACKUP_KEYS.forEach(k => {
+        if (k === 'usuarios' && backup[k] === undefined) return;
+        promises.push(remove(ref(db, k)));
+      });
+      await Promise.all(promises);
+
+      const writes = [];
+      BACKUP_KEYS.forEach(k => {
+        if (backup[k] !== undefined) {
+          writes.push(set(ref(db, k), backup[k]));
+        }
+      });
+      await Promise.all(writes);
+
+      await agregarLog('admin', 'backup_restaurado',
+        `♻️ Backup restaurado (${meta.tipo || 'manual'} · ${formatearFechaBonita(meta.fecha || 0)})`,
+        { backupKey, meta });
+
+      alert('✅ Backup restaurado correctamente.\n\nSe creó un backup del estado anterior por si necesitas revertir esto.');
+    } catch (e) {
+      alert("❌ Error al restaurar: " + e.message);
+    }
+  }
+
+  async function eliminarBackup(backupKey) {
+    if (!isAdmin) return;
+    if (!confirm('¿Eliminar este backup? No podrá recuperarse.')) return;
+    try {
+      await remove(ref(db, `backups/${backupKey}`));
+      await agregarLog('admin', 'backup_eliminado', `🗑 Backup eliminado`, { backupKey });
+    } catch (e) { alert("❌ " + e.message); }
+  }
+
+  function renderBackups() {
+    const cont = document.getElementById('backupsList');
+    const keys = Object.keys(backupsCache).sort().reverse();
+
+    if (keys.length === 0) {
+      cont.innerHTML = '<div class="backups-empty">No hay backups todavía.<br><span style="font-size:11px;opacity:.7">Se crearán automáticamente antes de cada Reset/Reinicio.</span></div>';
+      return;
+    }
+
+    cont.innerHTML = keys.map(key => {
+      const b = backupsCache[key];
+      const meta = b._meta || {};
+      const resumen = meta.resumen || {};
+      const tipoCls = meta.tipo === 'reset_total' ? 'reset' : meta.tipo === 'reiniciar_votos' ? 'reiniciar' : 'reiniciar';
+      const tipoText = meta.tipo === 'reset_total' ? 'RESET' : meta.tipo === 'reiniciar_votos' ? 'REINICIO' : meta.tipo === 'antes_restore' ? 'PRE-RESTORE' : 'MANUAL';
+      const fecha = meta.fecha ? formatearFechaHora(meta.fecha) : '—';
+      const pinInfo = resumen.nUsuarios ? ` · 🔐 ${resumen.nUsuarios} PINs` : '';
+
+      return `
+        <div class="backup-item">
+          <div class="bi-info">
+            <div class="bi-titulo">
+              <span class="bi-tipo ${tipoCls}">${tipoText}</span>
+              <span>${fecha}</span>
+            </div>
+            <div class="bi-meta">👥 ${resumen.nVotantes || 0} votantes · 🗳 ${resumen.totalVotos || 0} votos · ⏳ ${resumen.nCooldowns || 0} CDs${pinInfo}</div>
+          </div>
+          <div class="bi-actions">
+            <button class="bi-btn restore" data-restore="${key}">Restaurar</button>
+            <button class="bi-btn delete" data-delete="${key}">Eliminar</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    cont.querySelectorAll('.bi-btn.restore').forEach(btn => {
+      btn.addEventListener('click', () => restaurarBackup(btn.dataset.restore));
+    });
+    cont.querySelectorAll('.bi-btn.delete').forEach(btn => {
+      btn.addEventListener('click', () => eliminarBackup(btn.dataset.delete));
+    });
+  }
+
+  document.getElementById('btnCrearBackupManual').addEventListener('click', async () => {
+    if (!isAdmin) return;
+    if (!confirm('¿Crear un backup manual del estado actual?')) return;
+    try {
+      await crearBackup('manual');
+      alert('✅ Backup manual creado.');
+    } catch (e) { alert("❌ " + e.message); }
+  });
+
+  function renderMantenimiento() {
+    const toggle = document.getElementById('inputMantenimiento');
+    const label = document.getElementById('mantStatusLabel');
+    toggle.checked = mantenimientoActivo;
+    if (mantenimientoActivo) {
+      label.className = 'mant-status on';
+      label.textContent = '🔴 ACTIVO';
+    } else {
+      label.className = 'mant-status off';
+      label.textContent = 'DESACTIVADO';
+    }
+  }
+
+  document.getElementById('inputMantenimiento').addEventListener('change', async (e) => {
+    if (!isAdmin) return;
+    const activar = e.target.checked;
+    if (activar) {
+      if (!confirm('🔧 ACTIVAR MANTENIMIENTO\n\nEl index mostrará un aviso y bloqueará el acceso a los usuarios.\n\n¿Continuar?')) {
+        e.target.checked = false;
+        return;
+      }
+    }
+    try {
+      await set(ref(db, 'config/mantenimiento'), activar);
+      await agregarLog('admin', activar ? 'mantenimiento_on' : 'mantenimiento_off',
+        activar ? '🔧 Modo mantenimiento ACTIVADO' : '✅ Modo mantenimiento DESACTIVADO', {});
+    } catch (err) {
+      e.target.checked = !activar;
+      alert("❌ " + err.message);
+    }
+  });
+
+  document.getElementById('btnGuardarMantMsg').addEventListener('click', async () => {
+    if (!isAdmin) return;
+    const val = document.getElementById('inputMantMsg').value.trim();
+    try {
+      await set(ref(db, 'config/mantenimiento_msg'), val);
+      await agregarLog('admin', 'mantenimiento_msg',
+        val ? `💬 Mensaje de mantenimiento actualizado: "${val}"` : '🗑 Mensaje de mantenimiento borrado', {});
+      alert(val ? "✅ Mensaje guardado." : "✅ Mensaje borrado.");
+    } catch (err) { alert("❌ " + err.message); }
+  });
 
   const loginDiv = document.getElementById("login");
   const adminDiv = document.getElementById("admin");
@@ -544,6 +995,8 @@ input:focus{border-color:var(--accent)}
       ganadorFinalActual = c.ganador_final || "";
       ganadorMetodoActual = c.ganador_metodo || "";
       rngTriggerAt = c.rng_trigger_at || 0;
+      resetTokenActual = c.reset_token || "";
+      mantenimientoActivo = c.mantenimiento === true;
 
       document.getElementById("aMiembros").textContent = totalMiembros;
 
@@ -556,6 +1009,9 @@ input:focus{border-color:var(--accent)}
       document.getElementById("inputMensaje").value = c.mensaje || "";
       document.getElementById("inputCdDias").value = c.cd_dias || 60;
       document.getElementById("inputAutoCd").checked = c.auto_cd_activo === true;
+      if (!document.getElementById('inputMantMsg').matches(':focus')) {
+        document.getElementById("inputMantMsg").value = c.mantenimiento_msg || "";
+      }
 
       document.getElementById("aGanadorRescate").textContent = ganadorRescateActual || "—";
       document.getElementById("aGanadorFinal").textContent = ganadorFinalActual
@@ -584,6 +1040,8 @@ input:focus{border-color:var(--accent)}
 
       chequearEmpate();
       actualizarEmpateEstado();
+      renderPredicciones();
+      renderMantenimiento();
     });
 
     onValue(ref(db, "votantes"), (snap) => {
@@ -610,14 +1068,318 @@ input:focus{border-color:var(--accent)}
     onValue(ref(db, "historial"), (snap) => {
       historialActual = snap.val() || {};
       renderStats();
+      renderHistorialVotaciones();
+    });
+    onValue(ref(db, "roles"), (snap) => {
+      rolesActuales = snap.val() || { lider: "", sublider: "" };
+      renderRoles(); renderPersonasList();
+    });
+    onValue(ref(db, "predicciones"), (snap) => {
+      prediccionesActuales = snap.val() || {};
+      renderPredicciones();
+    });
+    onValue(ref(db, "stats_usuarios"), (snap) => {
+      statsUsuarios = snap.val() || {};
+      renderPredicciones(); renderPersonasList();
+    });
+    onValue(ref(db, "config/primer_votante"), (snap) => {
+      primerVotanteConfig = snap.val() || null;
+      renderPrimerVotante();
+      renderPersonasList();
+    });
+    onValue(ref(db, "backups"), (snap) => {
+      backupsCache = snap.val() || {};
+      renderBackups();
+    });
+    onValue(ref(db, "usuarios"), (snap) => {
+      usuariosCache = snap.val() || {};
+      renderUsuariosPin();
+      renderPersonasList();
     });
 
     cargarLogs();
   }
 
+  function renderPrimerVotante() {
+    const el = document.getElementById('aPrimerVotante');
+    if (!primerVotanteConfig || primerVotanteConfig.resetToken !== resetTokenActual) {
+      el.textContent = "—";
+      return;
+    }
+    const nombre = (votantesActuales[primerVotanteConfig.username] && votantesActuales[primerVotanteConfig.username].nombreOriginal)
+      || primerVotanteConfig.usernameOriginal
+      || primerVotanteConfig.username;
+    el.textContent = `🌟 ${nombre}`;
+    el.style.color = "var(--accent)";
+    el.style.fontWeight = "700";
+  }
+
+  function renderUsuariosPin() {
+    const cont = document.getElementById('usuariosPinList');
+    const counter = document.getElementById('usuariosPinCounter');
+    if (!cont) return;
+
+    const entries = Object.entries(usuariosCache).filter(([k, v]) => v && v.pin_hash);
+    if (entries.length === 0) {
+      cont.innerHTML = '<div class="usuarios-pin-empty">Ningún usuario ha creado PIN todavía.</div>';
+      if (counter) counter.innerHTML = '';
+      return;
+    }
+    entries.sort((a, b) => (b[1].creado || 0) - (a[1].creado || 0));
+    cont.innerHTML = entries.map(([username, u]) => {
+      const nombre = u.nombreOriginal || username;
+      const fecha = u.creado ? formatearFechaHora(u.creado) : '—';
+      return `
+        <div class="usuario-pin-item">
+          <div class="upi-info">
+            <div class="upi-name">🔐 ${nombre} <span class="upi-meta">(${username})</span></div>
+            <div class="upi-fecha">Creado: ${fecha}</div>
+          </div>
+          <button class="upi-btn-reset" data-reset-pin="${username}" title="Resetear PIN (conserva votos, medallas y stats)">🔄</button>
+        </div>
+      `;
+    }).join('');
+
+    cont.querySelectorAll('[data-reset-pin]').forEach(btn => {
+      btn.addEventListener('click', () => resetearPin(btn.dataset.resetPin));
+    });
+
+    if (counter) counter.innerHTML = `<b>${entries.length}</b> usuario${entries.length !== 1 ? 's' : ''} con PIN registrado`;
+  }
+
+  async function resetearPin(username) {
+    if (!isAdmin) return;
+    const u = usuariosCache[username];
+    if (!u) return;
+    const nombre = u.nombreOriginal || username;
+    if (!confirm(`🔄 RESETEAR PIN\n\nUsuario: "${nombre}" (${username})\n\nEsto SOLO borrará su PIN de acceso. Se conservan intactos:\n• Sus votos\n• Sus rescates\n• Sus medallas y logros\n• Su historial y estadísticas\n\nEn su próximo login deberá crear un PIN nuevo.\n\n¿Continuar?`)) return;
+
+    try {
+      await remove(ref(db, `usuarios/${username}/pin_hash`));
+      await agregarLog('admin', 'pin_reseteado',
+        `🔄 PIN reseteado para "${nombre}" (${username})`,
+        { username, nombreOriginal: nombre });
+      alert(`✅ PIN de "${nombre}" reseteado.\n\nSus votos, medallas y stats se conservan.`);
+    } catch (err) {
+      alert("❌ " + err.message);
+    }
+  }
+
+  function renderSublideres() {
+    const cont = document.getElementById('sublideresList');
+    const sublideres = getSublideresList(rolesActuales);
+    if (sublideres.length === 0) {
+      cont.innerHTML = '<div class="sublideres-empty">Sin sublíderes asignados</div>';
+      return;
+    }
+    cont.innerHTML = sublideres.map(u => {
+      const nombre = (votantesActuales[u] && votantesActuales[u].nombreOriginal)
+        || (rescatadoresActuales[u] && rescatadoresActuales[u].nombreOriginal)
+        || (usuariosCache[u] && usuariosCache[u].nombreOriginal)
+        || u;
+      return `
+        <div class="sublider-item">
+          <div class="si-name">⭐ ${nombre} <span class="si-meta">(${u})</span></div>
+          <button class="si-del" data-del-sublider="${u}" title="Quitar sublider">🗑</button>
+        </div>`;
+    }).join('');
+    cont.querySelectorAll('[data-del-sublider]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!isAdmin) return;
+        const u = btn.dataset.delSublider;
+        if (!confirm(`¿Quitar a "${u}" como Sublíder?`)) return;
+        try {
+          await remove(ref(db, `roles/sublider/${u}`));
+          await agregarLog('admin', 'rol_quitado', `⭐ Rol de Sublíder removido (${u})`, {});
+        } catch (err) { alert("❌ " + err.message); }
+      });
+    });
+  }
+
+  function renderRoles() {
+    const infoLider = document.getElementById('liderActualInfo');
+    const inputLider = document.getElementById('inputLider');
+
+    if (rolesActuales.lider) {
+      const nombre = (votantesActuales[rolesActuales.lider] && votantesActuales[rolesActuales.lider].nombreOriginal)
+        || (rescatadoresActuales[rolesActuales.lider] && rescatadoresActuales[rolesActuales.lider].nombreOriginal)
+        || (usuariosCache[rolesActuales.lider] && usuariosCache[rolesActuales.lider].nombreOriginal)
+        || rolesActuales.lider;
+      infoLider.className = 'rol-info activo';
+      infoLider.innerHTML = `👑 Actualmente: <strong>${nombre}</strong> <span style="opacity:.7;font-size:11px">(${rolesActuales.lider})</span>`;
+      if (!inputLider.matches(':focus')) inputLider.value = rolesActuales.lider;
+    } else {
+      infoLider.className = 'rol-info vacio';
+      infoLider.textContent = 'Sin líder asignado';
+      if (!inputLider.matches(':focus')) inputLider.value = '';
+    }
+
+    const btnQL = document.getElementById('btnQuitarLider');
+    if (btnQL) btnQL.disabled = !rolesActuales.lider;
+
+    renderSublideres();
+  }
+
+  async function guardarRolLider() {
+    if (!isAdmin) return;
+    const input = document.getElementById('inputLider');
+    const rawVal = input.value.trim();
+    const val = normalizarUsername(rawVal);
+
+    if (!rawVal) {
+      if (!confirm(`¿Quitar el rol de Líder?`)) return;
+      try {
+        await remove(ref(db, `roles/lider`));
+        await agregarLog('admin', 'rol_quitado', `👑 Rol de Líder removido`, {});
+      } catch (err) { alert("❌ " + err.message); }
+      return;
+    }
+
+    if (val.length < 2) { alert("Username demasiado corto."); return; }
+
+    const check = await verificarUsuarioExiste(val);
+    if (check.ok === null) {
+      alert("❌ Error al verificar el usuario. Intenta de nuevo.");
+      return;
+    }
+    if (!check.ok) {
+      if (!confirm(`⚠️ El usuario "${val}" NO está registrado como votante, rescatador ni usuario con PIN.\n\nPuede que hayas escrito mal el nombre.\n\n¿Asignar 👑 Líder de todas formas?`)) return;
+    } else {
+      if (!confirm(`Asignar 👑 Líder a "${val}"? (${check.tipo})`)) return;
+    }
+
+    try {
+      await set(ref(db, `roles/lider`), val);
+      await agregarLog('admin', 'rol_asignado', `👑 "${val}" ahora es Líder`, { username: val });
+      alert(`✅ "${val}" es ahora Líder`);
+    } catch (err) { alert("❌ " + err.message); }
+  }
+
+  async function agregarSublider() {
+    if (!isAdmin) return;
+    const input = document.getElementById('inputSublider');
+    const rawVal = input.value.trim();
+    const val = normalizarUsername(rawVal);
+
+    if (!rawVal || val.length < 2) { alert("Username inválido."); return; }
+
+    const snap = await get(ref(db, 'roles/sublider'));
+    let current = snap.val();
+    if (typeof current === 'string') current = current ? { [current]: true } : {};
+    if (!current || typeof current !== 'object') current = {};
+    if (current[val]) { alert(`"${val}" ya es Sublíder.`); return; }
+
+    const check = await verificarUsuarioExiste(val);
+    if (check.ok === null) {
+      alert("❌ Error al verificar el usuario. Intenta de nuevo.");
+      return;
+    }
+    if (!check.ok) {
+      if (!confirm(`⚠️ El usuario "${val}" NO está registrado como votante, rescatador ni usuario con PIN.\n\n¿Agregar ⭐ Sublíder de todas formas?`)) return;
+    } else {
+      if (!confirm(`Agregar a "${val}" como Sublíder? (${check.tipo})`)) return;
+    }
+
+    try {
+      const nuevo = { ...current, [val]: true };
+      await set(ref(db, `roles/sublider`), nuevo);
+      await agregarLog('admin', 'rol_asignado', `⭐ "${val}" ahora es Sublíder`, { username: val });
+      input.value = '';
+      alert(`✅ "${val}" es ahora Sublíder`);
+    } catch (err) { alert("❌ " + err.message); }
+  }
+
+  document.getElementById('btnGuardarLider').addEventListener('click', guardarRolLider);
+  document.getElementById('btnGuardarSublider').addEventListener('click', agregarSublider);
+
+  document.getElementById('btnQuitarLider').addEventListener('click', async () => {
+    if (!isAdmin) return;
+    if (!rolesActuales.lider) { alert('No hay líder asignado.'); return; }
+    if (!confirm(`¿Quitar el rol de Líder a "${rolesActuales.lider}"?`)) return;
+    try {
+      await remove(ref(db, 'roles/lider'));
+      await agregarLog('admin', 'rol_quitado', `👑 Rol de Líder removido (${rolesActuales.lider})`, {});
+      alert('✅ Líder removido.');
+    } catch (err) { alert("❌ " + err.message); }
+  });
+
+  function renderPredicciones() {
+    const statsEl = document.getElementById('predStatsInfo');
+    const list = document.getElementById('prediccionesList');
+    if (!resetTokenActual) {
+      statsEl.innerHTML = '<div class="personas-empty" style="padding:12px">Esperando datos...</div>';
+      list.innerHTML = '';
+      return;
+    }
+    const predsRonda = Object.entries(prediccionesActuales)
+      .filter(([u, p]) => p && p.resetToken === resetTokenActual)
+      .map(([u, p]) => ({ username: u, ...p }));
+    if (predsRonda.length === 0) {
+      statsEl.innerHTML = '<div class="personas-empty" style="padding:12px">Nadie ha predicho en esta ronda todavía.</div>';
+      list.innerHTML = '';
+      return;
+    }
+    const nTotal = predsRonda.length;
+    const nAcertadas = predsRonda.filter(p => p.resuelta === true && p.acertada === true).length;
+    const nFalladas = predsRonda.filter(p => p.resuelta === true && p.acertada === false).length;
+    const nPendientes = predsRonda.filter(p => !p.resuelta).length;
+    statsEl.innerHTML = `
+      <div class="pred-stats-grid">
+        <div class="pred-stat-box"><div class="psb-value">${nTotal}</div><div class="psb-label">Predicciones</div></div>
+        <div class="pred-stat-box"><div class="psb-value" style="color:#4CAF50">${nAcertadas}</div><div class="psb-label">Acertadas</div></div>
+        <div class="pred-stat-box"><div class="psb-value" style="color:${nPendientes > 0 ? '#a855f7' : '#ff5c5c'}">${nPendientes > 0 ? nPendientes : nFalladas}</div><div class="psb-label">${nPendientes > 0 ? 'Pendientes' : 'Falladas'}</div></div>
+      </div>
+    `;
+    predsRonda.sort((a, b) => (b.fecha || 0) - (a.fecha || 0));
+    list.innerHTML = predsRonda.map(p => {
+      const nombre = (votantesActuales[p.username] && votantesActuales[p.username].nombreOriginal)
+        || (rescatadoresActuales[p.username] && rescatadoresActuales[p.username].nombreOriginal)
+        || p.username;
+      const fecha = p.fecha ? formatearFechaHora(p.fecha) : '—';
+      let claseExtra = 'pendiente';
+      let resultHTML = '<span class="pa-result pendiente">⏳ Pendiente</span>';
+      if (p.resuelta === true) {
+        if (p.acertada) { claseExtra = 'acertada'; resultHTML = '<span class="pa-result acierto">✅ Acertó</span>'; }
+        else { claseExtra = 'fallada'; resultHTML = '<span class="pa-result fallo">❌ Falló</span>'; }
+      }
+      return `
+        <div class="pred-item-admin ${claseExtra}">
+          <div class="pa-info">
+            <div class="pa-name">${nombre} <span style="font-weight:400;color:var(--sub);font-size:11px">(${p.username})</span></div>
+            <div class="pa-pred">Predijo: <b>${p.personaje}</b></div>
+            <div class="pa-fecha">${fecha}</div>
+          </div>
+          ${resultHTML}
+        </div>
+      `;
+    }).join('');
+  }
+
   function extraerDatosPersona(valor, username) {
     if (typeof valor === 'string') return { personaje: valor, nombreOriginal: username, fecha: 0 };
     return { personaje: valor.personaje || '', nombreOriginal: valor.nombreOriginal || username, fecha: valor.fecha || 0 };
+  }
+
+  function calcularRescatistaTop() {
+    const arr = Object.entries(statsUsuarios).map(([u, s]) => ({ u, r: (s && s.rescates_emitidos) || 0 })).filter(x => x.r > 0);
+    if (arr.length === 0) return [];
+    const max = Math.max(...arr.map(x => x.r));
+    return arr.filter(x => x.r === max).map(x => x.u);
+  }
+
+  function calcularBadgesPersona(username) {
+    const badges = [];
+    if (rolesActuales.lider === username) badges.push({ cls: 'lider', html: '👑 Líder' });
+    const sublideres = getSublideresList(rolesActuales);
+    if (sublideres.includes(username)) badges.push({ cls: 'sublider', html: '⭐ Sublíder' });
+    if (primerVotanteConfig && primerVotanteConfig.resetToken === resetTokenActual && primerVotanteConfig.username === username) {
+      badges.push({ cls: 'primer-voto', html: '🌟 Primer voto' });
+    }
+    const stats = statsUsuarios[username] || {};
+    if ((stats.streak_actual || 0) >= 3) badges.push({ cls: 'racha', html: `🎯 Racha x${stats.streak_actual}` });
+    if ((stats.predicciones_acertadas || 0) > 0) badges.push({ cls: 'oraculo', html: `🔮 Oráculo x${stats.predicciones_acertadas}` });
+    if (tienePin(username)) badges.push({ cls: 'pin', html: '🔐 PIN' });
+    return badges;
   }
 
   function renderPersonasList() {
@@ -640,24 +1402,32 @@ input:focus{border-color:var(--accent)}
       return;
     }
     todos.sort((a, b) => (b.fecha || 0) - (a.fecha || 0));
+    const topRescatistas = calcularRescatistaTop();
     cont.innerHTML = todos.map(p => {
       const set = p.tipo === 'rescate' ? rescatesRevelados : votosRevelados;
       const revelado = set.has(p.username) ? ' revealed' : '';
       const claseExtra = p.tipo === 'rescate' ? ' rescate-item' : '';
       const accion = p.tipo === 'rescate' ? '🔥 Rescató a:' : '🗳 Votó por:';
       const fecha = p.fecha ? formatearFechaHora(p.fecha) : '—';
+      const badges = calcularBadgesPersona(p.username);
+      if (topRescatistas.includes(p.username)) {
+        const r = (statsUsuarios[p.username] && statsUsuarios[p.username].rescates_emitidos) || 0;
+        if (r > 0) badges.push({ cls: 'rescatista', html: `🔥 Rescatista (${r})` });
+      }
+      const badgesHTML = badges.map(b => `<span class="badge-mini ${b.cls}">${b.html}</span>`).join('');
       return `
         <div class="persona-item${claseExtra}">
           <div class="p-info">
-            <div class="p-name">${p.nombreOriginal}<span class="p-meta">(${p.username})</span></div>
+            <div class="p-name">${p.nombreOriginal}<span class="p-meta">(${p.username})</span>${badgesHTML}</div>
             <div class="p-vote${revelado}" data-reveal-user="${p.username}" data-reveal-tipo="${p.tipo}" title="Clic para ${revelado ? 'ocultar' : 'revelar'}">
-              ${accion} <span class="p-vote-blurred">${p.personaje || '—'}</span>
+              ${accion} <span class="p-vote-blurred" data-real="${p.personaje || '—'}"></span>
             </div>
             <div class="p-fecha">${fecha}</div>
           </div>
           <button class="p-del" data-del-user="${p.username}" data-del-tipo="${p.tipo}" title="Eliminar ${p.tipo === 'rescate' ? 'rescate' : 'voto'}">Eliminar</button>
         </div>`;
     }).join('');
+
     cont.querySelectorAll('.p-vote[data-reveal-user]').forEach(el => {
       el.addEventListener('click', (ev) => {
         if (ev.target.closest('.p-del')) return;
@@ -735,7 +1505,6 @@ input:focus{border-color:var(--accent)}
       if (activo) enCd.push({ nombre, cd });
       else disponibles.push(nombre);
     });
-
     const gridDisp = document.getElementById("cdDisponibles");
     if (disponibles.length === 0) {
       gridDisp.innerHTML = '<div class="personas-empty" style="grid-column:1/-1;padding:12px">Todos los personajes están en CD.</div>';
@@ -747,7 +1516,6 @@ input:focus{border-color:var(--accent)}
         </label>
       `).join('');
     }
-
     const listaActivos = document.getElementById("cdActivos");
     const umbral = Math.ceil(totalMiembros / 2);
     if (enCd.length === 0) {
@@ -798,43 +1566,25 @@ input:focus{border-color:var(--accent)}
       `<strong>Rescates en curso (umbral: ${umbral}):</strong><br>${lineas}`;
   }
 
-  // ============================================================
-  // ESTADÍSTICAS DEL CLAN
-  // ============================================================
   function calcularEstadisticas() {
     const entries = Object.values(historialActual).filter(h => h && h.ganador);
     const totalVotaciones = entries.length;
     if (totalVotaciones === 0) return null;
-
     const victoriasPorPersonaje = {};
     const victoriasRescatePorPersonaje = {};
-    const metodos = { votos: 0, rng: 0, rescate: 0 };
     let totalParticipacion = 0;
-
     entries.forEach(h => {
       victoriasPorPersonaje[h.ganador] = (victoriasPorPersonaje[h.ganador] || 0) + 1;
-      if (h.metodo === 'rescate') {
-        victoriasRescatePorPersonaje[h.ganador] = (victoriasRescatePorPersonaje[h.ganador] || 0) + 1;
-        metodos.rescate++;
-      } else if (h.metodo === 'rng') {
-        metodos.rng++;
-      } else {
-        metodos.votos++;
-      }
+      if (h.metodo === 'rescate') victoriasRescatePorPersonaje[h.ganador] = (victoriasRescatePorPersonaje[h.ganador] || 0) + 1;
       totalParticipacion += (h.participantes || 0);
     });
-
     const topGanador = Object.entries(victoriasPorPersonaje).sort((a, b) => b[1] - a[1])[0] || null;
     const topRescatado = Object.entries(victoriasRescatePorPersonaje).sort((a, b) => b[1] - a[1])[0] || null;
-
     return {
-      totalVotaciones,
-      totalParticipacion,
+      totalVotaciones, totalParticipacion,
       participacionPromedio: Math.round(totalParticipacion / totalVotaciones),
       topGanador: topGanador ? { nombre: topGanador[0], victorias: topGanador[1] } : null,
-      topRescatado: topRescatado ? { nombre: topRescatado[0], victorias: topRescatado[1] } : null,
-      metodos,
-      entries: entries.sort((a, b) => (b.fecha || 0) - (a.fecha || 0))
+      topRescatado: topRescatado ? { nombre: topRescatado[0], victorias: topRescatado[1] } : null
     };
   }
 
@@ -845,82 +1595,37 @@ input:focus{border-color:var(--accent)}
       cont.innerHTML = '<div class="personas-empty">Sin votaciones en el historial todavía.<br><span style="font-size:11px;opacity:.7">Se llenará después de la primera votación cerrada.</span></div>';
       return;
     }
-
     cont.innerHTML = `
       <div class="stats-grid">
-        <div class="stat-box">
-          <div class="stat-icon">📊</div>
-          <div class="stat-value">${stats.totalVotaciones}</div>
-          <div class="stat-label">Votaciones</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-icon">👥</div>
-          <div class="stat-value">${stats.totalParticipacion}</div>
-          <div class="stat-label">Votos totales</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-icon">📈</div>
-          <div class="stat-value">${stats.participacionPromedio}<small> / ${totalMiembros}</small></div>
-          <div class="stat-label">Promedio</div>
-        </div>
+        <div class="stat-box"><div class="stat-icon">📊</div><div class="stat-value">${stats.totalVotaciones}</div><div class="stat-label">Votaciones</div></div>
+        <div class="stat-box"><div class="stat-icon">👥</div><div class="stat-value">${stats.totalParticipacion}</div><div class="stat-label">Votos totales</div></div>
+        <div class="stat-box"><div class="stat-icon">📈</div><div class="stat-value">${stats.participacionPromedio}<small> / ${totalMiembros}</small></div><div class="stat-label">Promedio</div></div>
       </div>
+      ${stats.topGanador ? `<h4>🏆 Historial de Ganadores</h4><div class="stat-winner"><span class="stat-winner-name">${stats.topGanador.nombre}</span><span class="stat-winner-count">${stats.topGanador.victorias} victoria${stats.topGanador.victorias !== 1 ? 's' : ''}</span></div>` : ''}
+      ${stats.topRescatado ? `<h4>🔥 Personaje más rescatado</h4><div class="stat-winner resc"><span class="stat-winner-name">${stats.topRescatado.nombre}</span><span class="stat-winner-count">${stats.topRescatado.victorias} rescate${stats.topRescatado.victorias !== 1 ? 's' : ''}</span></div>` : ''}
+    `;
+  }
 
-      ${stats.topGanador ? `
-        <h4>🏆 Personaje más ganador</h4>
-        <div class="stat-winner">
-          <span class="stat-winner-name">${stats.topGanador.nombre}</span>
-          <span class="stat-winner-count">${stats.topGanador.victorias} victoria${stats.topGanador.victorias !== 1 ? 's' : ''}</span>
-        </div>
-      ` : ''}
-
-      ${stats.topRescatado ? `
-        <h4>🔥 Personaje más rescatado</h4>
-        <div class="stat-winner resc">
-          <span class="stat-winner-name">${stats.topRescatado.nombre}</span>
-          <span class="stat-winner-count">${stats.topRescatado.victorias} rescate${stats.topRescatado.victorias !== 1 ? 's' : ''}</span>
-        </div>
-      ` : ''}
-
-      <h4>📊 Métodos usados</h4>
-      <div class="stat-metodos">
-        <div class="stat-metodo">
-          <span class="stat-metodo-icon">🗳</span>
-          <span class="stat-metodo-label">Por votos</span>
-          <span class="stat-metodo-count">${stats.metodos.votos}</span>
-        </div>
-        <div class="stat-metodo">
-          <span class="stat-metodo-icon">🎲</span>
-          <span class="stat-metodo-label">Por dados (RNG)</span>
-          <span class="stat-metodo-count">${stats.metodos.rng}</span>
-        </div>
-        <div class="stat-metodo">
-          <span class="stat-metodo-icon">🔥</span>
-          <span class="stat-metodo-label">Por rescate</span>
-          <span class="stat-metodo-count">${stats.metodos.rescate}</span>
-        </div>
-      </div>
-
-      <h4>📜 Historial de votaciones (${stats.entries.length})</h4>
+  function renderHistorialVotaciones() {
+    const cont = document.getElementById('historialVotacionesContent');
+    if (!cont) return;
+    const entries = Object.values(historialActual).filter(h => h && h.ganador)
+      .sort((a, b) => (b.fecha || 0) - (a.fecha || 0));
+    if (entries.length === 0) {
+      cont.innerHTML = '<div class="personas-empty">Sin votaciones en el historial todavía.</div>';
+      return;
+    }
+    cont.innerHTML = `
       <div class="historial-list">
-        ${stats.entries.map(e => {
+        ${entries.map(e => {
           const metodoIcon = e.metodo === 'rescate' ? '🔥' : e.metodo === 'rng' ? '🎲' : '🗳';
           const metodoText = e.metodo === 'rescate' ? 'Por rescate' : e.metodo === 'rng' ? 'Por dados' : 'Por votos';
-          const fecha = formatearFechaCorta(e.fecha || 0);
-          return `
-            <div class="historial-item">
-              <div class="hi-fecha">${fecha}</div>
-              <div class="hi-ganador">${e.ganador}</div>
-              <div class="hi-metodo ${e.metodo || 'votos'}">${metodoIcon} ${metodoText}</div>
-            </div>
-          `;
+          return `<div class="historial-item"><div class="hi-fecha">${formatearFechaCorta(e.fecha || 0)}</div><div class="hi-ganador">${e.ganador}</div><div class="hi-metodo ${e.metodo || 'votos'}">${metodoIcon} ${metodoText}</div></div>`;
         }).join('')}
       </div>
     `;
   }
 
-  // ============================================================
-  // EMPATE
-  // ============================================================
   function chequearEmpate() {
     const sec = document.getElementById("sectionEmpate");
     const cerrada = votacionCerrada();
@@ -939,19 +1644,13 @@ input:focus{border-color:var(--accent)}
     if (!el) return;
     if (rngTriggerAt > 0) {
       const restante = rngTriggerAt - Date.now();
-      if (restante > 0) {
-        el.textContent = `⏱ Desempate automático en ${Math.ceil(restante / 1000)}s. Si no quieres esperar, fuerza ahora.`;
-      } else {
-        el.textContent = `🎲 Desempate automático en curso... esperando resultado.`;
-      }
+      if (restante > 0) el.textContent = `⏱ Desempate automático en ${Math.ceil(restante / 1000)}s.`;
+      else el.textContent = `🎲 Desempate automático en curso...`;
     } else {
       el.textContent = `⏱ Aún sin programar (se activará automáticamente en el index).`;
     }
   }
 
-  // ============================================================
-  // RNG
-  // ============================================================
   async function ejecutarRngSilencioso(manual = false) {
     const votosSnap = await get(ref(db, 'votos'));
     votosActuales = votosSnap.val() || {};
@@ -961,8 +1660,7 @@ input:focus{border-color:var(--accent)}
     if (!emp) return null;
     const rondas = [];
     let candidatos = emp.empatados.map(x => x.nombre);
-    let rondaNum = 0;
-    let ganador = null;
+    let rondaNum = 0; let ganador = null;
     while (candidatos.length > 1 && rondaNum < 10) {
       rondaNum++;
       const tiradas = {};
@@ -1001,7 +1699,7 @@ input:focus{border-color:var(--accent)}
     const emp = obtenerEmpate();
     if (!emp) { alert("No hay empate ahora mismo."); return; }
     const nombres = emp.empatados.map(x => x.nombre);
-    const ok = confirm(`🎲 FORZAR DESEMPATE POR DADOS\n\nEmpate a ${emp.maxVotos} votos entre ${nombres.length} personajes:\n\n${nombres.map(n => `• ${n}`).join('\n')}\n\nSe lanzarán dados de 6 caras. El mayor gana. Si empatan en la tirada, solo los empatados vuelven a tirar.\n\n¿Continuar?`);
+    const ok = confirm(`🎲 FORZAR DESEMPATE POR DADOS\n\nEmpate a ${emp.maxVotos} votos entre ${nombres.length} personajes:\n\n${nombres.map(n => `• ${n}`).join('\n')}\n\n¿Continuar?`);
     if (!ok) return;
     const resultado = await ejecutarRngSilencioso(true);
     if (!resultado) { alert("⚠️ Otro admin ya lanzó los dados o no hay empate."); return; }
@@ -1026,9 +1724,6 @@ input:focus{border-color:var(--accent)}
     try { await ejecutarRngSilencioso(false); } catch (e) { rngYaIntentadoAdmin = false; }
   }, 3000);
 
-  // ============================================================
-  // ACCIONES
-  // ============================================================
   async function accionAplicarCd() {
     if (!isAdmin) return;
     const marcados = [...document.querySelectorAll("#cdDisponibles input:checked")].map(i => i.value);
@@ -1061,56 +1756,81 @@ input:focus{border-color:var(--accent)}
 
   async function accionReiniciarVotos() {
     if (!isAdmin) return;
-    if (!confirm("🔄 REINICIAR VOTOS\n\nEsto hará:\n• Votos normales a 0\n• Borrar los votantes registrados (podrán votar de nuevo)\n• Borrar ganadores y resultados pendientes\n• Abrir la votación sin fecha\n\nSE CONSERVAN:\n• Cooldowns (Sala de Espera)\n• Rescates acumulados\n• Rescatadores\n• Configuración\n• Historial\n\n¿Continuar?")) return;
-    if (!confirm("¿Estás TOTALMENTE seguro? Esta acción no se puede deshacer.")) return;
+    if (!confirm("🔄 REINICIAR VOTOS\n\nEsto hará:\n• Votos normales a 0\n• Borrar los votantes registrados\n• Borrar ganadores y resultados pendientes\n• Abrir la votación sin fecha\n• Limpiar predicciones de la ronda\n\nSE CONSERVAN:\n• Cooldowns, rescates, rescatadores\n• Configuración, roles, historial, stats\n• Usuarios y sus PINs\n\n⚡ Se creará un backup automático antes.\n\n¿Continuar?")) return;
+    if (!confirm("¿Estás TOTALMENTE seguro? Esta acción no se puede deshacer (pero tendrás un backup).")) return;
+
+    try {
+      await crearBackup('reiniciar_votos');
+    } catch (e) {
+      alert("❌ " + e.message + "\n\nLa operación fue CANCELADA por seguridad.");
+      return;
+    }
+
     try {
       const snap = await get(ref(db, "votos"));
       const votosSnap = snap.val() || {};
       const votosVacios = {};
       Object.keys(votosSnap).forEach(k => votosVacios[k] = 0);
+      await update(ref(db, "config"), {
+        reset_token: "v" + Date.now(),
+        rng_trigger_at: 0,
+        ganador_rescate: "",
+        ganador_final: "",
+        ganador_metodo: "",
+        fin_votacion: 0,
+        primer_votante: null,
+        predicciones_resueltas_token: null,
+        rng_resultado: null
+      });
       await Promise.all([
         set(ref(db, "votos"), votosVacios),
-        remove(ref(db, "votantes")),
-        remove(ref(db, "config/rng_resultado")),
-        set(ref(db, "config/rng_trigger_at"), 0),
-        set(ref(db, "config/reset_token"), "v" + Date.now()),
-        set(ref(db, "config/ganador_rescate"), ""),
-        set(ref(db, "config/ganador_final"), ""),
-        set(ref(db, "config/ganador_metodo"), ""),
-        set(ref(db, "config/fin_votacion"), 0)
+        remove(ref(db, "votantes"))
       ]);
       votosRevelados.clear();
-      await agregarLog('admin', 'reiniciar_votos', '🔄 Reiniciar Votos ejecutado (votos y votantes a 0, CDs y rescates conservados, votación abierta, historial intacto)', {});
-      alert("✅ Votos reiniciados. La votación está abierta y lista para un nuevo ciclo.\n\nSe conservaron: cooldowns, rescates acumulados, rescatadores e historial.");
+      await agregarLog('admin', 'reiniciar_votos', '🔄 Reiniciar Votos ejecutado (backup previo guardado, votos y votantes a 0, CDs y rescates conservados)', {});
+      alert("✅ Votos reiniciados.\n\nSe conservaron: cooldowns, rescates, rescatadores, historial, roles, stats y PINs de usuarios.\n💾 Puedes restaurar desde el backup si algo salió mal.");
     } catch (err) { alert("❌ " + err.message); }
   }
 
   async function accionResetTotal() {
     if (!isAdmin) return;
-    if (!confirm("⚠️ RESET TOTAL\n\nEsto pondrá TODOS los votos a 0, borrará CDs, rescates, rescatadores, votantes, ganadores y liberará a todos.\n\n⚠️ El historial (Salón de la Fama) NO se borra.\n\n¿Continuar?")) return;
-    if (!confirm("¿Estás TOTALMENTE seguro? Esta acción no se puede deshacer.")) return;
+    if (!confirm("⚠️ RESET TOTAL\n\nEsto pondrá TODOS los votos a 0, borrará CDs, rescates, rescatadores, votantes, ganadores y predicciones.\n\n⚠️ El historial, stats, roles y PINs de usuarios NO se borran.\n\n⚡ Se creará un backup automático antes.\n\n¿Continuar?")) return;
+    if (!confirm("¿Estás TOTALMENTE seguro? Esta acción no se puede deshacer (pero tendrás un backup).")) return;
+
+    try {
+      await crearBackup('reset_total');
+    } catch (e) {
+      alert("❌ " + e.message + "\n\nLa operación fue CANCELADA por seguridad.");
+      return;
+    }
+
     try {
       const snap = await get(ref(db, "votos"));
       const votosSnap = snap.val() || {};
       const votosVacios = {};
       Object.keys(votosSnap).forEach(k => votosVacios[k] = 0);
+      await update(ref(db, "config"), {
+        reset_token: "v" + Date.now(),
+        rng_trigger_at: 0,
+        ganador_rescate: "",
+        ganador_final: "",
+        ganador_metodo: "",
+        primer_votante: null,
+        predicciones_resueltas_token: null,
+        rng_resultado: null
+      });
       await Promise.all([
         set(ref(db, "votos"), votosVacios),
         remove(ref(db, "votantes")),
         remove(ref(db, "cooldowns")),
         remove(ref(db, "rescates")),
         remove(ref(db, "rescatadores")),
-        remove(ref(db, "config/rng_resultado")),
-        set(ref(db, "config/rng_trigger_at"), 0),
-        set(ref(db, "config/reset_token"), "v" + Date.now()),
-        set(ref(db, "config/ganador_rescate"), ""),
-        set(ref(db, "config/ganador_final"), ""),
-        set(ref(db, "config/ganador_metodo"), "")
+        remove(ref(db, "predicciones"))
       ]);
       votosRevelados.clear();
       rescatesRevelados.clear();
-      await agregarLog('admin', 'reset_total', '💥 RESET TOTAL ejecutado (votos, CDs, rescates, votantes, ganadores — historial intacto)', {});
-      alert("✅ Reset total completado.\n\nEl historial se conservó.");
+      await agregarLog('admin', 'reset_total', '💥 RESET TOTAL ejecutado (backup previo guardado, votos, CDs, rescates, votantes, ganadores, predicciones — historial, roles, stats y PINs intactos)', {});
+      alert("✅ Reset total completado.\n\nSe conservaron: historial, roles, stats y PINs de usuarios.\n💾 Puedes restaurar desde el backup si algo salió mal.");
     } catch (err) { alert("❌ " + err.message); }
   }
 
@@ -1123,19 +1843,16 @@ input:focus{border-color:var(--accent)}
     votosActuales = votosSnap.val() || {};
     cooldownsActuales = cdSnap.val() || {};
     const cfg = cfgSnap.val() || {};
-
     if (cfg.ganador_rescate || cfg.ganador_final) {
       await set(ref(db, "config/fin_votacion"), Date.now() - 1);
       await agregarLog('admin', 'cerrar_votacion', '⛔ Votación cerrada manualmente (ya tenía ganador)', { fin_votacion: Date.now() - 1 });
       alert("✅ Votación cerrada.\n\nYa había un ganador determinado previamente.");
       return;
     }
-
     const ranking = calcularRanking();
     const hayGanadorClaro = ranking.length > 0 && (ranking.length === 1 || ranking[0].votos > ranking[1].votos);
     await set(ref(db, "config/fin_votacion"), Date.now() - 1);
     await agregarLog('admin', 'cerrar_votacion', '⛔ Votación cerrada manualmente por el admin', { fin_votacion: Date.now() - 1 });
-
     if (hayGanadorClaro) {
       const ganador = ranking[0].nombre;
       await set(ref(db, 'config/ganador_final'), ganador);
@@ -1148,7 +1865,7 @@ input:focus{border-color:var(--accent)}
         alert(`✅ Votación cerrada.\n\n🏆 Ganador: ${ganador}\n\n(Auto-CD desactivado en la configuración)`);
       }
     } else if (ranking.length > 1 && ranking[0].votos === ranking[1].votos) {
-      alert("✅ Votación cerrada.\n\n⚖️ Hay un empate. El ganador se decidirá por lanzamiento de dados.\n\nCuando se resuelva, se aplicará el CD automático si está activado.");
+      alert("✅ Votación cerrada.\n\n⚖️ Hay un empate. El ganador se decidirá por lanzamiento de dados.");
     } else {
       alert("✅ Votación cerrada.\n\nSin votos registrados.");
     }
