@@ -48,7 +48,6 @@ body.light{--bg:#f2f3f7;--card:#ffffff;--text:#1a1c30;--accent:#d4a017;--sub:#55
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 
-/* Bloqueo de scroll para mantenimiento */
 html.no-scroll, body.no-scroll {
   overflow: hidden !important;
   height: 100vh !important;
@@ -160,7 +159,9 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
 .col-main{min-width:0}
 .col-cd{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow-y:auto}
 @media(max-width:1300px){
-  .layout,.layout.no-user{grid-template-columns:minmax(0,1fr) 320px}
+  .layout{grid-template-columns:minmax(0,1fr) 320px}
+  .layout.no-user{grid-template-columns:minmax(0,1fr) 320px}
+  .layout.no-user .col-user{display:none !important}
   .col-user{grid-column:1/-1;grid-row:1}
   .col-main{grid-column:1;grid-row:2}
   .col-cd{grid-column:2;grid-row:2}
@@ -168,7 +169,9 @@ h1{color:var(--accent);margin:0;font-size:clamp(24px,5.5vw,42px);letter-spacing:
   .layout.no-user .col-cd{grid-row:1}
 }
 @media(max-width:1100px){
-  .layout,.layout.no-user{grid-template-columns:minmax(0,1fr)}
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .layout.no-user{grid-template-columns:minmax(0,1fr)}
+  .layout.no-user .col-user{display:none !important}
   .col-user,.col-main,.col-cd{grid-column:1;grid-row:auto}
   .col-cd{position:static;max-height:none}
 }
@@ -273,15 +276,66 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:40px;padding
 .modal-content h2{color:var(--accent);margin:0 0 8px;font-size:20px}
 .modal-content.cd-modal h2{color:#ff9800}
 .modal-text{color:var(--sub);margin:0 0 20px;font-size:14px;line-height:1.5}
-.modal-buttons{display:flex;gap:10px}
+.modal-buttons{display:flex;gap:10px;margin-top:12px}
 .modal-btn{flex:1;padding:12px;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px;transition:.2s}
 .modal-btn-cancel{background:var(--border);color:var(--text)}
 .modal-btn-confirm{background:var(--accent);color:#1a1c30}
 .modal-btn-cd{background:#ff9800;color:#1a1c30}
 .modal-btn:hover{filter:brightness(1.1)}
 
-.modal-content input[type="tel"]{width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:16px;text-align:center;outline:none;letter-spacing:4px;font-family:inherit;font-weight:700;margin-bottom:10px}
-.modal-content input[type="tel"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(245,197,66,.15)}
+/* PIN INPUT CON OJITO */
+.pin-input-wrap {
+  position: relative;
+  width: 100%;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+.pin-input-wrap input {
+  width: 100%;
+  padding: 14px 46px 14px 16px !important;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 18px !important;
+  text-align: center;
+  outline: none;
+  font-family: inherit;
+  letter-spacing: 6px !important;
+  font-weight: 700;
+  transition: .2s;
+  margin-bottom: 0 !important;
+}
+.pin-input-wrap input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(245,197,66,.15);
+}
+.pin-toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  color: var(--sub);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: color .2s, background .2s, transform .1s;
+  z-index: 2;
+  line-height: 1;
+}
+.pin-toggle-btn:hover {
+  color: var(--accent);
+  background: rgba(255, 255, 255, .08);
+}
+.pin-toggle-btn:active {
+  transform: translateY(-50%) scale(.92);
+}
 .modal-content .lm-msg{min-height:18px;font-size:13px;color:#ff5c5c;text-align:center;margin:6px 0 10px;font-weight:600}
 
 #toastContainer{position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:1100;display:flex;flex-direction:column;gap:10px;align-items:center;pointer-events:none;width:calc(100% - 40px);max-width:420px}
@@ -420,14 +474,11 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
 .login-modal h2{color:var(--accent);margin:0 0 6px;font-size:22px;letter-spacing:2px;font-weight:800}
 .login-modal .lm-tagline{color:var(--sub);font-size:12px;text-transform:uppercase;letter-spacing:1.5px;margin:0 0 18px}
 .login-modal .lm-desc{color:var(--text);font-size:14px;line-height:1.5;margin:0 0 20px;opacity:.9}
-.login-modal input[type="text"],
-.login-modal input[type="tel"]{width:100%;padding:14px 16px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:16px;text-align:center;outline:none;font-family:inherit;letter-spacing:.5px;transition:.2s;margin-bottom:10px}
-.login-modal input[type="tel"]{font-size:18px;letter-spacing:6px;font-weight:700}
-.login-modal input[type="text"]:focus,
-.login-modal input[type="tel"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(245,197,66,.15)}
+.login-modal input[type="text"]{width:100%;padding:14px 16px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:16px;text-align:center;outline:none;font-family:inherit;letter-spacing:.5px;transition:.2s;margin-bottom:10px}
+.login-modal input[type="text"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(245,197,66,.15)}
 .login-modal .lm-msg{min-height:20px;font-size:13px;color:#ff5c5c;margin:6px 0 8px;font-weight:500}
 .login-modal .lm-msg.loading{color:var(--sub)}
-.login-modal .lm-btn{width:100%;padding:14px;border-radius:12px;border:none;background:var(--accent);color:#1a1c30;font-size:15px;font-weight:800;cursor:pointer;transition:.2s;font-family:inherit;letter-spacing:.5px}
+.login-modal .lm-btn{width:100%;padding:14px;border-radius:12px;border:none;background:var(--accent);color:#1a1c30;font-size:15px;font-weight:800;cursor:pointer;transition:.2s;font-family:inherit;letter-spacing:.5px;margin-top:6px}
 .login-modal .lm-btn:hover:not(:disabled){filter:brightness(1.1)}
 .login-modal .lm-btn:disabled{opacity:.6;cursor:not-allowed}
 .login-modal .lm-back{background:transparent;border:none;color:var(--sub);cursor:pointer;font-size:13px;margin-top:8px;padding:8px;font-family:inherit;transition:.2s;text-decoration:underline;display:block;width:100%}
@@ -710,9 +761,31 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
   <div class="modal-content">
     <h2 id="modalPinTitle">🔐 Cambiar PIN</h2>
     <p class="modal-text" id="modalPinText">Ingresá tu PIN actual y elegí uno nuevo.</p>
-    <input type="tel" id="inputPinActual" placeholder="PIN actual" maxlength="8" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
-    <input type="tel" id="inputPinNuevo" placeholder="Nuevo PIN (4-8 dígitos)" maxlength="8" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
-    <input type="tel" id="inputPinNuevoConfirm" placeholder="Confirmá nuevo PIN" maxlength="8" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+    
+    <div class="pin-input-wrap" id="wrapPinActual">
+      <input type="password" id="inputPinActual" placeholder="PIN actual" maxlength="8" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+      <button type="button" class="pin-toggle-btn" data-target="inputPinActual" aria-label="Mostrar u ocultar PIN" tabindex="-1">
+        <svg class="eye-icon eye-open" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        <svg class="eye-icon eye-closed" style="display:none" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+      </button>
+    </div>
+
+    <div class="pin-input-wrap">
+      <input type="password" id="inputPinNuevo" placeholder="Nuevo PIN" maxlength="8" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+      <button type="button" class="pin-toggle-btn" data-target="inputPinNuevo" aria-label="Mostrar u ocultar PIN" tabindex="-1">
+        <svg class="eye-icon eye-open" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        <svg class="eye-icon eye-closed" style="display:none" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+      </button>
+    </div>
+
+    <div class="pin-input-wrap">
+      <input type="password" id="inputPinNuevoConfirm" placeholder="Confirmá nuevo PIN" maxlength="8" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+      <button type="button" class="pin-toggle-btn" data-target="inputPinNuevoConfirm" aria-label="Mostrar u ocultar PIN" tabindex="-1">
+        <svg class="eye-icon eye-open" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        <svg class="eye-icon eye-closed" style="display:none" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+      </button>
+    </div>
+
     <div class="lm-msg" id="msgCambiarPin"></div>
     <div class="modal-buttons">
       <button class="modal-btn modal-btn-cancel" onclick="cerrarModalCambiarPin()">Cancelar</button>
@@ -760,7 +833,13 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
 
     <div id="loginStep2Login" style="display:none">
       <p class="lm-desc">Ingresá tu PIN para <strong id="pinLoginName">—</strong>.</p>
-      <input type="tel" id="inputPin" placeholder="• • • •" maxlength="8" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+      <div class="pin-input-wrap">
+        <input type="password" id="inputPin" placeholder="• • • •" maxlength="8" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+        <button type="button" class="pin-toggle-btn" data-target="inputPin" aria-label="Mostrar u ocultar PIN" tabindex="-1">
+          <svg class="eye-icon eye-open" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          <svg class="eye-icon eye-closed" style="display:none" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+        </button>
+      </div>
       <div class="lm-msg" id="loginMsg2"></div>
       <button class="lm-btn" id="btnEntrarPin" type="button">Entrar</button>
       <button class="lm-back" id="btnVolver1" type="button">← Volver</button>
@@ -768,8 +847,20 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
 
     <div id="loginStep2Create" style="display:none">
       <p class="lm-desc" id="createDesc">Elegí un PIN de <strong>4-8 dígitos</strong> para proteger tu cuenta.</p>
-      <input type="tel" id="inputPinNew" placeholder="Nuevo PIN (4-8 dígitos)" maxlength="8" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
-      <input type="tel" id="inputPinConfirm" placeholder="Confirmá tu PIN" maxlength="8" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+      <div class="pin-input-wrap">
+        <input type="password" id="inputPinNew" placeholder="Nuevo PIN" maxlength="8" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+        <button type="button" class="pin-toggle-btn" data-target="inputPinNew" aria-label="Mostrar u ocultar PIN" tabindex="-1">
+          <svg class="eye-icon eye-open" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          <svg class="eye-icon eye-closed" style="display:none" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+        </button>
+      </div>
+      <div class="pin-input-wrap">
+        <input type="password" id="inputPinConfirm" placeholder="Confirmá tu PIN" maxlength="8" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+        <button type="button" class="pin-toggle-btn" data-target="inputPinConfirm" aria-label="Mostrar u ocultar PIN" tabindex="-1">
+          <svg class="eye-icon eye-open" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          <svg class="eye-icon eye-closed" style="display:none" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+        </button>
+      </div>
       <div class="lm-msg" id="loginMsg3"></div>
       <button class="lm-btn" id="btnCrearPin" type="button">Crear PIN y entrar</button>
       <button class="lm-back" id="btnVolver2" type="button">← Volver</button>
@@ -811,6 +902,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
   const RESCUE_KEY = "axcend_rescate";
   const USER_KEY = "axcend_username";
   const USER_ORIG_KEY = "axcend_username_original";
+  const SESSION_AUTH_KEY = "axcend_session_user";
 
   const PERSONAJES = [
     "Akaoni Atsushi","Baade","Capt Locke","Choi Yuhee","Choi Yuhyun",
@@ -892,7 +984,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
         p.x += p.vx; p.y += p.vy;
         if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
         if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.beginPath(); ctx.arc(p.x, p.r, p.r, 0, Math.PI * 2);
         ctx.fillStyle = color + p.alpha + ')'; ctx.fill();
       }
       requestAnimationFrame(animar);
@@ -902,6 +994,92 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(() => {}); });
+  }
+
+  // RESTRICCIÓN NUMÉRICA ESTRICTA (BLOQUEO DE LETRAS Y TECLADO NUMÉRICO)
+  function restringirSoloNumeros(input) {
+    if (!input) return;
+
+    input.addEventListener('keydown', (e) => {
+      // Permitir teclas de navegación y control
+      if (['Backspace', 'Tab', 'Enter', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
+        return;
+      }
+      // Permitir atajos con Ctrl o Meta (Cmd en Mac): copiar, pegar, seleccionar todo
+      if (e.ctrlKey || e.metaKey) {
+        return;
+      }
+      // Bloquear cualquier tecla que no sea un número del 0 al 9
+      if (!/^[0-9]$/.test(e.key)) {
+        e.preventDefault();
+      }
+    });
+
+    // Sanitizar en input ante autocompletado o teclados virtuales
+    input.addEventListener('input', () => {
+      const limpio = input.value.replace(/\D/g, '');
+      if (input.value !== limpio) {
+        input.value = limpio;
+      }
+    });
+
+    // Sanitizar al pegar texto
+    input.addEventListener('paste', (e) => {
+      const textoPegado = (e.clipboardData || window.clipboardData).getData('text');
+      if (!/^\d+$/.test(textoPegado)) {
+        e.preventDefault();
+        const soloDigitos = textoPegado.replace(/\D/g, '').slice(0, input.maxLength || 8);
+        const inicio = input.selectionStart || 0;
+        const fin = input.selectionEnd || 0;
+        const actual = input.value;
+        input.value = (actual.slice(0, inicio) + soloDigitos + actual.slice(fin)).slice(0, input.maxLength || 8);
+        input.dispatchEvent(new Event('input'));
+      }
+    });
+  }
+
+  function setupNumericInputs() {
+    document.querySelectorAll('.pin-input-wrap input').forEach(restringirSoloNumeros);
+  }
+
+  // BOTONES PARA VER/OCULTAR PIN (OJITO)
+  function setupAllPinToggles() {
+    document.querySelectorAll('.pin-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const targetId = btn.dataset.target;
+        const input = document.getElementById(targetId);
+        if (!input) return;
+        const isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        const openIcon = btn.querySelector('.eye-open');
+        const closedIcon = btn.querySelector('.eye-closed');
+        if (openIcon && closedIcon) {
+          openIcon.style.display = isPassword ? 'none' : 'block';
+          closedIcon.style.display = isPassword ? 'block' : 'none';
+        }
+        input.focus();
+      });
+    });
+  }
+
+  function resetPinToggles() {
+    document.querySelectorAll('.pin-toggle-btn').forEach(btn => {
+      const targetId = btn.dataset.target;
+      const input = document.getElementById(targetId);
+      if (input) input.type = 'password';
+      const openIcon = btn.querySelector('.eye-open');
+      const closedIcon = btn.querySelector('.eye-closed');
+      if (openIcon) openIcon.style.display = 'block';
+      if (closedIcon) closedIcon.style.display = 'none';
+    });
+  }
+
+  // CONTROL DE SESIÓN AUTENTICADA CON PIN
+  function estaAutenticado() {
+    if (!usernameActual) return false;
+    return sessionStorage.getItem(SESSION_AUTH_KEY) === usernameActual;
   }
 
   async function agregarLog(tipo, subtipo, mensaje, detalles = {}) {
@@ -964,10 +1142,6 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
     localStorage.setItem(USER_ORIG_KEY, original);
     usernameActual = normalized; usernameOriginalActual = original;
   }
-  async function verificarDisponible(normalized) {
-    const snap = await get(ref(db, 'votantes/' + normalized));
-    return !snap.exists();
-  }
 
   async function sha256(text) {
     const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
@@ -1029,7 +1203,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
   function actualizarBotonLogin() {
     const btn = document.getElementById('btnAbrirLogin');
     if (!btn) return;
-    btn.style.display = usernameActual ? 'none' : 'inline-flex';
+    btn.style.display = estaAutenticado() ? 'none' : 'inline-flex';
   }
 
   function resetLoginModal() {
@@ -1046,6 +1220,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
     document.getElementById("loginMsg2").className = "lm-msg";
     document.getElementById("loginMsg3").textContent = "";
     document.getElementById("loginMsg3").className = "lm-msg";
+    resetPinToggles();
     loginTemp = { original: "", normalized: "", mode: null };
   }
 
@@ -1067,6 +1242,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
         document.getElementById("inputPin").value = "";
         document.getElementById("loginMsg2").textContent = "";
         document.getElementById("loginMsg2").className = "lm-msg";
+        resetPinToggles();
         setTimeout(() => document.getElementById("inputPin").focus(), 100);
       } else {
         const legacy = await existeLegacy(normalized);
@@ -1083,6 +1259,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
         document.getElementById("inputPinConfirm").value = "";
         document.getElementById("loginMsg3").textContent = "";
         document.getElementById("loginMsg3").className = "lm-msg";
+        resetPinToggles();
         setTimeout(() => document.getElementById("inputPinNew").focus(), 100);
       }
       msg.textContent = ""; msg.className = "lm-msg";
@@ -1094,7 +1271,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
   async function procesarPinLogin() {
     const pin = document.getElementById("inputPin").value;
     const msg = document.getElementById("loginMsg2");
-    if (!/^\d{4,8}$/.test(pin)) { msg.textContent = "El PIN debe tener entre 4 y 8 dígitos."; msg.className = "lm-msg"; return; }
+    if (!/^\d{4,8}$/.test(pin)) { msg.textContent = "El PIN debe tener entre 4 y 8 dígitos numéricos."; msg.className = "lm-msg"; return; }
     msg.textContent = "Verificando..."; msg.className = "lm-msg loading";
     try {
       const ok = await verificarPin(loginTemp.normalized, pin);
@@ -1113,7 +1290,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
     const pin = document.getElementById("inputPinNew").value;
     const pin2 = document.getElementById("inputPinConfirm").value;
     const msg = document.getElementById("loginMsg3");
-    if (!/^\d{4,8}$/.test(pin)) { msg.textContent = "El PIN debe tener entre 4 y 8 dígitos."; msg.className = "lm-msg"; return; }
+    if (!/^\d{4,8}$/.test(pin)) { msg.textContent = "El PIN debe tener entre 4 y 8 dígitos numéricos."; msg.className = "lm-msg"; return; }
     if (pin !== pin2) { msg.textContent = "Los PINs no coinciden."; msg.className = "lm-msg"; return; }
     msg.textContent = "Creando..."; msg.className = "lm-msg loading";
     try {
@@ -1126,6 +1303,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
 
   async function finalizarLogin(original, normalized) {
     setUsername(original, normalized);
+    sessionStorage.setItem(SESSION_AUTH_KEY, normalized);
     resetLoginModal();
     cerrarLoginModal();
     actualizarHeaderUsuario();
@@ -1204,6 +1382,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
   window.confirmarCambiarUsuario = function() {
     cerrarModalCambiarUsuario();
     detenerListenersUsuario();
+    sessionStorage.removeItem(SESSION_AUTH_KEY);
     localStorage.removeItem(USER_KEY); localStorage.removeItem(USER_ORIG_KEY);
     localStorage.removeItem(VOTE_KEY); localStorage.removeItem(RESCUE_KEY);
     usernameActual = ""; usernameOriginalActual = "";
@@ -1211,7 +1390,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
     prevBadgeStats = null;
     sessionStorage.removeItem('confetti_rescate'); sessionStorage.removeItem('confetti_ganador');
     actualizarHeaderUsuario(); refrescarBotones(); renderCdPanel(); renderBadges();
-    document.getElementById("prediccionRow").style.display = "none";
+    actualizarPrediccionRow();
     mostrarToast("Sesión cerrada. Ingresa el nuevo usuario.", "success");
     setTimeout(() => mostrarLoginModal(), 300);
   };
@@ -1232,6 +1411,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
     document.getElementById("inputPinNuevo").value = "";
     document.getElementById("inputPinNuevoConfirm").value = "";
     document.getElementById("msgCambiarPin").textContent = "";
+    resetPinToggles();
   };
 
   document.getElementById("btnCambiarPin").addEventListener("click", async () => {
@@ -1244,22 +1424,23 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
     }
     const titleEl = document.getElementById("modalPinTitle");
     const textEl = document.getElementById("modalPinText");
-    const inputActual = document.getElementById("inputPinActual");
+    const wrapActual = document.getElementById("wrapPinActual");
     if (cambiarPinTieneActual) {
       titleEl.textContent = "🔐 Cambiar PIN";
       textEl.textContent = "Ingresá tu PIN actual y elegí uno nuevo.";
-      inputActual.style.display = "block";
-      inputActual.value = "";
+      wrapActual.style.display = "flex";
+      document.getElementById("inputPinActual").value = "";
     } else {
       titleEl.textContent = "🔐 Crear PIN";
       textEl.textContent = "Aún no tenés PIN. Elegí uno para proteger tu cuenta.";
-      inputActual.style.display = "none";
+      wrapActual.style.display = "none";
     }
     document.getElementById("inputPinNuevo").value = "";
     document.getElementById("inputPinNuevoConfirm").value = "";
     document.getElementById("msgCambiarPin").textContent = "";
+    resetPinToggles();
     document.getElementById("modalCambiarPin").classList.add("active");
-    setTimeout(() => (cambiarPinTieneActual ? inputActual : document.getElementById("inputPinNuevo")).focus(), 100);
+    setTimeout(() => (cambiarPinTieneActual ? document.getElementById("inputPinActual") : document.getElementById("inputPinNuevo")).focus(), 100);
   });
 
   window.confirmarCambiarPin = async function() {
@@ -1270,12 +1451,12 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
 
     if (cambiarPinTieneActual) {
       const actual = document.getElementById("inputPinActual").value;
-      if (!/^\d{4,8}$/.test(actual)) { msg.textContent = "PIN actual inválido."; return; }
+      if (!/^\d{4,8}$/.test(actual)) { msg.textContent = "PIN actual inválido (4-8 dígitos numéricos)."; return; }
       msg.textContent = "Verificando...";
       const ok = await verificarPin(usernameActual, actual);
       if (!ok) { msg.textContent = "PIN actual incorrecto."; return; }
     }
-    if (!/^\d{4,8}$/.test(nuevo)) { msg.textContent = "El nuevo PIN debe tener 4-8 dígitos."; return; }
+    if (!/^\d{4,8}$/.test(nuevo)) { msg.textContent = "El nuevo PIN debe tener entre 4 y 8 dígitos numéricos."; return; }
     if (nuevo !== nuevo2) { msg.textContent = "Los PINs nuevos no coinciden."; return; }
 
     msg.textContent = "Guardando...";
@@ -1449,7 +1630,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
   }
 
   function refrescarBotones() {
-    const v = getVote(); const r = getRescue(); const finalizada = votacionFinalizada(); const logueado = !!usernameActual;
+    const v = getVote(); const r = getRescue(); const finalizada = votacionFinalizada(); const logueado = estaAutenticado();
     document.querySelectorAll("#grid .vote-btn").forEach(function(btn) {
       const nombre = btn.dataset.vote;
       btn.classList.remove("voted", "disabled"); btn.disabled = false;
@@ -1466,7 +1647,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
   function renderCdPanel() {
     const cdList = document.getElementById("cdList");
     const r = getRescue(); const finalizada = votacionFinalizada();
-    const umbral = Math.ceil(totalMiembros / 2); const logueado = !!usernameActual;
+    const umbral = Math.ceil(totalMiembros / 2); const logueado = estaAutenticado();
     const activos = Object.entries(cooldowns).filter(([_, cd]) => cd && cd.activo && cd.hasta > Date.now())
       .sort((a, b) => (rescates[b[0]] || 0) - (rescates[a[0]] || 0));
     if (activos.length === 0) { cdList.innerHTML = '<div class="cd-empty">Nadie está en la Sala de Espera.</div>'; return; }
@@ -1570,7 +1751,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
   }
 
   async function registrarPrimerVotanteSiEsNecesario() {
-    if (!usernameActual || !resetToken) return;
+    if (!estaAutenticado() || !resetToken) return;
     try {
       let esPrimero = false;
       const tx = await runTransaction(ref(db, 'config/primer_votante'), (current) => {
@@ -1586,7 +1767,17 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
   }
 
   async function ejecutarVoto(nombre) {
-    if (!usernameActual) { mostrarLoginModal(); return; }
+    if (!estaAutenticado()) {
+      mostrarLoginModal();
+      mostrarToast("Debes ingresar con tu usuario y PIN para votar.", "error");
+      return;
+    }
+    const userDb = await obtenerUsuario(usernameActual);
+    if (!userDb || !userDb.pin_hash) {
+      mostrarLoginModal();
+      mostrarToast("Debes configurar tu PIN para poder votar.", "error");
+      return;
+    }
     if (getRescue() !== "") { mostrarToast("Ya usaste tu voto en rescate.", "error"); return; }
     if (estaEnCd(nombre)) { mostrarToast("Ese personaje está en la Sala de Espera.", "error"); return; }
     const voterId = getVoterId();
@@ -1611,7 +1802,17 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
   }
 
   async function ejecutarRescate(nombre) {
-    if (!usernameActual) { mostrarLoginModal(); return; }
+    if (!estaAutenticado()) {
+      mostrarLoginModal();
+      mostrarToast("Debes ingresar con tu usuario y PIN para rescatar.", "error");
+      return;
+    }
+    const userDb = await obtenerUsuario(usernameActual);
+    if (!userDb || !userDb.pin_hash) {
+      mostrarLoginModal();
+      mostrarToast("Debes configurar tu PIN para poder rescatar.", "error");
+      return;
+    }
     if (getVote() !== "") { mostrarToast("Ya votaste por un activo. No puedes rescatar.", "error"); return; }
     if (!estaEnCd(nombre)) { mostrarToast("Ese personaje ya no está en cooldown.", "error"); return; }
     if (getRescue() !== "") { mostrarToast("Ya usaste tu voto de rescate.", "error"); return; }
@@ -1655,7 +1856,11 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
 
   document.querySelectorAll("#grid .vote-btn").forEach(function(btn) {
     btn.addEventListener("click", function() {
-      if (!usernameActual) { mostrarLoginModal(); return; }
+      if (!estaAutenticado()) {
+        mostrarLoginModal();
+        mostrarToast("Debes ingresar con tu usuario y PIN para votar.", "error");
+        return;
+      }
       if (votacionFinalizada()) { mostrarToast("La votación ya está cerrada.", "error"); return; }
       if (getRescue() !== "") { mostrarToast("Ya usaste tu voto en rescate.", "error"); return; }
       if (getVote() !== "") return;
@@ -2066,12 +2271,11 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
         if (err.name !== 'AbortError') {
           console.warn('Error al compartir nativo:', err);
         } else {
-          return; // Usuario canceló
+          return;
         }
       }
     }
     
-    // Fallback: Descarga
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -2081,6 +2285,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
     mostrarToast("¡Imagen descargada! 📸", "success");
   }
 
+  // CAPTURA DEL GANADOR CON ANCHO AUMENTADO EN UN ~27%
   async function compartirComoImagen(boton) {
     const ganadorActual = ganadorRescate || ganadorFinal;
     if (!ganadorActual) return;
@@ -2100,7 +2305,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
       wrapper.style.position = 'fixed';
       wrapper.style.top = '-9999px';
       wrapper.style.left = '0';
-      wrapper.style.width = '1200px'; // Aumentado para dar más espacio
+      wrapper.style.width = '1450px'; // Lienzo ampliado para espacio horizontal
       wrapper.style.padding = '60px'; 
       wrapper.style.background = 'linear-gradient(135deg, #0f1020, #1a1c30, #0f1020)';
       wrapper.style.boxSizing = 'border-box';
@@ -2124,7 +2329,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
       const title = document.createElement('h1');
       title.textContent = ganadorRescate ? '🔥 SALVADO 🔥' : (ganadorMetodo === 'rng' ? '🎲 GANADOR POR DADOS 🎲' : '★ GANADOR ★');
       title.style.color = '#f5c542';
-      title.style.fontSize = '56px'; // Un poco más grande
+      title.style.fontSize = '56px';
       title.style.margin = '0 0 50px 0';
       title.style.textShadow = '0 0 20px rgba(245,197,66,0.6)';
       title.style.fontWeight = '900';
@@ -2135,7 +2340,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
       const clone = originalCard.cloneNode(true);
       clone.style.animation = 'none';
       clone.style.transform = 'none';
-      clone.style.width = '600px'; // 15% más ancho (antes 520px)
+      clone.style.width = '760px'; // +26.7% más ancha (antes 600px), sin verse apretada
       clone.style.margin = '0';
       clone.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
       clone.style.border = '4px solid #f5c542'; 
@@ -2145,7 +2350,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
       const imgWrap = clone.querySelector('.img-wrap');
       if (imgWrap) {
         imgWrap.style.width = '100%';
-        imgWrap.style.height = '750px'; // Proporcional al nuevo ancho
+        imgWrap.style.height = '750px'; // Mantenemos la misma altura vertical
         imgWrap.style.borderRadius = '16px';
       }
 
@@ -2188,7 +2393,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
       const rescatesGanador = rescates[ganadorActual] || 0;
       votesText.textContent = ganadorRescate ? `🔥 ${rescatesGanador} rescates` : `🗳 ${votos} voto${votos !== 1 ? 's' : ''}`;
       votesText.style.color = '#f5c542';
-      votesText.style.fontSize = '52px'; // Un poco más grande
+      votesText.style.fontSize = '52px';
       votesText.style.fontWeight = 'bold';
       votesText.style.marginTop = '20px';
       votesText.style.textShadow = '0 0 15px rgba(245,197,66,0.4)';
@@ -2363,7 +2568,11 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
   window.compartirResumenComoImagen = compartirResumenComoImagen;
 
   window.abrirModalPrediccion = function() {
-    if (!usernameActual) { mostrarLoginModal(); return; }
+    if (!estaAutenticado()) {
+      mostrarLoginModal();
+      mostrarToast("Debes ingresar con tu usuario y PIN para poder predecir.", "error");
+      return;
+    }
     if (votacionFinalizada()) { mostrarToast("La votación ya está cerrada. No puedes predecir.", "error"); return; }
     if (prediccionesActuales[usernameActual] && prediccionesActuales[usernameActual].resetToken === resetToken) {
       mostrarToast("Ya predijiste en esta ronda.", "error"); return;
@@ -2407,14 +2616,29 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
     });
   }
   window.confirmarPrediccion = async function() {
-    if (!personajeSeleccionadoPred || !usernameActual || !resetToken) return;
+    if (!estaAutenticado()) {
+      cerrarModalPrediccion();
+      mostrarLoginModal();
+      mostrarToast("Debes ingresar con tu usuario y PIN para poder predecir.", "error");
+      return;
+    }
+    if (!personajeSeleccionadoPred || !resetToken) return;
+
+    const userDb = await obtenerUsuario(usernameActual);
+    if (!userDb || !userDb.pin_hash) {
+      cerrarModalPrediccion();
+      mostrarLoginModal();
+      mostrarToast("Tu usuario no está registrado con PIN. Creá tu PIN para continuar.", "error");
+      return;
+    }
+
     const btn = document.getElementById("predConfirmBtn");
     btn.disabled = true; btn.textContent = "Guardando...";
     try {
       const predRef = ref(db, 'predicciones/' + usernameActual);
       const tx = await runTransaction(predRef, (current) => {
         if (current && current.resetToken === resetToken) return;
-        return { personaje: personajeSeleccionadoPred, fecha: Date.now(), resetToken };
+        return { personaje: personajeSeleccionadoPred, fecha: Date.now(), resetToken, nombreOriginal: usernameOriginalActual };
       });
       if (!tx.committed) {
         mostrarToast("Ya habías predicho en esta ronda.", "error");
@@ -2437,7 +2661,19 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
   function actualizarPrediccionRow() {
     const row = document.getElementById("prediccionRow");
     const btn = document.getElementById("btnPredecir");
-    if (!usernameActual) { row.style.display = "none"; return; }
+    if (!row || !btn) return;
+
+    if (!estaAutenticado()) {
+      row.style.display = "flex";
+      btn.classList.remove("done", "acierto");
+      btn.innerHTML = `🔮 Predecir ganador <span style="font-size:11px;opacity:.8">(ingresá para predecir)</span>`;
+      btn.onclick = () => {
+        mostrarLoginModal();
+        mostrarToast("Debes ingresar con tu usuario y PIN para poder predecir.", "oracle");
+      };
+      return;
+    }
+
     row.style.display = "flex";
     const miPred = prediccionesActuales[usernameActual];
     const tienePredEstaRonda = miPred && miPred.resetToken === resetToken;
@@ -2522,7 +2758,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
   }
 
   function calcularBadgesUsuario() {
-    if (!usernameActual) return [];
+    if (!estaAutenticado()) return [];
     const badges = [];
     const miStats = statsUsuarios[usernameActual] || {};
     if (rolesActuales.lider === usernameActual) badges.push({ cls: 'lider', html: '👑 Líder', title: 'Líder del clan' });
@@ -2553,7 +2789,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
   }
 
   function checkNewBadges() {
-    if (!usernameActual) { prevBadgeStats = null; return; }
+    if (!estaAutenticado()) { prevBadgeStats = null; return; }
     const stats = statsUsuarios[usernameActual] || {};
     const current = {
       oraculo: stats.predicciones_acertadas || 0,
@@ -2582,7 +2818,7 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
     const layout = document.getElementById('mainLayout');
     if (!panel) return;
 
-    if (!usernameActual) {
+    if (!estaAutenticado()) {
       panel.style.display = 'none';
       if (layout) layout.classList.add('no-user');
       prevBadgeStats = null;
@@ -2876,10 +3112,39 @@ body.light .chart-bar{background:linear-gradient(90deg,rgba(212,160,23,.65),rgba
     if (adminKeyBuffer.endsWith(ADMIN_CODE)) { adminKeyBuffer = ""; window.open("admin.html", "_blank"); }
   });
 
-  usernameActual = getUsername();
-  usernameOriginalActual = getUsernameOriginal();
-  if (!usernameActual) { actualizarBotonLogin(); mostrarLoginModal(); }
-  else { iniciarListenerUsuario(); actualizarHeaderUsuario(); }
+  // INICIALIZACIÓN DE SESIÓN Y COMPONENTES
+  setupAllPinToggles();
+  setupNumericInputs();
+
+  const storedUser = getUsername();
+  const storedOriginal = getUsernameOriginal();
+  const sessionUser = sessionStorage.getItem(SESSION_AUTH_KEY);
+
+  if (storedUser && sessionUser === storedUser) {
+    usernameActual = storedUser;
+    usernameOriginalActual = storedOriginal;
+    obtenerUsuario(usernameActual).then(u => {
+      if (!u || !u.pin_hash) {
+        sessionStorage.removeItem(SESSION_AUTH_KEY);
+        usernameActual = "";
+        usernameOriginalActual = "";
+        actualizarBotonLogin();
+        mostrarLoginModal();
+      } else {
+        iniciarListenerUsuario();
+        actualizarHeaderUsuario();
+        refrescarBotones();
+        renderCdPanel();
+        renderBadges();
+        actualizarPrediccionRow();
+      }
+    });
+  } else {
+    usernameActual = "";
+    usernameOriginalActual = "";
+    actualizarBotonLogin();
+    mostrarLoginModal();
+  }
 
   cargarConfig();
   refrescarBotones();
