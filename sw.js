@@ -1,128 +1,49 @@
-// AXCEND - Service Worker
-// Estrategia:
-//   - HTML  → network-first (para que las actualizaciones se vean al instante)
-//   - Estáticos (imágenes, iconos, manifest) → cache-first (para que cargue rápido)
-//   - Firebase y CDNs externos → no se cachean (siempre red)
-//   - Fallback offline → sirve index.html desde caché si no hay red
-
-const CACHE_VERSION = 'axcend-v2';
-const CACHE_STATIC = CACHE_VERSION + '-static';
-
-const ASSETS_PRECACHE = [
-  './',
-  './index.html',
-  './admin.html',
-  './manifest.json',
-  './favicon.ico',
-  './favicon.png',
-  './apple-touch-icon.png',
-  './icon-192.png',
-  './icon-512.png'
-];
-
-// ============================================================
-// INSTALL: precachear assets críticos
-// ============================================================
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_STATIC)
-      .then((cache) => cache.addAll(ASSETS_PRECACHE).catch(() => {}))
-      .then(() => self.skipWaiting())
-  );
+// El nombre incluye el ámbito porque GitHub Pages comparte el origen entre proyectos.
+const prefix = 'woofia:' + self.registration.scope + ':';
+const version = prefix + '3.4.0';
+const here = path => new URL(path, self.registration.scope).href;
+const shell = ['offline.html','assets/axcend.png','assets/design.css','assets/body.woff2','assets/display.woff2','manifest.json','icon-192.png?v=axn-v2','icon-512.png?v=axn-v2','icon-maskable.png?v=axn-v2','apple-touch-icon.png?v=axn-v2'];
+self.addEventListener('install', event => {
+  event.waitUntil(caches.open(version).then(cache => cache.addAll(shell.map(path => new Request(here(path), {cache:'reload'})))));
 });
-
-// ============================================================
-// ACTIVATE: limpiar cachés viejas y tomar el control
-// ============================================================
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys
-          .filter((key) => key !== CACHE_STATIC)
-          .map((key) => caches.delete(key))
-      )
-    ).then(() => self.clients.claim())
-  );
+self.addEventListener('message', event => {
+  if (event.data === 'ACTIVATE') event.waitUntil(self.skipWaiting());
 });
-
-// ============================================================
-// FETCH: rutas de red vs caché según el tipo
-// ============================================================
-self.addEventListener('fetch', (event) => {
+self.addEventListener('activate', event => {
+  event.waitUntil((async () => {
+    const names = await caches.keys();
+    await Promise.all(names.filter(name => name.startsWith(prefix) && name !== version).map(name => caches.delete(name)));
+    // La caché v2 era global. Retirá únicamente las entradas de esta instalación.
+    if (names.includes('axcend-v2-static')) {
+      const legacy = await caches.open('axcend-v2-static');
+      for (const req of await legacy.keys()) if (req.url.startsWith(self.registration.scope)) await legacy.delete(req);
+      if (!(await legacy.keys()).length) await caches.delete('axcend-v2-static');
+    }
+    await self.clients.claim();
+  })());
+});
+self.addEventListener('fetch', event => {
   const req = event.request;
-
-  // Solo GET
-  if (req.method !== 'GET') return;
-
-  const url = new URL(req.url);
-
-  // No interceptar peticiones a otros dominios (Firebase, CDNs, etc.)
-  if (url.origin !== self.location.origin) return;
-
-  // HTML → network-first (para que los deploys nuevos se vean enseguida)
-  if (req.headers.get('accept') && req.headers.get('accept').includes('text/html')) {
-    event.respondWith(networkFirst(req));
+  if (req.method !== 'GET' || !req.url.startsWith(self.registration.scope)) return;
+  if (req.mode === 'navigate') {
+    event.respondWith(fetch(req, {cache:'no-cache'}).catch(async () => (await caches.open(version)).match(here('offline.html'))));
     return;
   }
-
-  // Estáticos (imágenes, iconos, css, js) → cache-first
-  if (/\.(png|jpg|jpeg|webp|svg|gif|ico|css|woff2?|ttf)$/i.test(url.pathname)) {
-    event.respondWith(cacheFirst(req));
-    return;
-  }
-
-  // manifest y sw → network-first
-  if (url.pathname.endsWith('/manifest.json') || url.pathname.endsWith('/sw.js')) {
-    event.respondWith(networkFirst(req));
-    return;
-  }
-
-  // Cualquier otra ruta → network-first con fallback a caché
-  event.respondWith(networkFirst(req));
+  const path = new URL(req.url).pathname;
+  if (!/\.(?:js|css|json|png|webp|woff2|ico|jpg)$/.test(path)) return;
+  event.respondWith((async () => {
+    const cache = await caches.open(version);
+    const artwork = /\/(Activos|Ocultos)\//.test(path);
+    const hit = await cache.match(req);
+    if (hit && artwork) return hit;
+    try {
+      const response = await fetch(req, {cache:artwork ? 'default' : 'no-cache'});
+      if (response.ok && response.type === 'basic' && !new URL(req.url).search) {
+        await cache.put(req, response.clone()).catch(() => {});
+      }
+      return response;
+    } catch {
+      return hit || Response.error();
+    }
+  })());
 });
-
-// ============================================================
-// ESTRATEGIAS
-// ============================================================
-
-// Network-first: intenta la red, si falla usa caché; si la red responde, actualiza caché
-async function networkFirst(request) {
-  try {
-    const fresh = await fetch(request);
-    if (fresh && fresh.ok) {
-      const cache = await caches.open(CACHE_STATIC);
-      cache.put(request, fresh.clone()).catch(() => {});
-    }
-    return fresh;
-  } catch (err) {
-    const cached = await caches.match(request);
-    if (cached) return cached;
-    // Fallback offline para HTML
-    if (request.headers.get('accept')?.includes('text/html')) {
-      const fallback = await caches.match('./index.html');
-      if (fallback) return fallback;
-    }
-    return new Response('Offline y sin caché disponible', {
-      status: 503,
-      statusText: 'Offline',
-      headers: { 'Content-Type': 'text/plain; charset=utf-8' }
-    });
-  }
-}
-
-// Cache-first: intenta caché, si no, va a red y guarda
-async function cacheFirst(request) {
-  const cached = await caches.match(request);
-  if (cached) return cached;
-  try {
-    const fresh = await fetch(request);
-    if (fresh && fresh.ok) {
-      const cache = await caches.open(CACHE_STATIC);
-      cache.put(request, fresh.clone()).catch(() => {});
-    }
-    return fresh;
-  } catch (err) {
-    return new Response('', { status: 404 });
-  }
-}
