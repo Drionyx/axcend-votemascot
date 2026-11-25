@@ -1,0 +1,89 @@
+/* Sólo las franjas exteriores reciben partículas. El ancho sigue el relleno
+   real de la arena, incluso en el punto en que deja de crecer la columna. */
+.arena-page { isolation:isolate; }
+.arena-gutter {
+  --pigment:#8dd9c8; --haze:color-mix(in srgb,var(--pigment) 10%,transparent);
+  position:fixed; inset-block:0; width:max(20px,calc((100% - 1280px)/2));
+  overflow:hidden; z-index:-1; pointer-events:none; contain:strict;
+  background:radial-gradient(ellipse at 0 78%,var(--haze),transparent 65%);
+  mask-image:linear-gradient(to right,#000 78%,transparent);
+}
+.gutter-left { left:0; }
+.gutter-right { right:0; transform:scaleX(-1); }
+.arena-gutter i {
+  position:absolute; left:var(--x); top:var(--y); width:var(--size); height:var(--size);
+  opacity:.65; color:var(--pigment); transform:rotate(var(--tilt));
+  animation:gutter-rise var(--duration) var(--offset) infinite linear;
+}
+@keyframes gutter-rise {
+  0% { opacity:0; transform:translate(0,45px) rotate(var(--tilt)); }
+  25%,65% { opacity:.75; }
+  100% { opacity:0; transform:translate(var(--sway),-65px) rotate(calc(var(--tilt) + 16deg)); }
+}
+body[data-palette="axn"] .arena-gutter i {
+  width:calc(var(--size)*.56);height:calc(var(--size)*.56);
+  border:1.5px solid currentColor; transform:rotate(45deg); rotate:45deg;
+  animation-name:gutter-signal;
+}
+body[data-palette="axn"] .arena-gutter i:nth-child(3n+1) { color:#edbe65; }
+body[data-palette="axn"] .arena-gutter i:nth-child(3n)::before {
+  content:""; position:absolute; inset:3px; background:currentColor;
+}
+@keyframes gutter-signal {
+  0% { opacity:0;transform:translate(18px,18px); }
+  25%,65% { opacity:.65; }
+  100% { opacity:0;transform:translate(-30px,-30px); }
+}
+body[data-palette="fire"] .arena-gutter { --pigment:#ff9652; }
+body[data-palette="fire"] .arena-gutter i {
+  width:calc(var(--size)*.32);height:calc(var(--size)*.56);
+  background:linear-gradient(20deg,#ff6e34,#ffd28b);
+  border-radius:65% 18% 56% 26%;box-shadow:0 0 7px #ff762aa6,0 0 15px #eb592a5e;
+}
+body[data-palette="water"] .arena-gutter { --pigment:#69d5ed; }
+body[data-palette="water"] .arena-gutter i {
+  border-radius:50%;border:1px solid color-mix(in srgb,currentColor 73%,transparent);
+  background:radial-gradient(ellipse at 28% 23%,#f1ffffba 0 5%,transparent 14%),
+    radial-gradient(circle at 45% 39%,transparent 40%,#49a6c942 76%,#abf3ff7a);
+  box-shadow:inset -1px -2px 3px #79d7e638;
+}
+body[data-palette="wood"] .arena-gutter { --pigment:#48ae80; }
+body[data-palette="wood"] .arena-gutter i {
+  width:calc(var(--size)*.64);height:var(--size);border-radius:95% 0 88% 5%;
+  background:linear-gradient(48deg,transparent 46%,#a7daa192 50%,transparent 55%),
+    linear-gradient(135deg,#3b876c,#7fb278);animation-direction:reverse;
+}
+body[data-palette="light"] .arena-gutter { --pigment:#f4bf58; }
+body[data-palette="light"] .arena-gutter i {
+  width:calc(var(--size)*.58);height:calc(var(--size)*.58);border-radius:50%;
+  background:radial-gradient(circle,#fffadc 8%,#ffdb80 38%,#fac864a6 61%,transparent 75%);
+  box-shadow:0 0 9px #ffcf7482,0 0 21px #eaa54542;
+}
+body[data-palette="light"] .arena-gutter i:nth-child(4n)::before {
+  content:"";position:absolute;inset:-50%;background:#ffd78caf;
+  clip-path:polygon(50% 0,56% 44%,100% 50%,56% 56%,50% 100%,44% 56%,0 50%,44% 44%);
+}
+body[data-palette="dark"] .arena-gutter { --pigment:#a784da; }
+body[data-palette="dark"] .arena-gutter i {
+  border-radius:50%;background:radial-gradient(circle at 65% 35%,#704f95,#251535 62%);
+  box-shadow:inset -1px 1px 1px #ceacfb,0 0 8px #9971cd79,0 0 20px #7b52af38;
+}
+body[data-palette="dark"] .arena-gutter i:nth-child(2n)::after {
+  content:"";position:absolute;inset:28% -27%;border:1px solid #c192f3a3;border-radius:50%;transform:rotate(-28deg);
+}
+.arena-page.light .arena-gutter { --haze:color-mix(in srgb,var(--accent) 10%,transparent); }
+body.light[data-palette="light"] .arena-gutter i { outline:1px solid #b87b2999; }
+.arena-page[data-ambient-still] .arena-gutter i { animation-play-state:paused; }
+@media(prefers-reduced-motion:reduce) {
+  .arena-page .arena-gutter i { animation:none !important; opacity:.58; }
+  body[data-palette="axn"] .arena-gutter i { transform:none; }
+}
+@media(max-width:1400px) {
+  .arena-gutter i:nth-child(even) { display:none; }
+  .arena-gutter i { scale:.67; }
+}
+@media(max-width:680px) {
+  .arena-gutter { width:13px; opacity:.72; }
+  .arena-gutter i { left:10%; scale:.47; transform-origin:left center; }
+}
+

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="AXN">
+  <path fill="#f6bc51" d="M13 10h91l16 15-8 63-47 32-47-24L7 77z"/>
+  <path fill="#15232e" d="M18 15h84l12 12-7 58-42 28-43-21-9-17z"/>
+  <path fill="#416574" d="M23 21h51l-5 4H23z"/>
+  <g transform="matrix(.9 0 -.10 1 13.2 0)">
+    <g fill="#ffc654">
+      <path d="m15 78 12-44h11l10 44H37l-5-29-7 29z"/>
+      <path fill="#ffdf8b" d="M25 61h12l2 7H23z"/>
+    </g>
+    <g fill="#74e7da">
+      <path d="M43 34h11l8 14 8-14h11L66 56 52 78H41l15-23z"/>
+      <path d="m67 59 9 19H66l-5-10z"/>
+    </g>
+    <path fill="#ffdd96" d="M78 78V34h9l12 25V34h10v44h-9L88 53v25z"/>
+  </g>
+  <path fill="#304954" d="M39 88h53l-27 17z"/>
+  <path fill="#f5bd51" d="M56 92h18l-9 6z"/>
+</svg>

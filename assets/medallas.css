@@ -1,0 +1,21 @@
+/* Una misma ilustración para el perfil, el panel y los avisos del logro. */
+[data-medal="primer-voto"] { --medal-art:url(medallas/primer-voto.webp); }
+[data-medal="racha"] { --medal-art:url(medallas/racha.webp); }
+[data-medal="oraculo"] { --medal-art:url(medallas/oraculo.webp); }
+[data-medal="aciertos"] { --medal-art:url(medallas/aciertos.webp); }
+[data-medal="rescatista"] { --medal-art:url(medallas/rescatista.webp); }
+[data-medal="cumlicker"] { --medal-art:url(medallas/cumlicker.webp); }
+[data-medal="lider"] { --medal-art:url(medallas/lider.webp); }
+[data-medal="sublider"] { --medal-art:url(medallas/sublider.webp); }
+
+:is(.badge-chip,.badge-mini,.toast)[data-medal]:not([data-medal="boyfriend"])::before {
+  content:""; width:var(--medal-size,28px); height:var(--medal-size,28px);
+  display:inline-block; flex:none; vertical-align:middle;
+  background:var(--medal-art) center / contain no-repeat;
+}
+.user-panel .badge-chip[data-medal] {
+  gap:7px; min-height:36px; padding:3px 9px 3px 5px; color:var(--text);
+}
+.user-panel .badge-chip.boyfriend img {width:28px;height:28px;}
+.badge-mini[data-medal] { --medal-size:21px; gap:4px; padding:2px 7px 2px 4px; color:var(--text); }
+.toast[data-medal] { display:flex; align-items:center; gap:9px; text-align:left; }
