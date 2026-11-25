@@ -1,6 +1,6 @@
 // El nombre incluye el ámbito porque GitHub Pages comparte el origen entre proyectos.
 const prefix = 'woofia:' + self.registration.scope + ':';
-const version = prefix + '3.4.0';
+const version = prefix + '3.13.0';
 const here = path => new URL(path, self.registration.scope).href;
 const shell = ['offline.html','assets/axcend.png','assets/design.css','assets/body.woff2','assets/display.woff2','manifest.json','icon-192.png?v=axn-v2','icon-512.png?v=axn-v2','icon-maskable.png?v=axn-v2','apple-touch-icon.png?v=axn-v2'];
 self.addEventListener('install', event => {
@@ -33,7 +33,7 @@ self.addEventListener('fetch', event => {
   if (!/\.(?:js|css|json|png|webp|woff2|ico|jpg)$/.test(path)) return;
   event.respondWith((async () => {
     const cache = await caches.open(version);
-    const artwork = /\/(Activos|Ocultos)\//.test(path);
+    const artwork = /\/(Activos|Ocultos|Chara_Nkd|Elements)\//.test(path);
     const hit = await cache.match(req);
     if (hit && artwork) return hit;
     try {

@@ -1,0 +1,10 @@
+{
+  "name": "woofia-compilacion",
+  "private": true,
+  "scripts": {
+    "build": "node compilar.cjs"
+  },
+  "devDependencies": {
+    "rollup": "2.79.2"
+  }
+}
